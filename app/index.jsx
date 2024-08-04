@@ -3,8 +3,17 @@ import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 import logo from "../assets/images/logo.jpg";
 import topVector from "../assets/images/home-vector.png";
 import bottomVector from "../assets/images/home-vector2.png";
+import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    setTimeout(() => {
+      router.push("/onboarding");
+    }, 2000);
+  }, []);
+
   return (
     <SafeAreaView className="bg-white h-full">
       <ScrollView
@@ -40,6 +49,7 @@ const App = () => {
           resizeMode="contain"
         />
       </ScrollView>
+      <StatusBar backgroundColor="#161622" style="dark" />
     </SafeAreaView>
   );
 };

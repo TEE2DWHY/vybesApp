@@ -42,6 +42,7 @@ module.exports = {
       },
       fontFamily: {
         axiformaBlack: ["Axiforma-Black", "sans-serif"],
+        axiformaLight: ["Axiforma-Light", "sans-serif"],
       },
     },
   },

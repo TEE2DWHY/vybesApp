@@ -6,6 +6,7 @@ SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
   const [fontsLoaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
+    "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
   });
 
   useEffect(() => {
