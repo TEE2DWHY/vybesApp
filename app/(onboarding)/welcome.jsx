@@ -19,7 +19,7 @@ const Welcome = () => {
           <View className="flex-1 justify-center items-center">
             <Image
               source={iphone}
-              className="w-[90%] self-center"
+              className="w-[90%] self-center mt-3"
               resizeMode="contain"
             />
           </View>
@@ -82,15 +82,14 @@ const Welcome = () => {
               </>
             )}
 
-            <TouchableOpacity>
-              {(activeIndex === 0 || activeIndex === 1) && (
-                <Image
-                  source={multipleArrows}
-                  className="w-[80px] h-[20px] self-center mb-8"
-                  resizeMode="contain"
-                />
-              )}
-            </TouchableOpacity>
+            {(activeIndex === 0 || activeIndex === 1) && (
+              <Image
+                source={multipleArrows}
+                className="w-[80px] h-[20px] self-center mb-8"
+                resizeMode="contain"
+              />
+            )}
+
             <View className="flex-row justify-between px-6">
               <TouchableOpacity>
                 <Text className="text-white-normal font-axiformaBlack">
