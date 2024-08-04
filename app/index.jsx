@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const App = () => {
   useEffect(() => {
     setTimeout(() => {
-      router.push("/onboarding");
+      router.push("/welcome");
     }, 2000);
   }, []);
 

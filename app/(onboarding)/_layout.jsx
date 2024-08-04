@@ -5,7 +5,7 @@ const OnBoardingLayout = () => {
   return (
     <>
       <Stack>
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="welcome" options={{ headerShown: false }} />
       </Stack>
       <StatusBar backgroundColor="#161622" style="dark" />
     </>
