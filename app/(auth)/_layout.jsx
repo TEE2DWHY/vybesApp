@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const AuthLayout = () => {
-  const [formData, setFormData] = useState({});
-  return <div>AuthLayout</div>;
+  return (
+    <>
+      <Stack>
+        <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+      </Stack>
+      <StatusBar backgroundColor="#391753" style="light" />
+    </>
+  );
 };
 
 export default AuthLayout;

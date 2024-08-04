@@ -12,6 +12,7 @@ import iphone3 from "../../assets/images/iphone3.png";
 import multipleArrows from "../../assets/images/multipleArrows.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { router } from "expo-router";
 
 const Welcome = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -134,7 +135,10 @@ const Welcome = () => {
 
             {activeIndex === 2 && (
               <View className="flex-1 justify-center items-center">
-                <TouchableOpacity className="self-center bg-purple-dark px-16 py-4 rounded-3xl flex-row items-center">
+                <TouchableOpacity
+                  className="self-center bg-purple-dark px-16 py-4 rounded-3xl flex-row items-center"
+                  onPress={() => router.push("/sign-in")}
+                >
                   <Text className="text-white-normal font-axiformaBlack font-extrabold">
                     Now, Lets Get Started
                   </Text>
