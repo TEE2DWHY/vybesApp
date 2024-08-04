@@ -6,9 +6,12 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import iphone from "../../assets/images/iPhone.png";
+import iphone from "../../assets/images/iphone.png";
+import iphone2 from "../../assets/images/iphone2.png";
+import iphone3 from "../../assets/images/iphone3.png";
 import multipleArrows from "../../assets/images/multipleArrows.png";
-import { router } from "expo-router";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const Welcome = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -17,11 +20,29 @@ const Welcome = () => {
       <SafeAreaView className="bg-white flex-1">
         <View className="flex-1 relative">
           <View className="flex-1 justify-center items-center">
-            <Image
-              source={iphone}
-              className="w-[90%] self-center mt-3"
-              resizeMode="contain"
-            />
+            {activeIndex === 0 && (
+              <Image
+                source={iphone}
+                className="w-[90%] self-center mt-2"
+                resizeMode="contain"
+              />
+            )}
+
+            {activeIndex === 1 && (
+              <Image
+                source={iphone2}
+                className="w-[90%] self-center mt-2"
+                resizeMode="contain"
+              />
+            )}
+
+            {activeIndex === 2 && (
+              <Image
+                source={iphone3}
+                className="w-[90%] self-center mt-2"
+                resizeMode="contain"
+              />
+            )}
           </View>
           <View className="absolute bottom-0 w-full h-[40vh] bg-purple-darker rounded-tr-[80px] px-6 pt-10 z-20">
             <View className="flex-row items-center gap-2 mb-4">
@@ -51,8 +72,10 @@ const Welcome = () => {
                   Are You Looking For The Right Match?
                 </Text>
                 <Text className="text-base text-white-normal font-axiformaLight font-light mb-6">
-                  With <Text className="text-purple-dark">Vybes</Text>, finding
-                  your perfect date is just a few steps and clicks away.
+                  With{" "}
+                  <Text className="text-purple-dark font-extrabold">Vybes</Text>
+                  , finding your perfect date is just a few steps and clicks
+                  away.
                 </Text>
               </>
             )}
@@ -85,28 +108,45 @@ const Welcome = () => {
             {(activeIndex === 0 || activeIndex === 1) && (
               <Image
                 source={multipleArrows}
-                className="w-[80px] h-[20px] self-center mb-8"
+                className="w-[80px] h-[20px] self-center bottom-10absolute"
                 resizeMode="contain"
               />
             )}
 
-            <View className="flex-row justify-between px-6">
-              <TouchableOpacity>
-                <Text className="text-white-normal font-axiformaBlack">
-                  Skip
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setActiveIndex(activeIndex + 1)}>
-                <Text className="text-white-normal font-axiformaBlack">
-                  Arrow
-                </Text>
-                {/* <Image
-                  source={arrowIcon}
-                  className="w-[24px] h-[24px]"
-                  resizeMode="contain"
-                /> */}
-              </TouchableOpacity>
-            </View>
+            {(activeIndex === 0 || activeIndex === 1) && (
+              <View className="flex-row justify-between px-6 mt-8">
+                <TouchableOpacity>
+                  <Text className="text-white-normal font-axiformaBlack">
+                    Skip
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setActiveIndex(activeIndex + 1)}
+                >
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    size={24}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {activeIndex === 2 && (
+              <View className="flex-1 justify-center items-center">
+                <TouchableOpacity className="self-center bg-purple-dark px-16 py-4 rounded-3xl flex-row items-center">
+                  <Text className="text-white-normal font-axiformaBlack font-extrabold">
+                    Now, Lets Get Started
+                  </Text>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    size={18}
+                    color="white"
+                    style={{ marginLeft: 8, marginTop: -3 }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </SafeAreaView>
