@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   SafeAreaView,
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
 import iphone from "../../assets/images/iphone.png";
 import iphone2 from "../../assets/images/iphone2.png";
@@ -13,10 +12,16 @@ import iphone3 from "../../assets/images/iphone3.png";
 import multipleArrows from "../../assets/images/multipleArrows.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 const Welcome = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Handle any navigation-related side effects here if needed
+  }, [activeIndex]);
+
   return (
     <>
       <SafeAreaView className="bg-white flex-1">
@@ -117,7 +122,7 @@ const Welcome = () => {
 
             {(activeIndex === 0 || activeIndex === 1) && (
               <View className="flex-row justify-between px-6 mt-8 pb-2">
-                <TouchableOpacity onPress={router.push("/sign-up")}>
+                <TouchableOpacity onPress={() => router.push("/sign-up")}>
                   <Text className="text-white-normal font-axiformaBlack">
                     Skip
                   </Text>

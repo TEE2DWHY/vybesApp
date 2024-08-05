@@ -1,5 +1,12 @@
 import React from "react";
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import logo from "../assets/images/logo.jpg";
 import topVector from "../assets/images/home-vector.png";
 import bottomVector from "../assets/images/home-vector2.png";
