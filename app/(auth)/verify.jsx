@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   Alert,
+  ScrollView,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -68,59 +69,68 @@ const Verify = () => {
   return (
     <>
       <SafeAreaView className="h-full bg-white-normal">
-        <View className="flex-row items-center mt-4 mb-6">
-          <TouchableOpacity onPress={() => router.push("/sign-up")}>
-            <View className="ml-4">
-              <FontAwesomeIcon icon={faChevronLeft} size={24} color={"gray"} />
+        <ScrollView
+          containerStyles={{ backgroundColor: "#fff", height: "100%" }}
+        >
+          <View className="flex-row items-center mt-4 mb-6 ">
+            <TouchableOpacity onPress={() => router.push("/sign-up")}>
+              <View className="ml-4">
+                <FontAwesomeIcon
+                  icon={faChevronLeft}
+                  size={24}
+                  color={"gray"}
+                />
+              </View>
+            </TouchableOpacity>
+            <Image
+              source={topVerify}
+              className="ml-auto w-20 h-20 mr-[-10px]"
+              resizeMode="contain"
+            />
+          </View>
+          <View className="h-full px-6">
+            <View className="mb-2">
+              <Text className="text-2xl text-left font-axiformaBlack mb-2 mt-6">
+                Enter 6 Digit Code
+              </Text>
+              <Text className="text-left text-sm font-axiformaLight text-gray-600 w-4/5">
+                Your 6 Digit Verification Code Was Sent Via Your E-Mail
+                @Exa...@Gmail.Com
+              </Text>
             </View>
-          </TouchableOpacity>
-          <Image
-            source={topVerify}
-            className="ml-auto w-20 h-20 mr-[-10px]"
-            resizeMode="contain"
-          />
-        </View>
-        <View className="h-full px-6">
-          <View className="mb-2">
-            <Text className="text-2xl text-left font-axiformaBlack mb-2 mt-6">
-              Enter 6 Digit Code
+            <View className="flex-row justify-center space-x-2 my-8">
+              {[...Array(6)].map((_, index) => (
+                <TextInput
+                  key={index}
+                  ref={(ref) => (inputsRef.current[index] = ref)}
+                  maxLength={1}
+                  keyboardType="numeric"
+                  className="border-b border-gray-400 text-center text-xl font-axiformaRegular w-10"
+                  value={verificationCode[index]}
+                  onChangeText={(value) => handleChangeText(value, index)}
+                  onKeyPress={(e) => handleKeyPress(e, index)}
+                />
+              ))}
+            </View>
+            <Text className="text-left text-sm text-gray-600 px-">
+              Resend Code {timer}s
             </Text>
-            <Text className="text-left text-sm font-axiformaLight text-gray-600 w-4/5">
-              Your 6 Digit Verification Code Was Sent Via Your E-Mail
-              @Exa...@Gmail.Com
-            </Text>
+            <TouchableOpacity
+              className="self-center bg-purple-dark rounded-full py-4 px-20 mt-8"
+              onPress={handleVerify}
+            >
+              <Text className="text-white-normal text-base text-center font-axiformaBlack">
+                {buttonText}
+              </Text>
+            </TouchableOpacity>
+            <Image
+              source={verifyImage}
+              className="mt-32 self-center w-full h-24"
+              resizeMode="contain"
+            />
           </View>
-          <View className="flex-row justify-center space-x-2 my-8">
-            {[...Array(6)].map((_, index) => (
-              <TextInput
-                key={index}
-                ref={(ref) => (inputsRef.current[index] = ref)}
-                maxLength={1}
-                keyboardType="numeric"
-                className="border-b border-gray-400 text-center text-xl font-axiformaRegular w-10"
-                value={verificationCode[index]}
-                onChangeText={(value) => handleChangeText(value, index)}
-                onKeyPress={(e) => handleKeyPress(e, index)}
-              />
-            ))}
-          </View>
-          <Text className="text-left text-sm text-gray-600 px-">
-            Resend Code {timer}s
-          </Text>
-          <TouchableOpacity
-            className="self-center bg-purple-dark rounded-full py-4 px-20 mt-8"
-            onPress={handleVerify}
-          >
-            <Text className="text-white-normal text-lg text-center font-axiformaBlack">
-              {buttonText}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <Image
-          source={verifyImage}
-          className="absolute bottom-10 self-center w-full h-24"
-          resizeMode="contain"
-        />
+        </ScrollView>
+
         <StatusBar backgroundColor="#ffff" style="dark" />
       </SafeAreaView>
     </>
