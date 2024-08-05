@@ -7,6 +7,7 @@ const RootLayout = () => {
   const [fontsLoaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
+    "Axiforma-Regular": require("../assets/fonts/Axiforma-Regular.ttf"),
   });
 
   useEffect(() => {

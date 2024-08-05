@@ -42,7 +42,7 @@ const SignUp = () => {
       Alert.alert("Passwords do not match");
       return;
     }
-    // Handle sign-up logic here
+    router.push("/verify");
   };
 
   const handleInputChange = (name, value) => {
