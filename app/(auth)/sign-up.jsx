@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  ScrollView,
 } from "react-native";
 import userImages from "../../assets/images/user-images.png";
 import logoTwo from "../../assets/images/logo2.png";
@@ -71,7 +72,6 @@ const SignUp = () => {
         <Image
           source={userImages}
           className="w-[350px] h-[60px] absolute bottom-20"
-          //   resizeMode="contain"
         />
       </View>
       {section === 1 ? (
@@ -142,7 +142,7 @@ const SignUp = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            className="self-center bg-purple-dark rounded-full py-4 px-20 mt-2 w-[90%]"
+            className="self-center bg-purple-dark rounded-full py-2 px-20  w-[90%]"
             onPress={handleNext}
           >
             <Text className="text-white-normal text-lg text-center font-axiformaBlack">
@@ -151,58 +151,80 @@ const SignUp = () => {
           </TouchableOpacity>
         </View>
       ) : (
-        <View className="bg-white-normal h-full -mt-[50px] pt-2 rounded-tr-[80px]">
-          <Text className="self-center text-2xl font-axiformaBlack mt-2">
-            Sign Up
-          </Text>
-          <Text className="self-center text-sm font-axiformaLight mt-2 px-5 text-center">
-            Let's Get Started By Connecting You To The Community Of Love
-          </Text>
-          <View className="mt-2 px-5">
-            <TextInput
-              placeholder="Example@Gmail.Com"
-              className="border-b border-purple-300 py-2 text-base font-axiformaRegular mb-4"
-              value={formData.email}
-              onChangeText={(value) => handleInputChange("email", value)}
-            />
-            <TextInput
-              placeholder="Your Name"
-              className="border-b border-purple-300 py-2 text-base font-axiformaRegular mb-4"
-              value={formData.fullName}
-              onChangeText={(value) => handleInputChange("fullName", value)}
-            />
-            <TextInput
-              placeholder="Your Password"
-              secureTextEntry
-              className="border-b border-purple-300 py-2 text-base font-axiformaRegular mb-4"
-              value={formData.password}
-              onChangeText={(value) => handleInputChange("password", value)}
-            />
-            <TextInput
-              placeholder="Confirm Password"
-              secureTextEntry
-              className="border-b border-purple-300 py-2 text-base font-axiformaRegular mb-4"
-              value={formData.confirmPassword}
-              onChangeText={(value) =>
-                handleInputChange("confirmPassword", value)
-              }
-            />
-          </View>
-          <TouchableOpacity
-            className="self-center bg-purple-dark rounded-full py-4 px-20 mt-2 w-[90%]"
-            onPress={handleSignUp}
-          >
-            <Text className="text-white-normal text-lg text-center font-axiformaBlack">
-              Sign-Up
+        <ScrollView className="bg-white-normal h-full -mt-[50px] rounded-tr-[80px]">
+          <View>
+            <Text className="self-center text-2xl font-axiformaBlack mt-4">
+              Sign Up
             </Text>
-          </TouchableOpacity>
-          <Text className="self-center text-sm font-axiformaRegular mt-3">
-            Already A Member?
-            <TouchableOpacity onPress={() => router.push("/sign-in")}>
-              <Text className="font-axiformaBlack ml-1">Login</Text>
+            <Text className="self-center text-sm font-axiformaLight mt-2 px-5 text-center">
+              Let's Get Started By Connecting You To The Community Of Love
+            </Text>
+            <View className="mt-2 px-5">
+              <View className="mb-4">
+                <Text className="text-base font-axiformaRegular text-purple-darker mb-1">
+                  Email
+                </Text>
+                <TextInput
+                  placeholder="Example@Gmail.Com"
+                  className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
+                  value={formData.email}
+                  onChangeText={(value) => handleInputChange("email", value)}
+                />
+              </View>
+              <View className="mb-4">
+                <Text className="text-base font-axiformaRegular text-purple-darker mb-1">
+                  Full Name
+                </Text>
+                <TextInput
+                  placeholder="Your Name"
+                  className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
+                  value={formData.fullName}
+                  onChangeText={(value) => handleInputChange("fullName", value)}
+                />
+              </View>
+              <View className="mb-4">
+                <Text className="text-base font-axiformaRegular text-purple-darker mb-1">
+                  Password
+                </Text>
+                <TextInput
+                  placeholder="Your Password"
+                  secureTextEntry
+                  className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
+                  value={formData.password}
+                  onChangeText={(value) => handleInputChange("password", value)}
+                />
+              </View>
+              <View className="mb-4">
+                <Text className="text-base font-axiformaRegular text-purple-darker mb-1">
+                  Confirm Password
+                </Text>
+                <TextInput
+                  placeholder="Confirm Password"
+                  secureTextEntry
+                  className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
+                  value={formData.confirmPassword}
+                  onChangeText={(value) =>
+                    handleInputChange("confirmPassword", value)
+                  }
+                />
+              </View>
+            </View>
+            <TouchableOpacity
+              className="self-center bg-purple-dark rounded-full py-4 px-20 mt-2 w-[90%]"
+              onPress={handleSignUp}
+            >
+              <Text className="text-white-normal text-lg text-center font-axiformaBlack">
+                Sign-Up
+              </Text>
             </TouchableOpacity>
-          </Text>
-        </View>
+            <View className="flex-row justify-center items-center mt-3">
+              <Text className="text-sm">Already A Member?</Text>
+              <TouchableOpacity onPress={() => router.push("/sign-in")}>
+                <Text className="font-axiformaBlack ml-1">Login</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
       )}
       <StatusBar backgroundColor="#391753" style="light" />
     </SafeAreaView>

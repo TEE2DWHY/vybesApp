@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import iphone from "../../assets/images/iphone.png";
 import iphone2 from "../../assets/images/iphone2.png";
@@ -45,7 +46,7 @@ const Welcome = () => {
               />
             )}
           </View>
-          <View className="absolute bottom-0 w-full h-[40vh] bg-purple-darker rounded-tr-[80px] px-6 pt-10 z-20">
+          <View className="absolute bottom-0 w-full  bg-purple-darker rounded-tr-[80px] px-6 pt-10 z-20">
             <View className="flex-row items-center gap-2 mb-4">
               {[0, 1, 2].map((index) => (
                 <TouchableOpacity
@@ -115,8 +116,8 @@ const Welcome = () => {
             )}
 
             {(activeIndex === 0 || activeIndex === 1) && (
-              <View className="flex-row justify-between px-6 mt-8">
-                <TouchableOpacity>
+              <View className="flex-row justify-between px-6 mt-8 pb-2">
+                <TouchableOpacity onPress={router.push("/sign-up")}>
                   <Text className="text-white-normal font-axiformaBlack">
                     Skip
                   </Text>
@@ -136,7 +137,7 @@ const Welcome = () => {
             {activeIndex === 2 && (
               <View className="flex-1 justify-center items-center">
                 <TouchableOpacity
-                  className="self-center bg-purple-dark px-16 py-4 rounded-3xl flex-row items-center"
+                  className="self-center bg-purple-dark px-16 py-4 mb-3 rounded-3xl flex-row items-center"
                   onPress={() => router.push("/sign-in")}
                 >
                   <Text className="text-white-normal font-axiformaBlack font-extrabold">
