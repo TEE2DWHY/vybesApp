@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import verifyImage from "../../assets/images/verify-img.png";
 import topVerify from "../../assets/images/top-verify.png";
+import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 
 const Verify = () => {
   const [verificationCode, setVerificationCode] = useState(Array(6).fill(""));
@@ -66,22 +68,24 @@ const Verify = () => {
   return (
     <>
       <SafeAreaView className="h-full bg-white-normal">
-        <View className="flex-row items-center mt-4 mb-6 px-3">
-          <TouchableOpacity>
-            <FontAwesomeIcon icon={faChevronLeft} size={24} color={"#000"} />
+        <View className="flex-row items-center mt-4 mb-6">
+          <TouchableOpacity onPress={() => router.push("/sign-up")}>
+            <View className="ml-4">
+              <FontAwesomeIcon icon={faChevronLeft} size={24} color={"gray"} />
+            </View>
           </TouchableOpacity>
           <Image
             source={topVerify}
-            className="ml-auto w-10 h-10 mr-[-10px]"
+            className="ml-auto w-20 h-20 mr-[-10px]"
             resizeMode="contain"
           />
         </View>
-        <View className="h-full">
-          <View className="items-center mb-4">
-            <Text className="text-2xl font-axiformaBlack mb-2 mt-6">
+        <View className="h-full px-6">
+          <View className="mb-2">
+            <Text className="text-2xl text-left font-axiformaBlack mb-2 mt-6">
               Enter 6 Digit Code
             </Text>
-            <Text className="text-center text-sm font-axiformaLight text-gray-600">
+            <Text className="text-left text-sm font-axiformaLight text-gray-600 w-4/5">
               Your 6 Digit Verification Code Was Sent Via Your E-Mail
               @Exa...@Gmail.Com
             </Text>
@@ -100,7 +104,7 @@ const Verify = () => {
               />
             ))}
           </View>
-          <Text className="text-left text-sm text-gray-600 px-6">
+          <Text className="text-left text-sm text-gray-600 px-">
             Resend Code {timer}s
           </Text>
           <TouchableOpacity
@@ -111,12 +115,13 @@ const Verify = () => {
               {buttonText}
             </Text>
           </TouchableOpacity>
-          <Image
-            source={verifyImage}
-            className="absolute bottom-20 self-center w-full h-24"
-            resizeMode="contain"
-          />
         </View>
+        <Image
+          source={verifyImage}
+          className="absolute bottom-10 self-center w-full h-24"
+          resizeMode="contain"
+        />
+        <StatusBar backgroundColor="#ffff" style="dark" />
       </SafeAreaView>
     </>
   );

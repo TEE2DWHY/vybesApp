@@ -6,13 +6,13 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  StatusBar,
   Alert,
 } from "react-native";
 import userImages from "../../assets/images/user-images.png";
 import logoTwo from "../../assets/images/logo2.png";
 import union from "../../assets/images/union.png";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const SignUp = () => {
   const [section, setSection] = useState(1);
@@ -54,7 +54,6 @@ const SignUp = () => {
 
   return (
     <SafeAreaView className="h-full bg-purple-darker">
-      <StatusBar backgroundColor="#391753" barStyle="light-content" />
       <View className="bg-purple-darker h-[350px] items-center justify-center relative overflow-hidden">
         <Image
           source={union}
@@ -205,6 +204,7 @@ const SignUp = () => {
           </Text>
         </View>
       )}
+      <StatusBar backgroundColor="#391753" style="light" />
     </SafeAreaView>
   );
 };
