@@ -2,14 +2,14 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { SafeAreaView, Text } from "react-native";
 
-const Home = () => {
+const Profile = () => {
   return (
     <>
       <SafeAreaView>
-        <Text>Home</Text>
+        <Text>Profile</Text>
       </SafeAreaView>
     </>
   );
 };
 
-export default Home;
+export default Profile;

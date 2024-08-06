@@ -34,7 +34,7 @@ const SignIn = () => {
       Alert.alert("Please fill in all fields");
       return;
     }
-    // Handle login logic here
+    router.push("/home");
   };
 
   return (
