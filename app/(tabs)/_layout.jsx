@@ -19,7 +19,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
       />
       <Text
         className={`${
-          !focused ? `font-axiformaRegular` : `font-axiformaBlack`
+          !focused
+            ? `font-axiformaRegular`
+            : `font-axiformaBlack text-purple-normal`
         } text-xs text-white`}
       >
         {name}
@@ -39,7 +41,8 @@ const TabsLayout = () => {
           tabBarStyle: {
             backgroundColor: "#fffff",
             borderTopWidth: 0,
-            height: 104,
+            height: 100,
+            bottom: 0,
           },
         }}
       >
