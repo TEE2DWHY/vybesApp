@@ -12,7 +12,7 @@ const UserDetails = ({ img, username, firstName, age, state, country }) => {
     >
       <Image
         source={img}
-        className="h-56 w-full rounded-2xl"
+        className="h-60 w-full rounded-[25.41px]"
         resizeMode="cover"
       />
       <View className="p-2">
@@ -22,8 +22,8 @@ const UserDetails = ({ img, username, firstName, age, state, country }) => {
         >
           {username}
         </Text>
-        <View className="pt-1">
-          <Text className="font-axiformaBlack text-lg">
+        <View className="pt-0">
+          <Text className="font-axiformaBlack text-lg leading-[43.2px]">
             {firstName}, {age}
           </Text>
           <Text className="text-sm font-axiformaLight pb-2">{`${state}, ${country}`}</Text>

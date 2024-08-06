@@ -3,6 +3,7 @@ import esther from "../assets/images/esther.png";
 import mina from "../assets/images/mina.png";
 import bella from "../assets/images/bella.png";
 import bisola from "../assets/images/bisola.png";
+import gold from "../assets/images/gold.png";
 
 export const users = [
   {
@@ -39,16 +40,16 @@ export const users = [
   },
   {
     img: bisola,
-    username: "Baddie",
+    username: "Vyber",
     firstName: "Bisola",
     age: 22,
     state: "Lagos",
     country: "Nigeria",
   },
   {
-    img: moana,
+    img: gold,
     username: "Baddie",
-    firstName: "Esther",
+    firstName: "Gold",
     age: 21,
     state: "Abeokuta",
     country: "Nigeria",
