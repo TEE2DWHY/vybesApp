@@ -63,10 +63,11 @@ const Home = () => {
         <FlatList
           data={users}
           renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => index}
           contentContainerStyle={{ paddingHorizontal: 20 }}
           columnWrapperStyle={{ justifyContent: "space-between" }}
-          showVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={true}
           numColumns={2}
         />
         <StatusBar backgroundColor="#fff" style="dark" />

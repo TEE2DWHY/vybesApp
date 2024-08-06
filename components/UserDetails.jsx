@@ -8,11 +8,11 @@ const UserDetails = ({ img, username, firstName, age, state, country }) => {
   return (
     <View
       className="bg-white rounded-lg overflow-hidden mb-4"
-      style={{ width: "48%" }}
+      style={{ width: "47%" }}
     >
       <Image
         source={img}
-        className="h-60 w-full rounded-[25.41px]"
+        className="min-h-[56px] w-full rounded-[25.41px]"
         resizeMode="cover"
       />
       <View className="p-2">
@@ -26,7 +26,7 @@ const UserDetails = ({ img, username, firstName, age, state, country }) => {
           <Text className="font-axiformaBlack text-lg leading-[43.2px]">
             {firstName}, {age}
           </Text>
-          <Text className="text-sm font-axiformaLight pb-2">{`${state}, ${country}`}</Text>
+          <Text className="text-sm font-axiformaLight pb-2 pt-0">{`${state}, ${country}`}</Text>
         </View>
       </View>
     </View>
