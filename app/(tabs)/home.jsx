@@ -1,5 +1,4 @@
-import { Tabs } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -7,15 +6,30 @@ import {
   Text,
   TextInput,
   View,
+  RefreshControl,
+  TouchableOpacity,
 } from "react-native";
-import filter from "../../assets/images/filter.png";
+// import filter from "../../assets/images/filter.png";
+import Feather from "@expo/vector-icons/Feather";
 import search from "../../assets/images/search.png";
 import bell from "../../assets/images/bell.png";
 import { StatusBar } from "expo-status-bar";
 import UserDetails from "../../components/UserDetails";
 import { users } from "../../data/users";
+import Empty from "../../components/Empty";
+import FilterModal from "../../modal/FilterModal";
 
 const Home = () => {
+  const [refreshing, setRefreshing] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    // recalls video if new videos appeared
+    setRefreshing(false);
+    console.log("app refreshing is successful.");
+  };
+
   const renderItem = ({ item }) => (
     <UserDetails
       img={item.img}
@@ -33,26 +47,37 @@ const Home = () => {
         <View className="pt-6 px-5">
           <View className="sticky top-0 z-10 bg-gray-200 pb-4">
             <View className="flex-row items-center justify-between border-b-[#6888ce] border-b-[1px] pb-4">
-              <Image
-                source={filter}
-                className="w-[25px] h-[25px] bg-purple-normal rounded-md"
-                resizeMode="contain"
-              />
+              <TouchableOpacity onPress={() => setShowFilterModal(true)}>
+                <Feather
+                  name="sliders"
+                  size={24}
+                  style={{
+                    color: "#fff",
+                    backgroundColor: "#a241ee",
+                    borderRadius: 8,
+                  }}
+                />
+              </TouchableOpacity>
               <View className="rounded-3xl flex-row items-center justify-between w-[68%] py-2 px-3 bg-white-normal">
-                <Image
-                  source={search}
-                  className="w-[20px] h-[20px]"
-                  resizeMode="contain"
+                <Feather
+                  name="search"
+                  size={24}
+                  style={{
+                    color: "gray",
+                  }}
                 />
                 <TextInput
                   placeholder="Find a Fellow Vyber..."
                   className="w-[80%] font-axiformaRegular"
                 />
               </View>
-              <Image
-                source={bell}
-                className="w-[25px] h-[25px]"
-                resizeMode="contain"
+
+              <Feather
+                name="bell"
+                size={30}
+                style={{
+                  color: "gray",
+                }}
               />
             </View>
           </View>
@@ -63,13 +88,20 @@ const Home = () => {
         <FlatList
           data={users}
           renderItem={renderItem}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ paddingHorizontal: 20 }}
           columnWrapperStyle={{ justifyContent: "space-between" }}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={true}
+          showsHorizontalScrollIndicator={false}
           numColumns={2}
+          ListEmptyComponent={<Empty text={"No users found in your area."} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
+        {showFilterModal && (
+          <FilterModal onClose={() => setShowFilterModal(false)} />
+        )}
         <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>
     </>

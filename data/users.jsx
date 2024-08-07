@@ -4,6 +4,10 @@ import mina from "../assets/images/mina.png";
 import bella from "../assets/images/bella.png";
 import bisola from "../assets/images/bisola.png";
 import gold from "../assets/images/gold.png";
+import ella from "../assets/images/ella.png";
+import janie from "../assets/images/janie.png";
+import crystabel from "../assets/images/crystabel.png";
+import maryam from "../assets/images/maryam.png";
 
 export const users = [
   {
@@ -51,6 +55,38 @@ export const users = [
     username: "Baddie",
     firstName: "Gold",
     age: 21,
+    state: "Abeokuta",
+    country: "Nigeria",
+  },
+  {
+    img: maryam,
+    username: "Baddie",
+    firstName: "Maryam",
+    age: 21,
+    state: "Abeokuta",
+    country: "Nigeria",
+  },
+  {
+    img: janie,
+    username: "Baddie",
+    firstName: "Janie",
+    age: 20,
+    state: "Abeokuta",
+    country: "Nigeria",
+  },
+  {
+    img: ella,
+    username: "Baddie",
+    firstName: "Ella",
+    age: 25,
+    state: "Abeokuta",
+    country: "Nigeria",
+  },
+  {
+    img: crystabel,
+    username: "Baddie",
+    firstName: "Crystabl",
+    age: 19,
     state: "Abeokuta",
     country: "Nigeria",
   },
