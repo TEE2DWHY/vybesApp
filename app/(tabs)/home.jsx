@@ -11,8 +11,8 @@ import {
 } from "react-native";
 // import filter from "../../assets/images/filter.png";
 import Feather from "@expo/vector-icons/Feather";
-import search from "../../assets/images/search.png";
-import bell from "../../assets/images/bell.png";
+// import search from "../../assets/images/search.png";
+// import bell from "../../assets/images/bell.png";
 import { StatusBar } from "expo-status-bar";
 import UserDetails from "../../components/UserDetails";
 import { users } from "../../data/users";
@@ -47,7 +47,9 @@ const Home = () => {
         <View className="pt-6 px-5">
           <View className="sticky top-0 z-10 bg-gray-200 pb-4">
             <View className="flex-row items-center justify-between border-b-[#6888ce] border-b-[1px] pb-4">
-              <TouchableOpacity onPress={() => setShowFilterModal(true)}>
+              <TouchableOpacity
+                onPress={() => setShowFilterModal(!showFilterModal)}
+              >
                 <Feather
                   name="sliders"
                   size={24}
