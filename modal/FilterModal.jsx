@@ -213,8 +213,6 @@ const FilterModal = ({ onClose }) => {
             </TouchableOpacity>
           </>
         )}
-
-        {/* Additional content for other tabs like 'Sex' can be added similarly */}
       </ScrollView>
     </View>
   );
