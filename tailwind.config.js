@@ -48,6 +48,7 @@ module.exports = {
         axiformaBlack: ["Axiforma-Black", "sans-serif"],
         axiformaLight: ["Axiforma-Light", "sans-serif"],
         axiformaRegular: ["Axiforma-Regular", "sans-serif"],
+        axiformaBook: ["Axiforma-Book", "sans-serif"],
       },
     },
   },
