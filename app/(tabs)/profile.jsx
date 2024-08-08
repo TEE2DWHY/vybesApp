@@ -230,7 +230,19 @@ const Profile = () => {
           <View className="mt-4 space-y-4">
             <View className="bg-white rounded-lg shadow-lg">
               <TouchableOpacity className="px-4 py-4 border-b border-[#EEF1F4] flex-row justify-between items-center">
-                <Text className="text-[#546881]">Analytics</Text>
+                <Text className="text-[#546881] font-axiformaBlack">
+                  Analytics
+                </Text>
+                <MaterialIcons
+                  name="keyboard-arrow-right"
+                  size={24}
+                  color="#546881"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity className="px-4 py-4 border-b border-[#EEF1F4] flex-row justify-between items-center ">
+                <Text className="text-[#546881] font-axiformaBlack">
+                  Share QR Code
+                </Text>
                 <MaterialIcons
                   name="keyboard-arrow-right"
                   size={24}
@@ -238,15 +250,9 @@ const Profile = () => {
                 />
               </TouchableOpacity>
               <TouchableOpacity className="px-4 py-4 border-b border-[#EEF1F4] flex-row justify-between items-center">
-                <Text className="text-[#546881]">Share QR Code</Text>
-                <MaterialIcons
-                  name="keyboard-arrow-right"
-                  size={24}
-                  color="#546881"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity className="px-4 py-4 border-b border-[#EEF1F4] flex-row justify-between items-center">
-                <Text className="text-[#546881]">Share Profile</Text>
+                <Text className="text-[#546881] font-axiformaBlack">
+                  Share Profile
+                </Text>
                 <MaterialIcons
                   name="keyboard-arrow-right"
                   size={24}
@@ -254,7 +260,9 @@ const Profile = () => {
                 />
               </TouchableOpacity>
               <TouchableOpacity className="px-4 py-4 flex-row justify-between items-center">
-                <Text className="text-[#546881]">App Language</Text>
+                <Text className="text-[#546881] font-axiformaBlack">
+                  App Language
+                </Text>
                 <MaterialIcons
                   name="keyboard-arrow-right"
                   size={24}
@@ -265,10 +273,14 @@ const Profile = () => {
 
             <View className="flex-row justify-between mt-8">
               <TouchableOpacity className="flex-1 items-center py-3 mr-2 border border-[#E4D7F5] rounded-lg">
-                <Text className="text-[#C4B1F3]">Log Out</Text>
+                <Text className="text-[#C4B1F3] font-axiformaRegular">
+                  Log Out
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity className="flex-1 items-center py-3 ml-2 border border-[#FFDBDB] rounded-lg">
-                <Text className="text-[#FF7474]">Delete Account</Text>
+                <Text className="text-[#FF7474] font-axiformaRegular">
+                  Delete Account
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
