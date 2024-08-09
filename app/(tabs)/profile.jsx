@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -13,8 +13,11 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { router } from "expo-router";
+import EditProfile from "../../modal/EditProfile";
 
 const Profile = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
       <SafeAreaView className="h-full w-full">
@@ -27,7 +30,9 @@ const Profile = () => {
             />
             <View className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 border-none rounded-md">
               <View className="flex-row items-center">
-                <FontAwesome5 name="coins" size={24} color="#fff" />
+                <TouchableOpacity onPress={() => router.push("/home")}>
+                  <FontAwesome5 name="coins" size={24} color="#fff" />
+                </TouchableOpacity>
                 <Text className="font-axiformaBlack text-sm text-white ml-2 text-white-normal">
                   Bal
                 </Text>
@@ -102,7 +107,10 @@ const Profile = () => {
               <Text className="font-axiformaBlack text-lg">
                 Account Information
               </Text>
-              <TouchableOpacity className="flex-row items-center">
+              <TouchableOpacity
+                className="flex-row items-center"
+                onPress={() => setModalVisible(true)}
+              >
                 <Text className="text-purple-dark opacity-50 font-axiformaBlack">
                   Edit
                 </Text>
@@ -284,6 +292,12 @@ const Profile = () => {
               </TouchableOpacity>
             </View>
           </View>
+          {modalVisible && (
+            <EditProfile
+              closeModal={() => setModalVisible(false)}
+              modalVisible={modalVisible}
+            />
+          )}
         </ScrollView>
         <StatusBar backgroundColor="#ffffff" style="dark" />
       </SafeAreaView>
