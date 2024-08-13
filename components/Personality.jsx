@@ -7,8 +7,9 @@ import {
   TextInput,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Foundation from "@expo/vector-icons/Foundation";
 
-const Personality = ({ active, fn }) => {
+const Personality = ({ active, handleNext }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="w-full px-4">
@@ -74,7 +75,7 @@ const Personality = ({ active, fn }) => {
             </Text>
             <Text className="text-center  font-axiformaRegular leading-5 text-xs text-[#47586E]">
               You selected
-              <Text className="text-[#6BADA9]"> baddie </Text>
+              <Text className="text-[#6BADA9] bg-[#D9F3F1] p-2"> baddie </Text>
               as as your preferred account type
             </Text>
             <Text className="text-center text-2xl font-axiformaBlack my-2">
@@ -86,7 +87,7 @@ const Personality = ({ active, fn }) => {
                 size={24}
                 style={{ color: "#FFB053" }}
               />
-              <Text className="font-axiformaRegular ml-1 px-3 leading-4 text-[#909DAD]">
+              <Text className="font-axiformaRegular ml-1 px-3 leading-4 text-[#909DAD] mt-2">
                 All your contact details are kept private and not displayed
                 until displayed by you
               </Text>
@@ -122,12 +123,149 @@ const Personality = ({ active, fn }) => {
             </View>
           </View>
         )}
+        {active === 3 && (
+          <View className="mt-8">
+            <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
+              Two More Sections And You Are Ready To Vybe. Provide Details On
+              Your Relationship And Physical Characteristics
+            </Text>
+            <Text className="text-center  font-axiformaRegular leading-5 text-xs text-[#47586E]">
+              You selected
+              <Text className="text-[#6BADA9] bg-[#D9F3F1] p-2"> baddie </Text>
+              as as your preferred account type
+            </Text>
+            <Text className="text-center text-xl font-axiformaBlack my-2 capitalize">
+              Physical And Relationship Details
+            </Text>
+            <View className="flex-row items-center justify-center mt-2 mb-4">
+              <AntDesign
+                name="exclamationcircleo"
+                size={20}
+                style={{ color: "#FFB053" }}
+              />
+              <Text className="font-axiformaRegular ml-2 leading-6 text-[#909DAD] text-xs">
+                Your Age, Availability Status, Height, Weight Details Would Be
+                Displayed Once Vybers Click On Profile.
+              </Text>
+            </View>
+            <View className="mt-4">
+              <Text className="text-gray-500 font-axiformaBook">
+                Your Date Of Birth
+              </Text>
+              <View className="w-full flex-row items-center justify-between border-b border-gray-300 py-2">
+                <TextInput
+                  className="text-base font-axiformaRegular text-[#47586E] w4/6"
+                  placeholder="11-Aug-1950"
+                />
+                <TouchableOpacity>
+                  <AntDesign name="calendar" size={24} color="gray" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <Text className="text-gray-500 font-axiformaBook mt-5">
+              Your Availability Status
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="mb-2"
+            >
+              <View className="mt-1">
+                <View className="flex-row justify-between mt-2">
+                  <TouchableOpacity className="flex-1 bg-[#E6F3EC] p-3 rounded-md mr-2">
+                    <Text className="text-center text-[#3AB04D]">
+                      Available
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity className="flex-1 bg-[#FBE8E7] p-3 rounded-md mx-2">
+                    <Text className="text-center text-[#E2341D]">
+                      Not Available
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity className="flex-1 bg-[#F8F3E7] p-3 rounded-md ml-2">
+                    <Text className="text-center text-[#F6C535]">
+                      Should Be Available In Next Hour
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+
+            <View className="mt-4">
+              <View className="w-full flex-row items-center justify-between py-2">
+                <Text className="text-base font-axiformaRegular text-[#47586E]">
+                  Your Assumed Height (m)
+                </Text>
+                <TouchableOpacity>
+                  <AntDesign name="caretdown" size={18} color="gray" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View className="mt-4">
+              <View className="w-full flex-row items-center justify-between  py-2">
+                <Text className="text-base font-axiformaRegular text-[#47586E]">
+                  Your Assumed Weight (Kg)
+                </Text>
+                <TouchableOpacity>
+                  <AntDesign name="caretdown" size={18} color="gray" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View className="mt-4">
+              <View className="w-full flex-row items-center justify-between py-2">
+                <Text className="text-base font-axiformaRegular text-[#47586E]">
+                  Gender
+                </Text>
+                <TouchableOpacity>
+                  <AntDesign name="caretdown" size={18} color="gray" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {active === 4 && (
+          <View className="mt-8">
+            <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
+              Finally, Set your rate and attract Vybers who crave access to your
+              amazing profile.
+            </Text>
+            <Text className="text-center text-xl font-axiformaBlack my-2 capitalize mt-6">
+              set up your premium rate
+            </Text>
+            <View className="flex-row items-center justify-center mt-2 mb-4">
+              <AntDesign
+                name="exclamationcircleo"
+                size={20}
+                style={{ color: "#FFB053" }}
+              />
+              <Text className="font-axiformaRegular ml-2 leading-6 text-[#909DAD] text-xs">
+                What rate would you like to set to unlock access to your profile
+                for Vybers?
+              </Text>
+            </View>
+            <View className="mt-4">
+              <Text className="text-gray-500 font-axiformaBook">VybeCoin</Text>
+              <TextInput
+                placeholder="60 vybe coin"
+                className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
+              />
+            </View>
+            <Text className="mt-2 text-xs text-[#909DAD] font-axiformaBook">
+              Vybers often choose rates between 50-70 Vybes Coins.
+            </Text>
+          </View>
+        )}
+
         <TouchableOpacity
           className="bg-purple-600 mt-8 py-4 rounded-3xl w-2/5 self-center"
-          onPress={fn}
+          onPress={handleNext}
         >
           <Text className="text-center text-white-normal font-axiformaBlack">
-            Next
+            {active === 4 ? "Complete" : "Next"}
           </Text>
         </TouchableOpacity>
       </ScrollView>

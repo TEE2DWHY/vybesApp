@@ -22,19 +22,28 @@ const Profile = () => {
   const [personalityTab, setPersonalityTab] = useState(1);
   const router = useRouter();
 
+  const handlePrevious = () => {
+    if (personalityTab > 4 || personalityTab > 1)
+      setPersonalityTab((prevState) => prevState - 1);
+  };
+
+  const handleNext = () => {
+    if (personalityTab < 4) setPersonalityTab((prevState) => prevState + 1);
+  };
+
   return (
     <>
       <SafeAreaView className="h-full w-full">
         <ScrollView className="px-4 bg-gray-100">
           {activeTab === "Personality" && (
             <View className="flex-row justify-between w-full items-center px-2 mt-3">
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handlePrevious}>
                 <AntDesign name="left" size={24} style={{ color: "#B2BBC6" }} />
               </TouchableOpacity>
               <Text className="font-axiformaBlack text-lg text-[#6E83E0] bg-[#D6DDFD]  w-3/5 py-2 text-center">
-                Step {personalityTab}/5
+                Step {personalityTab}/4
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleNext}>
                 <AntDesign
                   name="right"
                   size={24}
@@ -75,9 +84,9 @@ const Profile = () => {
               <TouchableOpacity
                 className={`${
                   activeTab === "Personality"
-                    ? "bg-purple-normal"
-                    : "border-gray-400"
-                } px-3 py-2 rounded-sm flex-row items-center mr-3 border-none`}
+                    ? "bg-purple-normal border-none"
+                    : "border-gray-400 border"
+                } px-3 py-2 rounded-sm flex-row items-center mr-3`}
                 onPress={() => setActiveTab("Personality")}
               >
                 <AntDesign
@@ -98,7 +107,7 @@ const Profile = () => {
               <TouchableOpacity
                 className={`${
                   activeTab === "Account"
-                    ? "text-white-normal bg-purple-normal"
+                    ? " bg-purple-normal"
                     : "border-gray-400"
                 } px-3 py-2 rounded-sm border flex-row items-center mr-3`}
                 onPress={() => setActiveTab("Account")}
@@ -193,7 +202,7 @@ const Profile = () => {
           {activeTab === "Personality" && (
             <Personality
               active={personalityTab}
-              fn={() => setPersonalityTab((prevState) => prevState + 1)}
+              handleNext={() => handleNext()}
             />
           )}
 
@@ -422,7 +431,7 @@ const Profile = () => {
             />
           )}
         </ScrollView>
-        <StatusBar backgroundColor="#ffffff" style="dark" />
+        <StatusBar backgroundColor="#ffff" style="dark" />
       </SafeAreaView>
     </>
   );
