@@ -7,7 +7,6 @@ import {
   TextInput,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Foundation from "@expo/vector-icons/Foundation";
 
 const Personality = ({ active, handleNext }) => {
   return (
@@ -132,7 +131,7 @@ const Personality = ({ active, handleNext }) => {
           <View className="mt-8">
             <View className="bg-purple-darker py-2 px-4 rounded-2xl mb-3">
               <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
-                Two More Sections And You Are Ready To Vybe. Provide Details On
+                One More Sections And You Are Ready To Vybe. Provide Details On
                 Your Relationship And Physical Characteristics
               </Text>
             </View>

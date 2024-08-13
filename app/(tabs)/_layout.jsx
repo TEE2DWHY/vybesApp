@@ -7,20 +7,20 @@ import chat from "../../assets/icons/chat.png";
 import ticket from "../../assets/icons/ticket.png";
 import vybes from "../../assets/icons/vybe.png";
 import profile from "../../assets/icons/profile.png";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Foundation from "@expo/vector-icons/Foundation";
 
-const TabIcon = ({ icon, color, name, focused }) => {
+const TabIcon = ({ icon, name, focused }) => {
   return (
     <View className="items-center justify-center gap-2 mb-2">
-      <Image
-        source={icon}
-        resizeMode="contain"
-        tintColor={color}
-        className="w-6 h-6"
-      />
+      <Text>{icon}</Text>
       <Text
         className={`${
           !focused
-            ? `font-axiformaRegular`
+            ? `font-axiformaRegular text-[#B2BBC6]`
             : `font-axiformaBlack text-purple-normal`
         } text-xs text-white`}
       >
@@ -53,7 +53,13 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={home}
+                icon={
+                  <MaterialIcons
+                    name="home"
+                    size={24}
+                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                  />
+                }
                 color={color}
                 name="Home"
                 focused={focused}
@@ -69,7 +75,13 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={ticket}
+                icon={
+                  <Foundation
+                    name="ticket"
+                    size={24}
+                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                  />
+                }
                 color={color}
                 name="Ticket"
                 focused={focused}
@@ -85,9 +97,15 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={vybes}
+                icon={
+                  <MaterialCommunityIcons
+                    name="star-three-points"
+                    size={24}
+                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                  />
+                }
                 color={color}
-                name="Vybes"
+                name="Vybe"
                 focused={focused}
               />
             ),
@@ -101,7 +119,13 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={chat}
+                icon={
+                  <Ionicons
+                    name="chatbubbles"
+                    size={24}
+                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                  />
+                }
                 color={color}
                 name="Chat"
                 focused={focused}
@@ -117,7 +141,13 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={profile}
+                icon={
+                  <FontAwesome5
+                    name="user-circle"
+                    size={24}
+                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                  />
+                }
                 color={color}
                 name="Profile"
                 focused={focused}
