@@ -15,10 +15,13 @@ const Personality = ({ active, handleNext }) => {
       <ScrollView className="w-full px-4">
         {active === 1 && (
           <View className="mt-8">
-            <Text className="bg-purple-darker text-white-normal text-center py-6 px-4 rounded-md font-axiformaBlack leading-6 mb-3">
-              Complete Your Personality Profile To Be Able To Find Similar Match
-              And To Be Identified By Vybers Or Baddies
-            </Text>
+            <View className="bg-purple-darker py-6 px-4 rounded-2xl mb-3">
+              <Text className=" text-white-normal text-center  font-axiformaBlack leading-6">
+                Complete Your Personality Profile To Be Able To Find Similar
+                Match And To Be Identified By Vybers Or Baddies
+              </Text>
+            </View>
+
             <View className="mt-4">
               <Text className="text-gray-500 font-axiformaBook">Your Name</Text>
               <TextInput
@@ -69,10 +72,12 @@ const Personality = ({ active, handleNext }) => {
 
         {active === 2 && (
           <View className="mt-8">
-            <Text className="bg-purple-darker text-white-normal text-center py-6 px-4 rounded-md font-axiformaBlack leading-6 mb-3">
-              Lets continue your profile set-up by providing your contact
-              details
-            </Text>
+            <View className="bg-purple-darker py-6 px-4 rounded-2xl mb-3">
+              <Text className="bg-purple-darker text-white-normal text-center py-2 px-4 rounded-md font-axiformaBlack leading-6 mb-3">
+                Lets continue your profile set-up by providing your contact
+                details
+              </Text>
+            </View>
             <Text className="text-center  font-axiformaRegular leading-5 text-xs text-[#47586E]">
               You selected
               <Text className="text-[#6BADA9] bg-[#D9F3F1] p-2"> baddie </Text>
@@ -125,10 +130,12 @@ const Personality = ({ active, handleNext }) => {
         )}
         {active === 3 && (
           <View className="mt-8">
-            <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
-              Two More Sections And You Are Ready To Vybe. Provide Details On
-              Your Relationship And Physical Characteristics
-            </Text>
+            <View className="bg-purple-darker py-2 px-4 rounded-2xl mb-3">
+              <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
+                Two More Sections And You Are Ready To Vybe. Provide Details On
+                Your Relationship And Physical Characteristics
+              </Text>
+            </View>
             <Text className="text-center  font-axiformaRegular leading-5 text-xs text-[#47586E]">
               You selected
               <Text className="text-[#6BADA9] bg-[#D9F3F1] p-2"> baddie </Text>
@@ -229,10 +236,12 @@ const Personality = ({ active, handleNext }) => {
 
         {active === 4 && (
           <View className="mt-8">
-            <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
-              Finally, Set your rate and attract Vybers who crave access to your
-              amazing profile.
-            </Text>
+            <View className="bg-purple-darker py-3 px-4 rounded-2xl mb-3">
+              <Text className="bg-purple-darker text-white-normal text-center py-4 px-4 font-axiformaBlack leading-6 mb-3 capitalize">
+                Finally, Set your rate and attract Vybers who crave access to
+                your amazing profile.
+              </Text>
+            </View>
             <Text className="text-center text-xl font-axiformaBlack my-2 capitalize mt-6">
               set up your premium rate
             </Text>

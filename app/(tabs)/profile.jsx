@@ -40,9 +40,11 @@ const Profile = () => {
               <TouchableOpacity onPress={handlePrevious}>
                 <AntDesign name="left" size={24} style={{ color: "#B2BBC6" }} />
               </TouchableOpacity>
-              <Text className="font-axiformaBlack text-lg text-[#6E83E0] bg-[#D6DDFD]  w-3/5 py-2 text-center">
-                Step {personalityTab}/4
-              </Text>
+              <View className=" bg-[#D6DDFD] w-3/5 py-2 rounded-lg">
+                <Text className="text-center text-lg text-[#6E83E0] font-axiformaBlack">
+                  Step {personalityTab}/4
+                </Text>
+              </View>
               <TouchableOpacity onPress={handleNext}>
                 <AntDesign
                   name="right"
