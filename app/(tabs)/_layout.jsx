@@ -1,12 +1,7 @@
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Image, Text, View } from "react-native";
-import home from "../../assets/icons/home.png";
-import chat from "../../assets/icons/chat.png";
-import ticket from "../../assets/icons/ticket.png";
-import vybes from "../../assets/icons/vybe.png";
-import profile from "../../assets/icons/profile.png";
+import { Text, View } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";

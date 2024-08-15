@@ -49,14 +49,13 @@ const Home = () => {
             <View className="flex-row items-center justify-between border-b-[#6888ce] border-b-[1px] pb-4">
               <TouchableOpacity
                 onPress={() => setShowFilterModal(!showFilterModal)}
+                className="bg-[#a241ee] rounded-md p-1"
               >
                 <Feather
                   name="sliders"
                   size={24}
                   style={{
                     color: "#fff",
-                    backgroundColor: "#a241ee",
-                    borderRadius: 8,
                   }}
                 />
               </TouchableOpacity>
