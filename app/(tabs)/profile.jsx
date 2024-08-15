@@ -12,6 +12,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import EditProfile from "../../modal/EditProfile";
 import Personality from "../../components/Personality";
@@ -58,8 +60,8 @@ const Profile = () => {
           )}
           {(activeTab === "Account" || activeTab === "Activities") && (
             <View className="flex-row items-center justify-between">
-              <AntDesign
-                name="caretleft"
+              <MaterialIcons
+                name="arrow-back-ios"
                 size={24}
                 style={{ color: "#546881" }}
               />
@@ -198,6 +200,52 @@ const Profile = () => {
                   }`}
                 >
                   Activities
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`${
+                  activeTab === "Privacy"
+                    ? "bg-purple-normal border-none"
+                    : "border-gray-400 border"
+                } px-3 py-2 rounded-sm  flex-row items-center mr-3`}
+                onPress={() => setActiveTab("Privacy")}
+              >
+                <Feather
+                  name="lock"
+                  size={20}
+                  color={activeTab === "Privacy" ? "#fff" : "#B2BBC6"}
+                />
+                <Text
+                  className={`ml-2 ${
+                    activeTab === "Privacy"
+                      ? "text-white-normal"
+                      : "text-[#B2BBC6]"
+                  }`}
+                >
+                  Privacy
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`${
+                  activeTab === "Settings"
+                    ? "bg-purple-normal border-none"
+                    : "border-gray-400 border"
+                } px-3 py-2 rounded-sm  flex-row items-center mr-3`}
+                onPress={() => setActiveTab("Settings")}
+              >
+                <Ionicons
+                  name="settings"
+                  size={20}
+                  color={activeTab === "Settings" ? "#fff" : "#B2BBC6"}
+                />
+                <Text
+                  className={`ml-2 ${
+                    activeTab === "Settings"
+                      ? "text-white-normal"
+                      : "text-[#B2BBC6]"
+                  }`}
+                >
+                  Settings
                 </Text>
               </TouchableOpacity>
             </View>
