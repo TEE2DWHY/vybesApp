@@ -6,7 +6,16 @@ const PrivacySwitch = ({ label, value, onValueChange }) => (
     <Text className="text-base font-axiformaRegular text-[#546881]">
       {label}
     </Text>
-    <Switch value={value} onValueChange={onValueChange} />
+    <View className="flex-row items-center">
+      <Text
+        className={`mr-2 text-base font-axiformaRegular ${
+          value ? "text-[#3D4C5E]" : "text-[#B2BBC6]"
+        }`}
+      >
+        {value ? "On" : "Off"}
+      </Text>
+      <Switch value={value} onValueChange={onValueChange} />
+    </View>
   </View>
 );
 
