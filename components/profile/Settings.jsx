@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { View, ScrollView, Text, TouchableOpacity, Switch } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Switch,
+  Vibration,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Feather from "@expo/vector-icons/Feather";
 
 const Settings = () => {
   const [showNotificationDropDown, setShowNotificationDropDown] =
@@ -15,6 +17,10 @@ const Settings = () => {
   const [showSupportDropDown, setShowSupportDropDown] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
   const [vibrate, setVibrate] = useState(false);
+
+  useEffect(() => {
+    if (vibrate) Vibration.vibrate();
+  }, [vibrate]);
 
   return (
     <>
