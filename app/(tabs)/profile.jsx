@@ -16,11 +16,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import EditProfile from "../../modal/EditProfile";
-import Personality from "../../components/Personality";
-import Account from "../../components/Account";
-import Activities from "../../components/Activities";
-import Privacy from "../../components/Privacy";
-import Settings from "../../components/Settings";
+import Personality from "../../components/profile/Personality";
+import Account from "../../components/profile/Account";
+import Activities from "../../components/profile/Activities";
+import Privacy from "../../components/profile/Privacy";
+import Settings from "../../components/profile/Settings";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);

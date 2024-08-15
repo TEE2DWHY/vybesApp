@@ -6,7 +6,7 @@ import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import ActivitiesModal from "../modal/ActivitiesModal";
+import ActivitiesModal from "../../modal/ActivitiesModal";
 
 const activities = [
   {
