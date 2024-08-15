@@ -19,6 +19,7 @@ import EditProfile from "../../modal/EditProfile";
 import Personality from "../../components/Personality";
 import Account from "../../components/Account";
 import Activities from "../../components/Activities";
+import Privacy from "../../components/Privacy";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -58,7 +59,9 @@ const Profile = () => {
               </TouchableOpacity>
             </View>
           )}
-          {(activeTab === "Account" || activeTab === "Activities") && (
+          {(activeTab === "Account" ||
+            activeTab === "Activities" ||
+            activeTab === "Privacy") && (
             <View className="flex-row items-center justify-between">
               <MaterialIcons
                 name="arrow-back-ios"
@@ -204,6 +207,29 @@ const Profile = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 className={`${
+                  activeTab === "Transactions"
+                    ? "bg-purple-normal border-none"
+                    : "border-gray-400 border"
+                } px-3 py-2 rounded-sm  flex-row items-center mr-3`}
+                onPress={() => setActiveTab("Transactions")}
+              >
+                <FontAwesome5
+                  name={"file-invoice-dollar"}
+                  size={20}
+                  color={activeTab === "Transactions" ? "#fff" : "#B2BBC6"}
+                />
+                <Text
+                  className={`ml-2 ${
+                    activeTab === "Transactions"
+                      ? "text-white-normal"
+                      : "text-[#B2BBC6]"
+                  }`}
+                >
+                  Transactions
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`${
                   activeTab === "Privacy"
                     ? "bg-purple-normal border-none"
                     : "border-gray-400 border"
@@ -260,6 +286,7 @@ const Profile = () => {
 
           {activeTab === "Account" && <Account />}
           {activeTab === "Activities" && <Activities />}
+          {activeTab === "Privacy" && <Privacy />}
 
           {modalVisible && (
             <EditProfile
