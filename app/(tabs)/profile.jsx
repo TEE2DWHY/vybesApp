@@ -41,7 +41,7 @@ const Profile = () => {
   return (
     <>
       <SafeAreaView className="h-full w-full">
-        <ScrollView className="px-4 bg-gray-50">
+        <View className="px-4 bg-gray-50">
           {activeTab === "Personality" && (
             <View className="flex-row justify-between w-full items-center px-2 mt-3">
               <TouchableOpacity onPress={handlePrevious}>
@@ -301,7 +301,7 @@ const Profile = () => {
               modalVisible={modalVisible}
             />
           )}
-        </ScrollView>
+        </View>
         <StatusBar backgroundColor="#fffff" style="dark" />
       </SafeAreaView>
     </>
