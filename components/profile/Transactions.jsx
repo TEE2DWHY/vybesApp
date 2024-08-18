@@ -47,6 +47,39 @@ const Transactions = () => {
     { id: 5, type: "Deposit", amount: "+#500,000", date: "12-03-2024 16:09" },
   ];
 
+  const convertedCoinsData = [
+    {
+      id: 1,
+      type: "Deposit",
+      amount: "+50 VybeCoins ",
+      date: "12-03-2024 16:09",
+    },
+    {
+      id: 2,
+      type: "Deposit",
+      amount: "+50 VybeCoins ",
+      date: "12-03-2024 16:09",
+    },
+    {
+      id: 3,
+      type: "Deposit",
+      amount: "+50 VybeCoins ",
+      date: "12-03-2024 16:09",
+    },
+    {
+      id: 4,
+      type: "Deposit",
+      amount: "+50 VybeCoins ",
+      date: "12-03-2024 16:09",
+    },
+    {
+      id: 5,
+      type: "Deposit",
+      amount: "+50 VybeCoins ",
+      date: "12-03-2024 16:09",
+    },
+  ];
+
   const receivedCoinsData = [
     {
       id: 1,
@@ -149,7 +182,9 @@ const Transactions = () => {
             className="flex-row justify-between mb-8 border-b pb-1 border-[#EEF6FF]"
           >
             <View className="gap-4">
-              <Text className="font-axiformaBlack text-[#3D4C5E]">{type}</Text>
+              <Text className={`font-axiformaBlack text-[#3D4C5E]`}>
+                {type}
+              </Text>
               {(type === "Transferred Coins" || type === "Received Coins") && (
                 <Text className="text-purple-normal font-axiformaRegular text-xs">
                   {data === transferredCoinsData ? "to" : "from"}{" "}
@@ -163,10 +198,13 @@ const Transactions = () => {
             <View>
               <Text
                 className={`${
-                  data === transferredCoinsData || data === receivedCoinsData
-                    ? "text-[#8BC0FE]"
-                    : "text-[#FFB053]"
-                } font-axiformaBlack text-base`}
+                  data === convertedCoinsData
+                    ? "text-[#02B784] text-xs"
+                    : data === transferredCoinsData ||
+                      data === receivedCoinsData
+                    ? "text-[#8BC0FE] text-base"
+                    : "text-[#FFB053] text-base"
+                } font-axiformaBlack`}
               >
                 {transaction.amount}
               </Text>
@@ -250,7 +288,14 @@ const Transactions = () => {
               >
                 Received Coins
               </Text>
-              <Text className="text-[#B2BBC6] font-axiformaRegular font-[14px]">
+              <Text
+                className={`${
+                  activeTab === "Converted Coins"
+                    ? "text-[#3D4C5E]"
+                    : "text-[#B2BBC6]"
+                } font-axiformaRegular font-[14px]`}
+                onPress={() => setActiveTab("Converted Coins")}
+              >
                 Converted Coins
               </Text>
             </View>
@@ -264,6 +309,8 @@ const Transactions = () => {
             renderTransactions(transferredCoinsData, "Transferred Coins")}
           {activeTab === "Received Coins" &&
             renderTransactions(receivedCoinsData, "Received Coins")}
+          {activeTab === "Converted Coins" &&
+            renderTransactions(convertedCoinsData, "Converted Money To Coins")}
         </ScrollView>
       </SafeAreaView>
     </>
