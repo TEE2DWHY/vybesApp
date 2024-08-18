@@ -43,7 +43,7 @@ const App = () => {
             className="mb-6 w-[80px] h-[80px]"
             resizeMode="contain"
           />
-          <Text className="text-6xl text-black-darker  mb-3 font-thin">
+          <Text className="text-6xl text-black-dark  mb-3 font-axiformaRegular">
             Vybes
           </Text>
           <Text className="text-blue-dark text-base text-center font-axiformaBlack">

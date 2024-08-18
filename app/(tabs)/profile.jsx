@@ -21,6 +21,7 @@ import Account from "../../components/profile/Account";
 import Activities from "../../components/profile/Activities";
 import Privacy from "../../components/profile/Privacy";
 import Settings from "../../components/profile/Settings";
+import Transactions from "../../components/profile/Transactions";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,7 +41,7 @@ const Profile = () => {
   return (
     <>
       <SafeAreaView className="h-full w-full">
-        <ScrollView className="px-4 bg-gray-100">
+        <ScrollView className="px-4 bg-gray-50">
           {activeTab === "Personality" && (
             <View className="flex-row justify-between w-full items-center px-2 mt-3">
               <TouchableOpacity onPress={handlePrevious}>
@@ -62,8 +63,9 @@ const Profile = () => {
           )}
           {(activeTab === "Account" ||
             activeTab === "Activities" ||
-            activeTab === "Privacy") && (
-            <View className="flex-row items-center justify-between">
+            activeTab === "Privacy" ||
+            activeTab === "Transactions") && (
+            <View className="flex-row items-center justify-between mt-2">
               <MaterialIcons
                 name="arrow-back-ios"
                 size={24}
@@ -289,54 +291,7 @@ const Profile = () => {
           {activeTab === "Activities" && <Activities />}
           {activeTab === "Privacy" && <Privacy />}
 
-          {activeTab === "Transactions" && (
-            <View className="mt-4">
-              <View className="flex-row justify-between items-center px-4 py-2 bg-white rounded-lg ">
-                <Text className="font-axiformaBlack text-lg">
-                  Transactions History
-                </Text>
-                <Text className="font-axiformaBlack text-sm text-gray-400">
-                  1 Week
-                </Text>
-              </View>
-
-              <View className="mt-2 bg-white rounded-lg shadow-sm">
-                <View className="flex-row justify-between px-4 py-2">
-                  <Text className="text-base text-gray-500">
-                    March 12 - March 19 2024
-                  </Text>
-                </View>
-
-                {/* Transaction List */}
-                <View className="border-t border-gray-200">
-                  {[
-                    { date: "12-03-2024", time: "16:09", amount: "#500,000" },
-                    { date: "13-03-2024", time: "09:09", amount: "#500,000" },
-                    { date: "14-03-2024", time: "11:09", amount: "#500,000" },
-                    { date: "15-03-2024", time: "17:09", amount: "#500,000" },
-                    { date: "16-03-2024", time: "20:09", amount: "#500,000" },
-                    { date: "17-03-2024", time: "21:09", amount: "#500,000" },
-                    { date: "18-03-2024", time: "22:09", amount: "#500,000" },
-                  ].map((transaction, index) => (
-                    <View
-                      key={index}
-                      className="flex-row justify-between px-4 py-2 border-b border-gray-200"
-                    >
-                      <Text className="text-base text-gray-700">
-                        Withdrawal
-                      </Text>
-                      <Text className="text-base text-red-500 font-bold">
-                        -{transaction.amount}
-                      </Text>
-                      <Text className="text-base text-gray-400">
-                        {transaction.date} {transaction.time}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </View>
-          )}
+          {activeTab === "Transactions" && <Transactions />}
 
           {activeTab === "Settings" && <Settings />}
 
@@ -347,7 +302,7 @@ const Profile = () => {
             />
           )}
         </ScrollView>
-        <StatusBar backgroundColor="#ffff" style="dark" />
+        <StatusBar backgroundColor="#fffff" style="dark" />
       </SafeAreaView>
     </>
   );
