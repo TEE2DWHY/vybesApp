@@ -11,7 +11,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 const Personality = ({ active, handleNext }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="w-full px-4">
+      <View className="w-full px-4">
         {active === 1 && (
           <View className="mt-8">
             <View className="bg-purple-darker py-6 px-4 rounded-2xl mb-3">
@@ -276,7 +276,7 @@ const Personality = ({ active, handleNext }) => {
             {active === 4 ? "Complete" : "Next"}
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

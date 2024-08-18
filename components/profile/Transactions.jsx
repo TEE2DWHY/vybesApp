@@ -1,23 +1,10 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    setRefreshing(false);
-    console.log("Transactions fetched successfully.");
-  };
 
   const withdrawalData = [
     {
@@ -231,12 +218,7 @@ const Transactions = () => {
   return (
     <>
       <SafeAreaView className="mt-10">
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View className="flex-row justify-between">
             <View>
               <Text className="text-[#3D4C5E] text-xl font-axiformaBlack">

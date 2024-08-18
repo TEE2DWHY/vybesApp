@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
+  RefreshControl,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -27,6 +27,8 @@ const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState("Account");
   const [personalityTab, setPersonalityTab] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
+
   const router = useRouter();
 
   const handlePrevious = () => {
@@ -38,10 +40,22 @@ const Profile = () => {
     if (personalityTab < 4) setPersonalityTab((prevState) => prevState + 1);
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setRefreshing(false);
+    console.log("Transactions fetched successfully.");
+  };
   return (
     <>
       <SafeAreaView className="h-full w-full">
-        <View className="px-4 bg-gray-50">
+        <ScrollView
+          className="px-4 bg-gray-50"
+          refreshControl={
+            (activeTab === "Account" || activeTab === "Transactions") && (
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            )
+          }
+        >
           {activeTab === "Personality" && (
             <View className="flex-row justify-between w-full items-center px-2 mt-3">
               <TouchableOpacity onPress={handlePrevious}>
@@ -301,7 +315,7 @@ const Profile = () => {
               modalVisible={modalVisible}
             />
           )}
-        </View>
+        </ScrollView>
         <StatusBar backgroundColor="#fffff" style="dark" />
       </SafeAreaView>
     </>
