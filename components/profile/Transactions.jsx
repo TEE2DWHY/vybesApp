@@ -2,173 +2,16 @@ import React, { useState } from "react";
 import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native";
+import {
+  withdrawalData,
+  depositData,
+  convertedCoinsData,
+  transferredCoinsData,
+  receivedCoinsData,
+} from "../../data/users";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
-
-  const withdrawalData = [
-    {
-      id: 1,
-      type: "Withdrawal",
-      amount: "-#500,000",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 2,
-      type: "Withdrawal",
-      amount: "-#500,000",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 3,
-      type: "Withdrawal",
-      amount: "-#500,000",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 4,
-      type: "Withdrawal",
-      amount: "-#500,000",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 5,
-      type: "Withdrawal",
-      amount: "-#500,000",
-      date: "12-03-2024 16:09",
-    },
-  ];
-
-  const depositData = [
-    { id: 1, type: "Deposit", amount: "+#500,000", date: "12-03-2024 16:09" },
-    { id: 2, type: "Deposit", amount: "+#500,000", date: "12-03-2024 16:09" },
-    { id: 3, type: "Deposit", amount: "+#500,000", date: "12-03-2024 16:09" },
-    { id: 4, type: "Deposit", amount: "+#500,000", date: "12-03-2024 16:09" },
-    { id: 5, type: "Deposit", amount: "+#500,000", date: "12-03-2024 16:09" },
-  ];
-
-  const convertedCoinsData = [
-    {
-      id: 1,
-      type: "Deposit",
-      amount: "+50 VybeCoins ",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 2,
-      type: "Deposit",
-      amount: "+50 VybeCoins ",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 3,
-      type: "Deposit",
-      amount: "+50 VybeCoins ",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 4,
-      type: "Deposit",
-      amount: "+50 VybeCoins ",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 5,
-      type: "Deposit",
-      amount: "+50 VybeCoins ",
-      date: "12-03-2024 16:09",
-    },
-  ];
-
-  const receivedCoinsData = [
-    {
-      id: 1,
-      to: "@Adetola_123",
-      amount: "+50 Vybe Coin",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 2,
-      to: "@Adetola_123",
-      amount: "+40 Vybe Coin",
-      date: "13-03-2024 09:09",
-    },
-    {
-      id: 3,
-      to: "@Adetola_123",
-      amount: "+250 Vybe Coin",
-      date: "14-03-2024 11:09",
-    },
-    {
-      id: 4,
-      to: "@Adetola_123",
-      amount: "+100 Vybe Coin",
-      date: "15-03-2024 17:09",
-    },
-    {
-      id: 5,
-      to: "@Adetola_123",
-      amount: "+1710 Vybe Coin",
-      date: "16-03-2024 20:09",
-    },
-    {
-      id: 6,
-      to: "@Adetola_123",
-      amount: "+120 Vybe Coin",
-      date: "17-03-2024 21:09",
-    },
-    {
-      id: 7,
-      to: "@Adetola_123",
-      amount: "+10 Vybe Coin",
-      date: "18-03-2024 22:09",
-    },
-  ];
-
-  const transferredCoinsData = [
-    {
-      id: 1,
-      to: "@Adetola_123",
-      amount: "-50 Vybe Coin",
-      date: "12-03-2024 16:09",
-    },
-    {
-      id: 2,
-      to: "@Adetola_123",
-      amount: "-40 Vybe Coin",
-      date: "13-03-2024 09:09",
-    },
-    {
-      id: 3,
-      to: "@Adetola_123",
-      amount: "-250 Vybe Coin",
-      date: "14-03-2024 11:09",
-    },
-    {
-      id: 4,
-      to: "@Adetola_123",
-      amount: "-100 Vybe Coin",
-      date: "15-03-2024 17:09",
-    },
-    {
-      id: 5,
-      to: "@Adetola_123",
-      amount: "-1710 Vybe Coin",
-      date: "16-03-2024 20:09",
-    },
-    {
-      id: 6,
-      to: "@Adetola_123",
-      amount: "-120 Vybe Coin",
-      date: "17-03-2024 21:09",
-    },
-    {
-      id: 7,
-      to: "@Adetola_123",
-      amount: "-10 Vybe Coin",
-      date: "18-03-2024 22:09",
-    },
-  ];
 
   const renderTransactions = (data, type) => (
     <View>
@@ -300,7 +143,6 @@ const Transactions = () => {
               </Text>
             </View>
           </ScrollView>
-
           {activeTab === "Withdrawal" &&
             renderTransactions(withdrawalData, "Withdrawal")}
           {activeTab === "Deposit" &&
