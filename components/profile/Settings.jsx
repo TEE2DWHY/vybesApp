@@ -24,7 +24,7 @@ const Settings = () => {
 
   return (
     <>
-      <ScrollView className="mt-14">
+      <ScrollView className="mt-6">
         <View className="bg-white rounded-lg mb-4">
           <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-200">
             <Text className="font-axiformaBlack text-base text-[#47586E]">

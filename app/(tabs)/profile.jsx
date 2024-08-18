@@ -43,7 +43,7 @@ const Profile = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     setRefreshing(false);
-    console.log("Transactions fetched successfully.");
+    console.log("Profile details fetched successfully.");
   };
   return (
     <>
@@ -51,7 +51,9 @@ const Profile = () => {
         <ScrollView
           className="px-4 bg-gray-50"
           refreshControl={
-            (activeTab === "Account" || activeTab === "Transactions") && (
+            (activeTab === "Account" ||
+              activeTab === "Activities" ||
+              activeTab === "Transactions") && (
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             )
           }
@@ -144,7 +146,7 @@ const Profile = () => {
                   color={activeTab === "Account" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2  font-axiformaBlack ${
                     activeTab === "Account"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
@@ -167,7 +169,7 @@ const Profile = () => {
                   color={activeTab === "Stories" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2 font-axiformaBlack ${
                     activeTab === "Stories"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
@@ -190,7 +192,7 @@ const Profile = () => {
                   color={activeTab === "Likes" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2  font-axiformaBlack ${
                     activeTab === "Likes"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
@@ -213,7 +215,7 @@ const Profile = () => {
                   color={activeTab === "Activities" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2 font-axiformaBlack ${
                     activeTab === "Activities"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
@@ -236,7 +238,7 @@ const Profile = () => {
                   color={activeTab === "Transactions" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2 font-axiformaBlack ${
                     activeTab === "Transactions"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
@@ -259,7 +261,7 @@ const Profile = () => {
                   color={activeTab === "Privacy" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2  font-axiformaBlack ${
                     activeTab === "Privacy"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
@@ -282,7 +284,7 @@ const Profile = () => {
                   color={activeTab === "Settings" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
-                  className={`ml-2 ${
+                  className={`ml-2 font-axiformaBlack ${
                     activeTab === "Settings"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
