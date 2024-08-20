@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Image,
   SafeAreaView,
   FlatList,
   Text,
@@ -9,10 +8,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-// import filter from "../../assets/images/filter.png";
 import Feather from "@expo/vector-icons/Feather";
-// import search from "../../assets/images/search.png";
-// import bell from "../../assets/images/bell.png";
 import { StatusBar } from "expo-status-bar";
 import UserDetails from "../../components/UserDetails";
 import { users } from "../../data/data";
@@ -25,7 +21,6 @@ const Home = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // recalls video if new videos appeared
     setRefreshing(false);
     console.log("app refreshing is successful.");
   };
