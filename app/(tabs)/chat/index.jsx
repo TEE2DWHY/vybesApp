@@ -1,21 +1,11 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  FlatList,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Entypo from "@expo/vector-icons/Entypo";
+import { SafeAreaView, FlatList, Text, View, Image } from "react-native";
+
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import ChatModal from "../../modal/ChatModal";
+import ChatModal from "../../../modal/ChatModal";
 import { StatusBar } from "expo-status-bar";
-import ShareProfile from "../../modal/ShareProfile";
+import Empty from "./components/Empty";
+import HeaderComponent from "./components/HeaderComponent";
 
 const dummyData = [
   // {
@@ -112,7 +102,6 @@ const dummyData = [
 
 const Chat = () => {
   const [showChatModal, setShowChatModal] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
 
   const renderItem = ({ item }) => (
     <>
@@ -182,63 +171,14 @@ const Chat = () => {
           keyExtractor={(item) => item.id}
           ListHeaderComponent={() => (
             <>
-              <View className="flex-row items-center justify-between">
-                <View className="flex-row gap-6 items-center">
-                  <AntDesign name="left" size={24} color="#546881" />
-                  <Text className="capitalize text-[#495795] font-axiformaBlack text-lg">
-                    Chats
-                  </Text>
-                </View>
-                <View className="flex-row items-center gap-6">
-                  <Ionicons name="person-add-sharp" size={24} color="#7A91F9" />
-                  <FontAwesome name="search" size={24} color="#7A91F9" />
-                  <View className="relative">
-                    <Entypo
-                      name="dots-three-vertical"
-                      size={24}
-                      color="#7A91F9"
-                      onPress={() => setShowChatModal(!showChatModal)}
-                    />
-                  </View>
-                </View>
-              </View>
+              <HeaderComponent
+                showChatModal={() => setShowChatModal(!showChatModal)}
+              />
             </>
           )}
           ListEmptyComponent={() => (
             <>
-              <ScrollView className="h-full relative">
-                <View className=" bg-white-normal w-[120px] mt-20 self-center rounded-[40px] p-4">
-                  <Text className="font-axiformaBlack text-center ">
-                    Link Copied
-                  </Text>
-                </View>
-                <View className="bg-white-normal border-white-normal self-center border h-[40vh] w-[100%] rounded-[12px] items-center mt-4">
-                  <View className="self-end mt-4 pr-10  flex-row items-center">
-                    <Text className="text-[#B2BBC6] font-axiformaRegular mr-1">
-                      Copy Link
-                    </Text>
-                    <Ionicons name="link-sharp" size={24} color="#9941EE" />
-                  </View>
-                  <Text className="font-axiformaBlackItalic text-purple-normal text-2xl mt-[25%]">
-                    Invite Friend's
-                  </Text>
-                  <Text className="self-center px-6 font-axiformaRegular leading-6 text-[#546881] mt-2 capitalize">
-                    send an invite to your friends to chat and earn 2 vybe coins
-                    per each person you refer
-                  </Text>
-                  <TouchableOpacity
-                    className="bg-purple-normal p-5 rounded-[80px] mt-4"
-                    onPress={() => setShowShareModal(true)}
-                  >
-                    <Text className="text-white-normal font-axiformaBlack">
-                      Send An Invite
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {showShareModal && (
-                  <ShareProfile closeModal={() => setShowShareModal(false)} />
-                )}
-              </ScrollView>
+              <Empty />
             </>
           )}
           contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
