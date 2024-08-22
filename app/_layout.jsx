@@ -9,6 +9,7 @@ const RootLayout = () => {
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
     "Axiforma-Regular": require("../assets/fonts/Axiforma-Regular.ttf"),
     "Axiforma-Book": require("../assets/fonts/Axiforma-Book.ttf"),
+    "Axiforma-BlackItalic": require("../assets/fonts/Axiforma-BlackItalic.ttf"),
   });
 
   useEffect(() => {
