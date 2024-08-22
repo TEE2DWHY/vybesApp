@@ -1,10 +1,11 @@
+import React from "react";
 import { Text, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const HeaderComponent = ({ showChatModal }) => {
+const HeaderComponent = ({ showChatModal, data }) => {
   return (
     <>
       <View className="flex-row items-center justify-between">
@@ -14,6 +15,7 @@ const HeaderComponent = ({ showChatModal }) => {
             Chats
           </Text>
         </View>
+
         <View className="flex-row items-center gap-6">
           <Ionicons name="person-add-sharp" size={24} color="#7A91F9" />
           <FontAwesome name="search" size={24} color="#7A91F9" />
@@ -27,6 +29,11 @@ const HeaderComponent = ({ showChatModal }) => {
           </View>
         </View>
       </View>
+      {data.length > 0 && (
+        <Text className="mt-6 mb-2 font-axiformaRegular text-[#909DAD] font-extrabold text-sm">
+          Recent Conversations
+        </Text>
+      )}
     </>
   );
 };
