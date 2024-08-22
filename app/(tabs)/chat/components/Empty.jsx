@@ -5,20 +5,35 @@ import ShareProfile from "../../../../modal/ShareProfile";
 
 const Empty = () => {
   const [showShareModal, setShowShareModal] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleIsCopied = () => {
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
 
   return (
     <>
       <ScrollView className="h-full relative">
-        <View className=" bg-white-normal w-[120px] mt-10 self-center rounded-[40px] p-4">
-          <Text className="font-axiformaBlack text-center ">Link Copied</Text>
-        </View>
-        <View className="bg-white-normal border-white-normal self-center border h-[40vh] w-[100%] rounded-[12px] items-center mt-4">
-          <View className="self-end mt-4 pr-10  flex-row items-center">
+        {isCopied && (
+          <View className=" bg-white-normal w-[120px] mt-10 self-center rounded-[40px] p-4 absolute">
+            <Text className="font-axiformaBlack text-center text-[#151A20]">
+              Link Copied
+            </Text>
+          </View>
+        )}
+        <View className="bg-white-normal border-white-normal self-center border h-[40vh] w-[100%] rounded-[12px] items-center mt-40">
+          <TouchableOpacity
+            className="self-end mt-4 pr-10  flex-row items-center"
+            onPress={handleIsCopied}
+          >
             <Text className="text-[#B2BBC6] font-axiformaRegular mr-1">
               Copy Link
             </Text>
             <Ionicons name="link-sharp" size={24} color="#9941EE" />
-          </View>
+          </TouchableOpacity>
           <Text className="font-axiformaBlackItalic text-purple-normal text-2xl mt-[25%]">
             Invite Friend's
           </Text>
