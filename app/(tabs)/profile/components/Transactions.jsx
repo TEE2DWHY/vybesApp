@@ -8,7 +8,7 @@ import {
   convertedCoinsData,
   transferredCoinsData,
   receivedCoinsData,
-} from "../../data/data";
+} from "../../../../data/data";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
