@@ -1,9 +1,22 @@
-import React from "react";
-import { FlatList, SafeAreaView, View, Text, Image } from "react-native";
+import { useState } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  RefreshControl,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import HeaderComponent from "./components/HeaderComponent";
 
 const Add = () => {
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setRefreshing(false);
+    console.log("Profile details fetched successfully.");
+  };
   const data = [
     {
       id: "1",
@@ -115,10 +128,10 @@ const Add = () => {
       />
 
       <View className="flex-1">
-        <Text className="font-axiformaBlack text-sm text-[#3D4C5E]">
+        <Text className="font-axiformaBlack text-sm text-[#314359]">
           {item.username}
         </Text>
-        <Text className="font-axiformaRegular text-xs text-[#6B7991]">
+        <Text className="font-axiformaRegular text-xs text-[#909DAD]">
           {item.description}
         </Text>
       </View>
@@ -162,6 +175,9 @@ const Add = () => {
         ListEmptyComponent={() => <Text>No suggestions available.</Text>}
         contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
         keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SafeAreaView>
   );
