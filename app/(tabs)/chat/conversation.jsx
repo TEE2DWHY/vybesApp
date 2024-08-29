@@ -5,14 +5,16 @@ import {
   View,
   Text,
   Image,
+  TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
-import { useEffect, useState, useCallback } from "react";
+import * as DocumentPicker from "expo-document-picker";
+import { useState, useCallback } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import ConversationModal from "./components/ConversationModal";
@@ -51,9 +53,31 @@ const Conversation = () => {
     }
   };
 
+  const openPicker = async (selectType) => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type:
+        selectType === "image"
+          ? ["image/png", "image/jpg", "/images/jpeg"]
+          : ["video/mp4", "video/gif"],
+    });
+
+    if (!result.canceled) {
+      if (selectType === "image") {
+        setForm({ ...form, thumbnail: result.assets[0] });
+      }
+      if (selectType === "video") {
+        setForm({ ...form, video: result.assets[0] });
+      }
+    } else {
+      setTimeout(() => {
+        console.log("nothing selected");
+      }, 100);
+    }
+  };
+
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white-normal">
+      <SafeAreaView className="bg-white-normal h-full">
         <View className="flex-row items-center justify-between py-4 px-4">
           <View className="flex-row gap-3 items-center">
             <AntDesign
@@ -80,6 +104,7 @@ const Conversation = () => {
             <Entypo name="dots-three-vertical" size={24} color="#7A91F9" />
           </View>
         </View>
+
         <ScrollView className="bg-gray-50 flex-1 relative">
           <View className="bg-white-normal rounded-lg p-4 w-[90%] self-center mt-10 text-justify">
             <Text className="font-axiformaRegular leading-6 capitalize text-[#47586E]">
@@ -101,6 +126,7 @@ const Conversation = () => {
               />
             </TouchableOpacity>
           </View>
+
           {showModal && (
             <ConversationModal
               step={step}
@@ -444,6 +470,26 @@ const Conversation = () => {
             />
           )}
         </ScrollView>
+
+        {!showModal && (
+          <View className="absolute bottom-8 left-0 right-0 flex-row items-center justify-between w-[93%] bg-white-normal p-4 rounded-md self-center mb-4 mx-4">
+            <View className="flex-row items-center gap-4 flex-1">
+              <Entypo name="attachment" size={24} color="#B2BBC6" />
+
+              <TextInput
+                className="text-[#3D4C5E] font-axiformaRegular flex-1"
+                placeholder="Type a Message..."
+                multiline={true}
+                textAlignVertical="top"
+              />
+            </View>
+            <View className="flex-row items-center gap-4 ml-2">
+              <AntDesign name="camera" size={24} color="#B2BBC6" />
+              <MaterialIcons name="keyboard-voice" size={24} color="#9941EE" />
+            </View>
+          </View>
+        )}
+
         <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>
     </>
