@@ -1,18 +1,29 @@
 import React, { useState } from "react";
-import { SafeAreaView, FlatList, Text, View, Image } from "react-native";
+import {
+  SafeAreaView,
+  FlatList,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ChatModal from "../../../modal/ChatModal";
 import { StatusBar } from "expo-status-bar";
 import Empty from "./components/Empty";
 import HeaderComponent from "./components/HeaderComponent";
 import { recentConversations } from "../../../data/data";
+import { router } from "expo-router";
 
 const Chat = () => {
   const [showChatModal, setShowChatModal] = useState(false);
 
   const renderItem = ({ item }) => (
     <View className="flex-row items-center justify-between my-4">
-      <View className="flex-row items-center gap-4">
+      <TouchableOpacity
+        className="flex-row items-center gap-4"
+        onPress={() => router.push("/chat/conversation")}
+      >
         <Image
           source={{ uri: item.image }}
           className="w-12 h-12 rounded-full"
@@ -51,7 +62,7 @@ const Chat = () => {
             </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       <View className="items-end">
         <Text className="text-[#546881] font-axiformaRegular text-sm">
           {item.time}

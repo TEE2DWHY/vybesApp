@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { StatusBar } from "expo-status-bar";
-import UserDetails from "../../components/UserDetails";
-import { users } from "../../data/data";
-import Empty from "../../components/Empty";
-import FilterModal from "../../modal/FilterModal";
+import UserDetails from "../../../components/UserDetails";
+import { users } from "../../../data/data";
+import Empty from "../../../components/Empty";
+import FilterModal from "../../../modal/FilterModal";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -41,7 +41,7 @@ const Home = () => {
       <SafeAreaView className="h-full bg-gray-200">
         <View className="pt-6 px-5">
           <View className="sticky top-0 z-10 bg-gray-200 pb-4">
-            <View className="flex-row items-center justify-between border-b-[#6888ce] border-b-[1px] pb-4">
+            <View className="flex-row items-center justify-between border-b-[#878a90] border-b-[1px] pb-4">
               <TouchableOpacity
                 onPress={() => setShowFilterModal(!showFilterModal)}
                 className="bg-[#a241ee] rounded-md p-1"

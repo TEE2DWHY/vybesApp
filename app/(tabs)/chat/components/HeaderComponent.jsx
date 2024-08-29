@@ -7,7 +7,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Link } from "expo-router";
-import { useRouteInfo } from "expo-router/build/hooks"; // Ensure this is the correct import for your setup
+import { useRouteInfo } from "expo-router/build/hooks";
 
 const HeaderComponent = ({ showChatModal, data }) => {
   const [pathname, setPathname] = useState("");
