@@ -1,13 +1,25 @@
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, ScrollView, View, Text, Image } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useEffect } from "react";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import ConversationModal from "./components/ConversationModal";
 
 const Conversation = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [step, setStep] = useState(0);
   const navigation = useNavigation();
   useEffect(() => {
     const parentNavigation = navigation.getParent();
@@ -51,8 +63,212 @@ const Conversation = () => {
             <Entypo name="dots-three-vertical" size={24} color="#7A91F9" />
           </View>
         </View>
-        <ScrollView className="bg-[#DBEBFF33] flex-1">
-          {/* Chat messages can be added here */}
+        <ScrollView className="bg-gray-50 flex-1 relative">
+          <View className="bg-white-normal rounded-lg p-4 w-[90%] self-center mt-10 text-justify">
+            <Text className="font-axiformaRegular leading-6 capitalize text-[#47586E]">
+              @dhemmexroxy accepted your request, she has a baddie profile, if
+              you would like to know more off and likely answered questions from
+              her profile, click below.
+            </Text>
+            <TouchableOpacity
+              className="flex-row items-center  self-end mt-4"
+              onPress={() => setShowModal(true)}
+            >
+              <Text className="font-axiformaRegular text-[#9941EE] capitalize mr-1">
+                see her dating tips and interest
+              </Text>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={24}
+                color="#9941EE"
+              />
+            </TouchableOpacity>
+          </View>
+          {showModal && (
+            <ConversationModal
+              closeModal={() => setShowModal(false)}
+              handleNext={() => setStep((prevState) => prevState + 1)}
+              header={
+                step === 0 ? (
+                  <Text className="capitalize font-axiformaBlack text-lg mt-6">
+                    likely date questions, answers and tips.
+                  </Text>
+                ) : (
+                  (step === 1 ||
+                    step === 2 ||
+                    step == 3 ||
+                    step === 4 ||
+                    step === 5 ||
+                    step === 6) && (
+                    <>
+                      <View className="flex-row  items-center justify-between w-full mt-8">
+                        <Ionicons
+                          name="chevron-back-circle-outline"
+                          size={24}
+                          disabled={step === 1 ? "true" : "false"}
+                          color={step === 1 ? "gray" : "black"}
+                          onPress={() => setStep((prevState) => prevState - 1)}
+                        />
+                        <Text className="font-axiformaRegular text-[#A3ADBB]">
+                          Tip {step}/10
+                        </Text>
+                        <Ionicons
+                          name="chevron-forward-circle-outline"
+                          size={24}
+                          color="black"
+                          onPress={() => setStep((prevState) => prevState + 1)}
+                        />
+                      </View>
+                      <View
+                        className={`w-[100%] mt-6 ${
+                          step === 1
+                            ? "bg-[#6890BF]"
+                            : step === 2
+                            ? "bg-[#FFB053]"
+                            : step === 3
+                            ? "bg-[#000AFF]"
+                            : step === 4
+                            ? "bg-[#7A91F9]"
+                            : ""
+                        }  p-4 rounded-xl`}
+                      >
+                        <Text
+                          className={`capitalize ${
+                            step === 1
+                              ? "text-white-normal"
+                              : step === 2
+                              ? "text-[#1b1b1b]"
+                              : step === 3
+                              ? "text-white-normal"
+                              : step === 4
+                              ? "text-white-normal"
+                              : ""
+                          }  font-axiformaBlack`}
+                        >
+                          {step === 1
+                            ? "q1. what interests my finance"
+                            : step === 2
+                            ? "q2. where did you school?"
+                            : step === 3
+                            ? "q3. are you an introvert or extrovert?"
+                            : step === 4
+                            ? "q4. am i a kid lover ?"
+                            : ""}
+                        </Text>
+                      </View>
+                    </>
+                  )
+                )
+              }
+              content={
+                step === 0 ? (
+                  <Text className="font-axiformaRegular leading-5 mt-5 text-[#546881] text-justify">
+                    <Text className="text-[#9941EE] font-extrabold">
+                      @Dhemmexroxy
+                    </Text>{" "}
+                    wants you to know more about her here, this does not stop
+                    you from chatting about it with her , you can but these are
+                    help tips you know her better to bring up conversations
+                    topics to weigh in when having conversations,{" "}
+                    <Text className="text-[#1b1b1b] font-extrabold">
+                      Click next
+                    </Text>{" "}
+                    to see likely questions and tips
+                  </Text>
+                ) : (
+                  <View className="mt-8 w-[85%]">
+                    <Text className="capitalize font-axiformaRegular text-[#546881] leading-5">
+                      {step === 1
+                        ? "my interest includes"
+                        : step === 2
+                        ? "i am currently a student of chemistry department in"
+                        : step == 3
+                        ? "i am an introvert"
+                        : step == 4
+                        ? "Yeah , i love children a lot and would prefer to have 3 kids"
+                        : ""}
+                    </Text>
+                    <View className="flex-row flex-wrap items-center gap-2 w-full mt-2">
+                      {step === 1 ? (
+                        <>
+                          <View className="whitespace-nowrap border p-2 border-[#6F9ACB] bg-[#DBEBFF]">
+                            <Text className="text-[#6F9ACB] font-axiformaBlack">
+                              Movies
+                            </Text>
+                          </View>
+                          <View className="whitespace-nowrap border p-2 border-[#6F9ACB] bg-[#DBEBFF]">
+                            <Text className="text-[#6F9ACB] font-axiformaBlack">
+                              Cycling
+                            </Text>
+                          </View>
+                          <View className="whitespace-nowrap border p-2 border-[#6F9ACB] bg-[#DBEBFF]">
+                            <Text className="text-[#6F9ACB] font-axiformaBlack">
+                              Football
+                            </Text>
+                          </View>
+                          <View className="whitespace-nowrap border p-2 border-[#6F9ACB] bg-[#DBEBFF]">
+                            <Text className="text-[#6F9ACB] font-axiformaBlack">
+                              Reading
+                            </Text>
+                          </View>
+                          <View className="whitespace-nowrap border p-2 border-[#6F9ACB] bg-[#DBEBFF]">
+                            <Text className="text-[#6F9ACB] font-axiformaBlack">
+                              Gaming
+                            </Text>
+                          </View>
+                          <View className="whitespace-nowrap border p-2 border-[#6F9ACB] bg-[#DBEBFF]">
+                            <Text className="text-[#6F9ACB] font-axiformaBlack">
+                              Cooking
+                            </Text>
+                          </View>
+                        </>
+                      ) : step === 2 ? (
+                        <>
+                          <View className="border p-2 border-[#FFE7CA] bg-[#FFF7EE]">
+                            <Text className="font-axiformaRegular  text-[#734F25]">
+                              Federal University of Agriculture Abeokuta
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFE7CA] bg-[#FFF7EE]">
+                            <Text className="font-axiformaRegular  text-[#734F25]">
+                              400L
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFE7CA] bg-[#FFF7EE]">
+                            <Text className="font-axiformaRegular  text-[#734F25]">
+                              Vice President
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFE7CA] bg-[#FFF7EE]">
+                            <Text className="font-axiformaRegular  text-[#734F25]">
+                              Head Of Class
+                            </Text>
+                          </View>
+                        </>
+                      ) : step === 3 ? (
+                        ""
+                      ) : step === 4 ? (
+                        <>
+                          <View className="border p-2 border-[#6274C7] bg-[#F2F4FE]">
+                            <Text className="font-axiformaRegular  text-[#6274C7]">
+                              Boys
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#6274C7] bg-[#F2F4FE]">
+                            <Text className="font-axiformaRegular  text-[#6274C7]">
+                              Girls
+                            </Text>
+                          </View>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </View>
+                  </View>
+                )
+              }
+            />
+          )}
         </ScrollView>
         <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>
