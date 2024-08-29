@@ -12,8 +12,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState, useCallback } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import ConversationModal from "./components/ConversationModal";
 
@@ -22,18 +22,22 @@ const Conversation = () => {
   const [step, setStep] = useState(0);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const parentNavigation = navigation.getParent();
-    parentNavigation?.setOptions({
-      tabBarStyle: {
-        display: "none",
-      },
-    });
-    return () =>
-      parentNavigation?.setOptions({
-        tabBarStyle: undefined,
-      });
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      const parent = navigation.getParent();
+      if (parent) {
+        parent.setOptions({
+          tabBarStyle: { display: "none" },
+        });
+
+        return () => {
+          parent.setOptions({
+            tabBarStyle: undefined,
+          });
+        };
+      }
+    }, [navigation])
+  );
 
   const handleNext = () => {
     if (step < 10) {

@@ -9,7 +9,7 @@ const ConversationModal = ({
   handleNext,
 }) => {
   return (
-    <View className="bg-white-normal w-[90%] items-center justify-center p-4 self-center rounded-t-[40px] mt-[30%]">
+    <View className="bg-white-normal w-[90%] items-center justify-center p-4 self-center rounded-t-[40px] mt-[22%]">
       <View className="self-start">
         <MaterialIcons
           name="cancel"
