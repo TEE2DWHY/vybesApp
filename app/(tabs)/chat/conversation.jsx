@@ -474,7 +474,12 @@ const Conversation = () => {
         {!showModal && (
           <View className="absolute bottom-8 left-0 right-0 flex-row items-center justify-between w-[93%] bg-white-normal p-4 rounded-md self-center mb-4 mx-4">
             <View className="flex-row items-center gap-4 flex-1">
-              <Entypo name="attachment" size={24} color="#B2BBC6" />
+              <Entypo
+                name="attachment"
+                size={24}
+                color="#B2BBC6"
+                onPress={() => openPicker()}
+              />
 
               <TextInput
                 className="text-[#3D4C5E] font-axiformaRegular flex-1"
