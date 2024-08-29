@@ -21,6 +21,7 @@ const Conversation = () => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(0);
   const navigation = useNavigation();
+
   useEffect(() => {
     const parentNavigation = navigation.getParent();
     parentNavigation?.setOptions({
@@ -33,6 +34,18 @@ const Conversation = () => {
         tabBarStyle: undefined,
       });
   }, [navigation]);
+
+  const handleNext = () => {
+    if (step < 10) {
+      setStep((prevState) => prevState + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (step > 0) {
+      setStep((prevState) => prevState - 1);
+    }
+  };
 
   return (
     <>
@@ -86,6 +99,7 @@ const Conversation = () => {
           </View>
           {showModal && (
             <ConversationModal
+              step={step}
               closeModal={() => setShowModal(false)}
               handleNext={() => setStep((prevState) => prevState + 1)}
               header={
@@ -99,15 +113,19 @@ const Conversation = () => {
                     step == 3 ||
                     step === 4 ||
                     step === 5 ||
-                    step === 6) && (
+                    step === 6 ||
+                    step === 7 ||
+                    step === 8 ||
+                    step === 9 ||
+                    step === 10) && (
                     <>
                       <View className="flex-row  items-center justify-between w-full mt-8">
                         <Ionicons
                           name="chevron-back-circle-outline"
                           size={24}
                           disabled={step === 1 ? "true" : "false"}
-                          color={step === 1 ? "gray" : "black"}
-                          onPress={() => setStep((prevState) => prevState - 1)}
+                          color="black"
+                          onPress={() => handlePrevious()}
                         />
                         <Text className="font-axiformaRegular text-[#A3ADBB]">
                           Tip {step}/10
@@ -115,8 +133,8 @@ const Conversation = () => {
                         <Ionicons
                           name="chevron-forward-circle-outline"
                           size={24}
-                          color="black"
-                          onPress={() => setStep((prevState) => prevState + 1)}
+                          color={step === 10 ? "gray" : ""}
+                          onPress={() => handleNext()}
                         />
                       </View>
                       <View
@@ -129,6 +147,18 @@ const Conversation = () => {
                             ? "bg-[#000AFF]"
                             : step === 4
                             ? "bg-[#7A91F9]"
+                            : step === 5
+                            ? "bg-[#919fe0]"
+                            : step === 6
+                            ? "bg-[#FF8674]"
+                            : step === 7
+                            ? "bg-[#EE5D2D]"
+                            : step === 8
+                            ? "bg-[#6DD3E1]"
+                            : step === 9
+                            ? "bg-[#7A91F9]"
+                            : step === 10
+                            ? "bg-[#D8ACB2]"
                             : ""
                         }  p-4 rounded-xl`}
                       >
@@ -142,17 +172,41 @@ const Conversation = () => {
                               ? "text-white-normal"
                               : step === 4
                               ? "text-white-normal"
+                              : step === 5
+                              ? "text-white-normal"
+                              : step === 6
+                              ? "text-white-normal"
+                              : step === 7
+                              ? "text-white-normal"
+                              : step === 8
+                              ? "text-black-darker"
+                              : step === 9
+                              ? "text-white-normal"
+                              : step === 10
+                              ? "text-white-normal"
                               : ""
-                          }  font-axiformaBlack`}
+                          }  font-axiformaBlack leading-5`}
                         >
                           {step === 1
-                            ? "q1. what interests my finance"
+                            ? "q1. what interests my fancy?"
                             : step === 2
                             ? "q2. where did you school?"
                             : step === 3
                             ? "q3. are you an introvert or extrovert?"
                             : step === 4
                             ? "q4. am i a kid lover ?"
+                            : step === 5
+                            ? "q5. am i a smoker ?"
+                            : step === 6
+                            ? "q6. i don't take strong alcohol such as?"
+                            : step === 7
+                            ? "q7. whats my star sign ?"
+                            : step === 8
+                            ? "q8. whats my type of pets?"
+                            : step === 9
+                            ? "q9. whats your religion?"
+                            : step === 10
+                            ? "q10. what are you bad at?"
                             : ""}
                         </Text>
                       </View>
@@ -178,15 +232,51 @@ const Conversation = () => {
                 ) : (
                   <View className="mt-8 w-[85%]">
                     <Text className="capitalize font-axiformaRegular text-[#546881] leading-5">
-                      {step === 1
-                        ? "my interest includes"
-                        : step === 2
-                        ? "i am currently a student of chemistry department in"
-                        : step == 3
-                        ? "i am an introvert"
-                        : step == 4
-                        ? "Yeah , i love children a lot and would prefer to have 3 kids"
-                        : ""}
+                      {step === 1 ? (
+                        "my interest includes"
+                      ) : step === 2 ? (
+                        "i am currently a student of chemistry department in"
+                      ) : step == 3 ? (
+                        "i am an introvert"
+                      ) : step == 4 ? (
+                        "Yeah , i love children a lot and would prefer to have 3 kids"
+                      ) : step === 5 ? (
+                        "I take cigarettes only"
+                      ) : step === 6 ? (
+                        "i don't take strong alcohol such as"
+                      ) : step === 7 ? (
+                        <>
+                          <View className="flex-row items-center gap-2">
+                            <Text className="capitalize  font-axiformaRegular">
+                              i am
+                            </Text>
+                            <View className="border p-2 border-[#FFF3F1] bg-[#FFD9D4]">
+                              <Text className="capitalize font-axiformaRegular   text-[#CC6B5D]">
+                                Aries
+                              </Text>
+                            </View>
+                          </View>
+                        </>
+                      ) : step === 8 ? (
+                        "i love dogs."
+                      ) : step === 9 ? (
+                        <>
+                          <View className="flex-row items-center gap-2">
+                            <Text className="capitalize font-axiformaRegular">
+                              i am a
+                            </Text>
+                            <View className="border p-2 border-[#6274C7] bg-[#BFC8F6]">
+                              <Text className="capitalize font-axiformaRegular   text-[#6274C7]">
+                                Christian
+                              </Text>
+                            </View>
+                          </View>
+                        </>
+                      ) : step === 10 ? (
+                        "i'm very bad at"
+                      ) : (
+                        ""("")
+                      )}
                     </Text>
                     <View className="flex-row flex-wrap items-center gap-2 w-full mt-2">
                       {step === 1 ? (
@@ -257,6 +347,86 @@ const Conversation = () => {
                           <View className="border p-2 border-[#6274C7] bg-[#F2F4FE]">
                             <Text className="font-axiformaRegular  text-[#6274C7]">
                               Girls
+                            </Text>
+                          </View>
+                        </>
+                      ) : step === 5 ? (
+                        ""
+                      ) : step === 6 ? (
+                        <>
+                          <View className="border p-2 border-[#FFF3F1] bg-[#FFD9D4]">
+                            <Text className="font-axiformaRegular  text-[#CC6B5D]">
+                              Four Cousins
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFF3F1] bg-[#FFD9D4]">
+                            <Text className="font-axiformaRegular  text-[#CC6B5D]">
+                              Origin
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFF3F1] bg-[##CC6B5D]">
+                            <Text className="font-axiformaRegular  text-[#CC6B5D]">
+                              Coco Samba
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFF3F1] bg-[#FFD9D4]">
+                            <Text className="font-axiformaRegular  text-[#CC6B5D]">
+                              Magic Moment
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#FFF3F1] bg-[#FFD9D4]">
+                            <Text className="font-axiformaRegular  text-[#CC6B5D]">
+                              Hennessy
+                            </Text>
+                          </View>
+                        </>
+                      ) : step === 7 ? (
+                        ""
+                      ) : step === 8 ? (
+                        <>
+                          <View className="border p-2 border-[#57A9B4] bg-[#F0FBFC]">
+                            <Text className="font-axiformaRegular  text-[#57A9B4]">
+                              German Shepard
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#57A9B4] bg-[#F0FBFC]">
+                            <Text className="font-axiformaRegular  text-[#57A9B4]">
+                              Rotweiller
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#57A9B4] bg-[#F0FBFC]">
+                            <Text className="font-axiformaRegular  text-[#57A9B4]">
+                              Caucassian
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#57A9B4] bg-[#F0FBFC]">
+                            <Text className="font-axiformaRegular  text-[#57A9B4]">
+                              Eskimo
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#57A9B4] bg-[#F0FBFC]">
+                            <Text className="font-axiformaRegular  text-[#57A9B4]">
+                              Lhasa Aspo
+                            </Text>
+                          </View>
+                        </>
+                      ) : step === 9 ? (
+                        ""
+                      ) : step === 10 ? (
+                        <>
+                          <View className="border p-2 border-[#4C3C3E] bg-[#F3E5E7]">
+                            <Text className="font-axiformaRegular  text-[#4C3C3E]">
+                              Exercising
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#4C3C3E] bg-[#F3E5E7]">
+                            <Text className="font-axiformaRegular  text-[#4C3C3E]">
+                              Eating In Public
+                            </Text>
+                          </View>
+                          <View className="border p-2 border-[#4C3C3E] bg-[#F3E5E7]">
+                            <Text className="font-axiformaRegular  text-[#4C3C3E]">
+                              Replying Chats
                             </Text>
                           </View>
                         </>
