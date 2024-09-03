@@ -204,7 +204,9 @@ const App = () => {
                   </View>
 
                   <Text className="capitalize font-axiformaRegular text-white-normal text-xs">
-                    Movie Addict and meeting great chef.
+                    {activeSection === "Baddies"
+                      ? "Loves having fun and meeting new friends"
+                      : " Movie Addict and  great chef."}
                   </Text>
                 </View>
               </View>
