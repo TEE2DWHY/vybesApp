@@ -7,39 +7,46 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as DocumentPicker from "expo-document-picker";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import ConversationModal from "./components/ConversationModal";
+import * as FileSystem from "expo-file-system";
+import { Audio } from "expo-av";
+import Options from "./components/Options";
 
 const Conversation = () => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(0);
-  const navigation = useNavigation();
+  const [conversationOptions, setConversationOptions] = useState(false);
+  const [recording, setRecording] = useState(null);
+  const [recordingStatus, setRecordingStatus] = useState("idle");
+  const [audioPermission, setAudioPermission] = useState(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      const parent = navigation.getParent();
-      if (parent) {
-        parent.setOptions({
-          tabBarStyle: { display: "none" },
-        });
+  // const navigation = useNavigation();
 
-        return () => {
-          parent.setOptions({
-            tabBarStyle: undefined,
-          });
-        };
-      }
-    }, [navigation])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const parent = navigation.getParent();
+  //     if (parent) {
+  //       parent.setOptions({
+  //         tabBarStyle: { display: "none" },
+  //       });
+
+  //       return () => {
+  //         parent.setOptions({
+  //           tabBarStyle: undefined,
+  //         });
+  //       };
+  //     }
+  //   }, [navigation])
+  // );
 
   const handleNext = () => {
     if (step < 10) {
@@ -75,6 +82,96 @@ const Conversation = () => {
     }
   };
 
+  useEffect(() => {
+    // Simply get recording permission upon first render
+    async function getPermission() {
+      await Audio.requestPermissionsAsync()
+        .then((permission) => {
+          console.log("Permission Granted: " + permission.granted);
+          setAudioPermission(permission.granted);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    // Call function to get permission
+    getPermission();
+    // Cleanup upon first render
+    return () => {
+      if (recording) {
+        stopRecording();
+      }
+    };
+  }, []);
+
+  async function startRecording() {
+    try {
+      // needed for IoS
+      if (audioPermission) {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+      }
+
+      const newRecording = new Audio.Recording();
+      console.log("Starting Recording");
+      await newRecording.prepareToRecordAsync(
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+      );
+      await newRecording.startAsync();
+      setRecording(newRecording);
+      setRecordingStatus("recording");
+    } catch (error) {
+      console.error("Failed to start recording", error);
+    }
+  }
+
+  async function stopRecording() {
+    try {
+      if (recordingStatus === "recording") {
+        console.log("Stopping Recording");
+        await recording.stopAndUnloadAsync();
+        const recordingUri = recording.getURI();
+
+        const fileName = `recording-${Date.now()}.caf`;
+
+        await FileSystem.makeDirectoryAsync(
+          FileSystem.documentDirectory + "recordings/",
+          { intermediates: true }
+        );
+        await FileSystem.moveAsync({
+          from: recordingUri,
+          to: FileSystem.documentDirectory + "recordings/" + `${fileName}`,
+        });
+
+        const playbackObject = new Audio.Sound();
+        await playbackObject.loadAsync({
+          uri: FileSystem.documentDirectory + "recordings/" + `${fileName}`,
+        });
+        await playbackObject.playAsync();
+
+        // reset our states to record again
+        setRecording(null);
+        setRecordingStatus("stopped");
+      }
+    } catch (error) {
+      console.error("Failed to stop recording", error);
+    }
+  }
+
+  async function handleRecordButtonPress() {
+    if (recording) {
+      const audioUri = await stopRecording(recording);
+      if (audioUri) {
+        console.log("Saved audio file to", savedUri);
+      }
+    } else {
+      await startRecording();
+    }
+  }
+
   return (
     <>
       <SafeAreaView className="bg-white-normal h-full">
@@ -101,7 +198,12 @@ const Conversation = () => {
           <View className="flex-row gap-6">
             <AntDesign name="videocamera" size={24} color="#7A91F9" />
             <Ionicons name="call-outline" size={24} color="#7A91F9" />
-            <Entypo name="dots-three-vertical" size={24} color="#7A91F9" />
+            <Entypo
+              name="dots-three-vertical"
+              size={24}
+              color="#7A91F9"
+              onPress={() => setConversationOptions(!conversationOptions)}
+            />
           </View>
         </View>
 
@@ -126,6 +228,7 @@ const Conversation = () => {
               />
             </TouchableOpacity>
           </View>
+          {conversationOptions && <Options />}
 
           {showModal && (
             <ConversationModal
@@ -472,7 +575,7 @@ const Conversation = () => {
         </ScrollView>
 
         {!showModal && (
-          <View className="absolute bottom-8 left-0 right-0 flex-row items-center justify-between w-[93%] bg-white-normal p-4 rounded-md self-center mb-4 mx-4">
+          <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal p-4 rounded-md self-center mb-2  mx-4">
             <View className="flex-row items-center gap-4 flex-1">
               <Entypo
                 name="attachment"
@@ -490,7 +593,12 @@ const Conversation = () => {
             </View>
             <View className="flex-row items-center gap-4 ml-2">
               <AntDesign name="camera" size={24} color="#B2BBC6" />
-              <MaterialIcons name="keyboard-voice" size={24} color="#9941EE" />
+              <MaterialIcons
+                name="keyboard-voice"
+                size={24}
+                color="#9941EE"
+                onPress={() => handleRecordButtonPress()}
+              />
             </View>
           </View>
         )}

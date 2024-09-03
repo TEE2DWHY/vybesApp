@@ -6,6 +6,8 @@ const ProfileLayout = () => {
     <>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="tx" options={{ headerShown: false }} />
+        <Stack.Screen name="txDashboard" options={{ headerShown: false }} />
       </Stack>
     </>
   );
