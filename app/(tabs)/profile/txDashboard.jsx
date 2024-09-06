@@ -12,6 +12,7 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 
 const coinValues = [
   { amount: "₦1,000.00", coin: "5 Vybe Coin" },
@@ -54,7 +55,10 @@ const TxDashboard = () => {
           </View>
         </View>
         <View className="flex-row items-center justify-between my-10">
-          <TouchableOpacity className="bg-[#055582] px-4 py-3 rounded-lg flex-row items-center justify-center">
+          <TouchableOpacity
+            className="bg-[#055582] px-4 py-3 rounded-lg flex-row items-center justify-center"
+            onPress={() => router.push("/profile/deposit")}
+          >
             <Text className="text-white-normal font-axiformaRegular mr-1">
               Deposit
             </Text>
@@ -112,7 +116,6 @@ const TxDashboard = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
         <Text className="text-[#47586E] capitalize font-axiformaBlack mt-8 mb-4 text-base">
           Coin Value
         </Text>
@@ -120,9 +123,9 @@ const TxDashboard = () => {
           {coinValues.map((item, index) => (
             <View
               key={index}
-              className="flex-row items-center justify-between mb-4"
+              className="flex-row items-center justify-between mb-4 border-b border-[#F3F9FF] pb-4"
             >
-              <Text className="text-black-dark font-axiformaRegular">
+              <Text className="text-[#47586E] font-axiformaRegular">
                 {item.amount}
               </Text>
               <FontAwesome5 name="exchange-alt" size={16} color="#FFB053" />
