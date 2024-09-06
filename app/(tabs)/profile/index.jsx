@@ -90,7 +90,10 @@ const Profile = () => {
                 size={24}
                 style={{ color: "#546881" }}
               />
-              <View className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 rounded-md">
+              <TouchableOpacity
+                className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 rounded-md"
+                onPress={() => router.push("/profile/txDashboard")}
+              >
                 <View className="flex-row items-center">
                   <TouchableOpacity onPress={() => router.push("/home")}>
                     <FontAwesome5 name="coins" size={24} color="#fff" />
@@ -102,7 +105,7 @@ const Profile = () => {
                 <Text className="font-axiformaBlack text-sm text-white-normal ml-4">
                   50 Vybes Coin
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
           )}
 
