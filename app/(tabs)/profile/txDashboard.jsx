@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  FlatList,
+  ScrollView,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
@@ -24,7 +24,7 @@ const coinValues = [
 const TxDashboard = () => {
   return (
     <SafeAreaView className="mt-4 h-full">
-      <View className="px-4 mt-2">
+      <ScrollView className="px-4 mt-2">
         <View className="flex-row items-center justify-between">
           <AntDesign name="left" size={24} style={{ color: "#B2BBC6" }} />
           <Image
@@ -35,7 +35,6 @@ const TxDashboard = () => {
             resizeMode="cover"
           />
         </View>
-
         <View className="bg-purple-darker w-[95%] rounded-lg p-8 self-center mt-8">
           <View className="border-b border-b-white-normal flex-row items-center justify-between pb-6">
             <Text className="capitalize font-axiformaRegular text-white-normal">
@@ -54,7 +53,6 @@ const TxDashboard = () => {
             </Text>
           </View>
         </View>
-
         <View className="flex-row items-center justify-between my-10">
           <TouchableOpacity className="bg-[#055582] px-4 py-3 rounded-lg flex-row items-center justify-center">
             <Text className="text-white-normal font-axiformaRegular mr-1">
@@ -73,7 +71,6 @@ const TxDashboard = () => {
             <Fontisto name="spinner-refresh" size={20} color="#593E1D" />
           </TouchableOpacity>
         </View>
-
         <View className="self-center flex-row space-x-14 bg-white-normal p-8 rounded-md border border-[#F3F9FF]">
           <TouchableOpacity className="gap-4">
             <View
@@ -115,34 +112,34 @@ const TxDashboard = () => {
             </Text>
           </TouchableOpacity>
         </View>
+
         <Text className="text-[#47586E] capitalize font-axiformaBlack mt-8 mb-4 text-base">
           Coin Value
         </Text>
         <View className="mt-1 rounded-lg bg-[#FFFFFF] border border-[#F3F9FF] p-4">
-          <FlatList
-            data={coinValues}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View className="flex-row items-center justify-between mb-4">
-                <Text className="text-black-dark font-axiformaRegular">
-                  {item.amount}
+          {coinValues.map((item, index) => (
+            <View
+              key={index}
+              className="flex-row items-center justify-between mb-4"
+            >
+              <Text className="text-black-dark font-axiformaRegular">
+                {item.amount}
+              </Text>
+              <FontAwesome5 name="exchange-alt" size={16} color="#FFB053" />
+              <View className="flex-row item-center">
+                <MaterialCommunityIcons
+                  name="star-three-points"
+                  size={16}
+                  color="#9941EE"
+                />
+                <Text className="text-[#47586E] font-axiformaRegular ml-1">
+                  {item.coin}
                 </Text>
-                <FontAwesome5 name="exchange-alt" size={16} color="#FFB053" />
-                <View className="flex-row item-center">
-                  <MaterialCommunityIcons
-                    name="star-three-points"
-                    size={16}
-                    color="#9941EE"
-                  />
-                  <Text className="text-[#47586E] font-axiformaRegular ml-1">
-                    {item.coin}
-                  </Text>
-                </View>
               </View>
-            )}
-          />
+            </View>
+          ))}
         </View>
-      </View>
+      </ScrollView>
       <StatusBar style="dark" backgroundColor="#ffff" />
     </SafeAreaView>
   );
