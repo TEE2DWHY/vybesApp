@@ -8,6 +8,7 @@ const ProfileLayout = () => {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="deposit" options={{ headerShown: false }} />
         <Stack.Screen name="txDashboard" options={{ headerShown: false }} />
+        <Stack.Screen name="withdraw" options={{ headerShown: false }} />
       </Stack>
     </>
   );

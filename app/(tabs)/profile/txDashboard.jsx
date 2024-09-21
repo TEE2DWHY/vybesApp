@@ -64,7 +64,10 @@ const TxDashboard = () => {
             </Text>
             <AntDesign name="plussquareo" size={20} color="#ffff" />
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#86D8D3] px-4 py-3 rounded-lg flex-row items-center justify-center">
+          <TouchableOpacity
+            className="bg-[#86D8D3] px-4 py-3 rounded-lg flex-row items-center justify-center"
+            onPress={() => router.push("/profile/withdraw")}
+          >
             <Text className="font-axiformaRegular mr-1">Withdraw</Text>
             <Feather name="arrow-up-right" size={20} color="black" />
           </TouchableOpacity>

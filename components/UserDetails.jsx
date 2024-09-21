@@ -2,7 +2,6 @@ import React from "react";
 import { Image, Text, View } from "react-native";
 
 const UserDetails = ({ img, username, firstName, age, state, country }) => {
-  // Define colors based on username
   const badgeColor = username === "Vyber" ? "#7A91F9" : "#9941EE";
 
   return (
