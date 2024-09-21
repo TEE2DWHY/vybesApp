@@ -7,22 +7,46 @@ import {
   TextInput,
   Image,
   ScrollView,
+  Modal,
+  FlatList,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import Feather from "@expo/vector-icons/Feather";
-import { formatNumberWithCommas } from "../../../utils/formatNumber";
+import { router } from "expo-router";
+
+const banks = [
+  { id: "1", name: "Access Bank" },
+  { id: "2", name: "First Bank" },
+  { id: "3", name: "Guaranty Trust Bank" },
+  { id: "4", name: "Zenith Bank" },
+  { id: "5", name: "UBA" },
+  { id: "6", name: "Sterling Bank" },
+  // Add more banks as needed
+];
 
 const Withdraw = () => {
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [selectedBank, setSelectedBank] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleSelectBank = (bankName) => {
+    setSelectedBank(bankName);
+    setModalVisible(false);
+  };
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white-normal">
+      <SafeAreaView className="flex-1 bg-white">
         <ScrollView className="mt-4">
           <View className="flex-row justify-between items-center px-4">
-            <AntDesign name="left" size={24} color="#B2BBC6" />
+            <AntDesign
+              name="left"
+              size={24}
+              color="#B2BBC6"
+              onPress={() => router.push("/profile/txDashboard")}
+            />
             <View className="w-10 h-10 rounded-full overflow-hidden">
               <Image
                 source={{
@@ -34,8 +58,8 @@ const Withdraw = () => {
             </View>
           </View>
 
-          <View className="flex-row items-center  justify-center bg-[#361753] py-4 mt-5  w-full">
-            <Text className="text-base text-white-normal font-axiformaRegular mr-2  text-center">
+          <View className="flex-row items-center justify-center bg-[#361753] py-4 mt-5 w-full">
+            <Text className="text-base text-white-normal font-axiformaRegular mr-2 text-center">
               Withdraw To Bank
             </Text>
             <Feather name="arrow-up-right" size={24} color="#fff" />
@@ -55,12 +79,15 @@ const Withdraw = () => {
               <View className="flex-row justify-between items-center mb-4 p-4 rounded-lg shadow border border-gray-200">
                 <View className="flex-row items-center">
                   <AntDesign name="home" size={24} color="#47586E" />
-                  <Text className="ml-2 text-gray-800 text-base font-medium font-axiformaRegular">
-                    Opay
+                  <Text className="ml-2 text-gray-800 text-sm font-medium font-axiformaRegular">
+                    {selectedBank || "Select Bank"}
                   </Text>
                 </View>
-                <TouchableOpacity className="flex-row items-center">
-                  <Text className="text-blue-normal font-medium font-axiformaRegular mr-2">
+                <TouchableOpacity
+                  onPress={() => setModalVisible(true)}
+                  className="flex-row items-center"
+                >
+                  <Text className="text-blue-400 font-medium font-axiformaRegular mr-2">
                     Select Bank
                   </Text>
                   <MaterialIcons
@@ -74,9 +101,12 @@ const Withdraw = () => {
               <View className="flex-row justify-between items-center p-4 rounded-lg shadow border border-gray-200">
                 <View className="flex-row items-center">
                   <AntDesign name="user" size={24} color="#47586E" />
-                  <Text className="ml-2 text-gray-800 text-base font-medium font-axiformaRegular">
-                    9029****50
-                  </Text>
+                  <TextInput
+                    className="ml-2 text-gray-800 text-sm font-medium font-axiformaRegular mt-[-5px]"
+                    placeholder="Enter account number here"
+                    keyboardType="number-pad"
+                    maxLength={10}
+                  />
                 </View>
                 <TouchableOpacity>
                   <AntDesign name="closecircleo" size={20} color="#B2BBC6" />
@@ -85,7 +115,10 @@ const Withdraw = () => {
             </View>
 
             <TouchableOpacity className="mt-4">
-              <Text className="text-blue-normal text-center font-axiformaRegular">
+              <Text
+                className="text-blue-400 text-center font-axiformaRegular"
+                onPress={() => setModalVisible(true)}
+              >
                 Switch Bank Account
               </Text>
             </TouchableOpacity>
@@ -111,7 +144,7 @@ const Withdraw = () => {
 
           <View className="mt-10 px-6">
             <TouchableOpacity className="bg-purple-normal py-4 rounded-full">
-              <Text className="text-center text-white text-lg font-semibold text-white-normal font-axiformaRegular">
+              <Text className="text-center text-white-normal text-lg font-semibold font-axiformaRegular">
                 Withdraw
               </Text>
             </TouchableOpacity>
@@ -119,6 +152,43 @@ const Withdraw = () => {
         </ScrollView>
 
         <StatusBar style="dark" backgroundColor="#FFFFFF" />
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-[#1b1b1ba0] bg-opacity-50">
+            <View className="w-4/5 bg-white-normal rounded-lg p-5 shadow-lg">
+              <Text className="text-lg font-bold mb-2 text-center font-axiformaRegular">
+                Select a Bank
+              </Text>
+              <FlatList
+                data={banks}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    className="py-4 border-b border-gray-300"
+                    onPress={() => handleSelectBank(item.name)}
+                  >
+                    <Text className="text-base font-axiformaRegular">
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                className="mt-5 p-3 bg-purple-normal rounded-lg"
+              >
+                <Text className="text-white-normal font-bold text-center font-axiformaBlack">
+                  Close
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </>
   );
