@@ -23,6 +23,7 @@ import Privacy from "./components/Privacy";
 import Settings from "./components/Settings";
 import Transactions from "./components/Transactions";
 import Stories from "./components/Stories";
+import Likes from "./components/Likes";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -315,6 +316,7 @@ const Profile = () => {
           {activeTab === "Transactions" && <Transactions />}
           {activeTab === "Settings" && <Settings />}
           {activeTab === "Stories" && <Stories />}
+          {activeTab === "Likes" && <Likes />}
 
           {modalVisible && (
             <EditProfile
