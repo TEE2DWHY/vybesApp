@@ -13,13 +13,7 @@ const Account = () => {
           source={{
             uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           }}
-          style={{
-            width: 150,
-            height: 150,
-            borderRadius: 80,
-            borderWidth: 1,
-            borderColor: "#7A91F9",
-          }}
+          className="w-[150px] h-[150px] rounded-[80px] border-[10px]  border-[#EEF6FF]"
         />
       </View>
 
