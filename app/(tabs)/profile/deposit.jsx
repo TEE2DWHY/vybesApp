@@ -9,9 +9,9 @@ import {
   ScrollView,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-// import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { formatNumberWithCommas } from "../../../utils/formatNumber";
+import { router } from "expo-router";
 
 const deposit = () => {
   const [selectedMethod, setSelectedMethod] = useState("Bank Transfer");
@@ -27,7 +27,12 @@ const deposit = () => {
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="mt-4">
         <View className="flex-row justify-between items-center px-4">
-          <AntDesign name="left" size={24} color="#B2BBC6" />
+          <AntDesign
+            name="left"
+            size={24}
+            color="#B2BBC6"
+            onPress={() => router.push("/profile")}
+          />
           <View className="w-10 h-10 rounded-full overflow-hidden">
             <Image
               source={{
