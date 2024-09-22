@@ -27,7 +27,12 @@ const TxDashboard = () => {
     <SafeAreaView className="mt-4 h-full">
       <ScrollView className="px-4 mt-2">
         <View className="flex-row items-center justify-between">
-          <AntDesign name="left" size={24} style={{ color: "#B2BBC6" }} />
+          <AntDesign
+            name="left"
+            size={24}
+            style={{ color: "#B2BBC6" }}
+            onPress={() => router.push("/profile")}
+          />
           <Image
             source={{
               uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -71,7 +76,10 @@ const TxDashboard = () => {
             <Text className="font-axiformaRegular mr-1">Withdraw</Text>
             <Feather name="arrow-up-right" size={20} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#FFB053] px-4 py-3 rounded-lg flex-row items-center justify-center">
+          <TouchableOpacity
+            className="bg-[#FFB053] px-4 py-3 rounded-lg flex-row items-center justify-center"
+            onPress={() => router.push("/profile/conversion")}
+          >
             <Text className="text-[#593E1D] font-axiformaRegular mr-1">
               Convert
             </Text>
