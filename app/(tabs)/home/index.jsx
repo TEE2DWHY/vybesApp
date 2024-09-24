@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { StatusBar } from "expo-status-bar";
-import UserDetails from "../../../components/UserDetails";
+import UserDetails from "./components/UserDetails";
 import { users } from "../../../data/data";
 import Empty from "../../../components/Empty";
 import FilterModal from "../../../modal/FilterModal";

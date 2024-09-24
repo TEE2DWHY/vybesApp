@@ -1,13 +1,16 @@
+import { router } from "expo-router";
 import React from "react";
+import { TouchableOpacity } from "react-native";
 import { Image, Text, View } from "react-native";
 
 const UserDetails = ({ img, username, firstName, age, state, country }) => {
   const badgeColor = username === "Vyber" ? "#7A91F9" : "#9941EE";
 
   return (
-    <View
+    <TouchableOpacity
       className="bg-white rounded-lg overflow-hidden mb-4"
       style={{ width: "47%" }}
+      onPress={() => router.push("/home/userprofile")}
     >
       <Image
         source={img}
@@ -28,7 +31,7 @@ const UserDetails = ({ img, username, firstName, age, state, country }) => {
           <Text className="text-sm font-axiformaLight pb-2 pt-0">{`${state}, ${country}`}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
