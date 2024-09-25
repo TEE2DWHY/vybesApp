@@ -354,60 +354,42 @@ const storiesData = [
     imageUrl:
       "https://images.unsplash.com/photo-1540324155974-7523202daa3f?q=80&w=2815&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "30 Minutes Ago",
+    locked: false,
   },
   {
     id: 2,
     imageUrl:
       "https://images.unsplash.com/photo-1631947430066-48c30d57b943?q=80&w=2816&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "1 Hours Ago",
+    locked: false,
   },
   {
     id: 3,
     imageUrl:
       "https://images.unsplash.com/photo-1599457382197-820d65b8bbdc?q=80&w=3088&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "2 Hours Ago",
+    locked: true,
   },
   {
     id: 4,
     imageUrl:
       "https://images.unsplash.com/photo-1561158317-757a4631770e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "3 Hours Ago",
+    locked: true,
   },
   {
     id: 5,
     imageUrl:
       "https://images.unsplash.com/photo-1643185539104-3622eb1f0ff6?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "4 Hours Ago",
+    locked: true,
   },
   {
     id: 6,
     imageUrl:
       "https://images.unsplash.com/photo-1485872299829-c673f5194813?q=80&w=2054&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "5 Hours Ago",
-  },
-  {
-    id: 7,
-    imageUrl:
-      "https://images.unsplash.com/photo-1516450137517-162bfbeb8dba?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    postedAt: "6 Hours Ago",
-  },
-  {
-    id: 8,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1670740580828-9f6b0526d830?q=80&w=3088&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    postedAt: "7 Hours Ago",
-  },
-  {
-    id: 9,
-    imageUrl:
-      "https://images.unsplash.com/photo-1562007900-a6aae8e4f07d?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    postedAt: "8 Hours Ago",
-  },
-  {
-    id: 10,
-    imageUrl:
-      "https://images.unsplash.com/photo-1534366352488-8b7b5f205086?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    postedAt: "9 Hours Ago",
+    locked: true,
   },
 ];
 
