@@ -1,5 +1,12 @@
-import React from "react";
-import { Image, ScrollView, Text, View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { SafeAreaView } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -8,8 +15,71 @@ import { router } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import { storiesData } from "../../../data/data";
 import locked from "../../../assets/images/locked.png";
+import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import * as LocalAuthentication from "expo-local-authentication";
+import lockChats from "../../../assets/images/lockchats.png";
 
 const UserProfile = () => {
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible);
+    })();
+  }, []);
+
+  // Function to handle Biometric Authentication
+  const handleBiometricAuth = async () => {
+    try {
+      // Check if biometrics are set up
+      const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+
+      if (!savedBiometrics) {
+        return Alert.alert(
+          "Biometric record not found",
+          "Please verify your identity with your password",
+          [{ text: "OK" }]
+        );
+      }
+
+      // Check what type of biometric authentication is available
+      const biometricTypes =
+        await LocalAuthentication.supportedAuthenticationTypesAsync();
+
+      if (
+        biometricTypes.includes(
+          LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+        )
+      ) {
+        // Authenticate with Face ID
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Authenticate with Face ID",
+          cancelLabel: "Cancel",
+          fallbackLabel: "Use Passcode",
+          disableDeviceFallback: false, // Keep this to allow fallback to passcode in case Face ID fails
+        });
+
+        if (result.success) {
+          Alert.alert(
+            "Authentication Success",
+            "You are successfully authenticated."
+          );
+        } else {
+          Alert.alert("Authentication Failed", "Please try again.");
+        }
+      } else {
+        Alert.alert(
+          "Face ID not supported",
+          "Your device does not support Face ID."
+        );
+      }
+    } catch (error) {
+      console.error("Biometric authentication error:", error);
+    }
+  };
+
   return (
     <SafeAreaView>
       <ScrollView className="px-4">
@@ -128,14 +198,42 @@ const UserProfile = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Chat and Call Buttons */}
-          <View className="flex-row justify-between mt-4 mb-4">
-            <TouchableOpacity className="bg-purple-500 py-3 px-5 rounded-full flex-1 mr-2">
-              <Text className="text-white text-center font-bold">Chat</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-purple-500 py-3 px-5 rounded-full flex-1 ml-2">
-              <Text className="text-white text-center font-bold">Call</Text>
-            </TouchableOpacity>
+          <View className=" flex-col mt-4 mb-4 bg-white-normal py-12 px-6 rounded-md">
+            <View className="flex-row justify-between">
+              <TouchableOpacity className="bg-purple-normal w-2/5 py-3 rounded-full mr-2 flex-row items-center justify-center gap-2">
+                <Entypo name="chat" size={24} color="#ffff" />
+                <Text className="text-white-normal text-center font-axiformaRegular text-base">
+                  Chat
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="bg-white-normal w-2/5 py-3 rounded-full ml-2 border border-[#F0E3FC] flex-row items-center justify-center gap-2">
+                <Ionicons name="call-sharp" size={24} color="#a241ee" />
+                <Text className="text-purple-normal text-center font-axiformaRegular text-base">
+                  Call
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row items-center justify-between border border-[#EEF6FF] rounded-md p-4 mt-6">
+              <View className="flex-row items-center gap-2">
+                <Image
+                  source={lockChats}
+                  className="w-8 h-8"
+                  resizeMode="contain
+                  "
+                />
+                <Text className="font-axiformaRegular text-base text-[#3D4C5E]">
+                  Lock Chats
+                </Text>
+              </View>
+
+              <FontAwesome5
+                name="fingerprint"
+                size={24}
+                color="#909DAD"
+                onPress={handleBiometricAuth}
+              />
+            </View>
           </View>
 
           {/* Interests and Personality Tags */}

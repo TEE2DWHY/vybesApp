@@ -1,5 +1,13 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(VYBES_APP) to use Face ID."
+        }
+      ]
+    ],
     "name": "vybesapp",
     "scheme": "vybesapp",
     "slug": "vybesapp",
@@ -13,7 +21,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "We need to use Face ID to secure your account."
+      }
     },
     "android": {
       "adaptiveIcon": {
