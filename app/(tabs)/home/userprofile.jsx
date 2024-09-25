@@ -19,6 +19,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import * as LocalAuthentication from "expo-local-authentication";
 import lockChats from "../../../assets/images/lockchats.png";
+import * as Linking from "expo-linking";
 
 const UserProfile = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
@@ -78,6 +79,20 @@ const UserProfile = () => {
     } catch (error) {
       console.error("Biometric authentication error:", error);
     }
+  };
+
+  const handleCall = () => {
+    const phoneNumber = "+2349032533461";
+    const url = `tel:${phoneNumber}`;
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          console.warn("Phone number is not available.");
+        }
+      })
+      .catch((err) => console.error("An error occurred", err));
   };
 
   return (
@@ -198,7 +213,7 @@ const UserProfile = () => {
             </TouchableOpacity>
           </View>
 
-          <View className=" flex-col mt-4 mb-4 bg-white-normal py-12 px-6 rounded-md">
+          <View className="flex-col mt-4 mb-4 bg-white-normal border-2 border-[#DEEDFF] py-12 px-6 rounded-md">
             <View className="flex-row justify-between">
               <TouchableOpacity className="bg-purple-normal w-2/5 py-3 rounded-full mr-2 flex-row items-center justify-center gap-2">
                 <Entypo name="chat" size={24} color="#ffff" />
@@ -206,7 +221,10 @@ const UserProfile = () => {
                   Chat
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity className="bg-white-normal w-2/5 py-3 rounded-full ml-2 border border-[#F0E3FC] flex-row items-center justify-center gap-2">
+              <TouchableOpacity
+                className="bg-white-normal w-2/5 py-3 rounded-full ml-2 border border-[#F0E3FC] flex-row items-center justify-center gap-2"
+                onPress={handleCall}
+              >
                 <Ionicons name="call-sharp" size={24} color="#a241ee" />
                 <Text className="text-purple-normal text-center font-axiformaRegular text-base">
                   Call
@@ -236,26 +254,27 @@ const UserProfile = () => {
             </View>
           </View>
 
-          {/* Interests and Personality Tags */}
-          <View className="mt-4">
-            <Text className="text-lg font-bold">
+          <View className="mt-4 bg-white-normal border-2 border-white-normal p-4 rounded-md">
+            <Text className="text-lg font-axiformaBlack pb-4 border-b border-[#DBEBFF]">
               My Interests and Personality
             </Text>
             <View className="flex-row flex-wrap mt-2">
               <View className="bg-purple-100 py-2 px-4 m-1 rounded-full">
-                <Text>Takes Alcohol</Text>
+                <Text className="font-axiformaRegular">Takes Alcohol</Text>
               </View>
               <View className="bg-red-100 py-2 px-4 m-1 rounded-full">
-                <Text>Loves Football</Text>
+                <Text className="font-axiformaRegular">Loves Football</Text>
               </View>
               <View className="bg-blue-100 py-2 px-4 m-1 rounded-full">
-                <Text>Loves Pet</Text>
+                <Text className="font-axiformaRegular">Loves Pet</Text>
               </View>
               <View className="bg-green-100 py-2 px-4 m-1 rounded-full">
-                <Text>Available for Short Time</Text>
+                <Text className="font-axiformaRegular">
+                  Available for Short Time
+                </Text>
               </View>
               <View className="bg-yellow-100 py-2 px-4 m-1 rounded-full">
-                <Text>Aries</Text>
+                <Text className="font-axiformaRegular">Aries</Text>
               </View>
             </View>
           </View>
