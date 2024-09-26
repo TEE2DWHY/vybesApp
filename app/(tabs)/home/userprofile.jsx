@@ -5,6 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Modal,
   Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -23,6 +24,7 @@ import * as Linking from "expo-linking";
 
 const UserProfile = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -121,15 +123,15 @@ const UserProfile = () => {
                 />
               </View>
             </View>
-            <View className="relative flex-row items-center justify-center">
+            <View className="relative self-center flex-row items-center justify-center w-[180px] h-[180px]">
               <Image
                 source={{
                   uri: "https://images.unsplash.com/photo-1627130596911-985450bd4d63?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 }}
-                className="w-[180px] h-[180px] rounded-full self-center mt-8 object-center border-[#F0E3FC] border-4"
+                className="w-full h-full rounded-full self-center mt-8 object-center border-[#F0E3FC] border-4"
                 resizeMode="cover"
               />
-              <View className=" rounded-full w-7 h-7 bg-purple-normal absolute bottom-4 right-20 z-9999"></View>
+              <View className="rounded-full w-7 h-7 bg-purple-normal absolute bottom-0 right-2  z-9999"></View>
             </View>
 
             <View className="flex-row items-center justify-center border border-[#EEF6FF] mt-6 p-4 rounded-2xl">
@@ -137,7 +139,7 @@ const UserProfile = () => {
                 I love meeting new people and love exploring new things.
               </Text>
             </View>
-            <View className="flex-row items-center space-x-1 mt-6 border-b border-[#DBEBFF] pb-4">
+            <View className="flex-row items-center  justify-between mt-6 border-b border-[#DBEBFF] pb-4">
               <View className="bg-[#B1C3FF] text-[#3E4459] rounded-md p-3">
                 <Text className="font-axiformaRegular">20 miles away</Text>
               </View>
@@ -207,7 +209,10 @@ const UserProfile = () => {
               resizeMode="contain"
             />
             <TouchableOpacity className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md">
-              <Text className="text-white-normal text-center font-axiformaRegular p-1">
+              <Text
+                className="text-white-normal text-center font-axiformaRegular p-1"
+                onPress={() => setShowModal(true)}
+              >
                 Proceed to Make Payment
               </Text>
             </TouchableOpacity>
@@ -279,6 +284,49 @@ const UserProfile = () => {
             </View>
           </View>
         </View>
+        <Modal
+          visible={showModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowModal(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-[#1b1b1ba0] bg-opacity-50">
+            <View className="bg-white-normal rounded-2xl p-4 mt-8 mb-4 border border-[#E9E9EB] w-[90%] shadow-lg">
+              <View className="self-end">
+                <AntDesign
+                  name="close"
+                  size={24}
+                  color="#47586E"
+                  onPress={() => setShowModal(false)}
+                />
+              </View>
+              <Text className="text-center font-axiformaBlack text-lg text-[#333333] mt-2">
+                Instant Match
+              </Text>
+              <Text className="text-center text-sm my-2 text-[#47586E] font-axiformaRegular leading-6">
+                Get exclusive access to chat, calls, and instant matching with
+                Dhemmex for{" "}
+                <Text className="text-[#7A91F9]">60 Vybes Coins</Text>.
+              </Text>
+              <Image
+                source={locked}
+                className="w-32 h-32 self-center"
+                resizeMode="contain"
+              />
+              <TouchableOpacity className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md mb-4">
+                <Text
+                  className="text-white-normal text-center font-axiformaRegular p-1"
+                  onPress={() => {
+                    setShowModal(false);
+                    router.push("/home/transfercoin");
+                  }}
+                >
+                  Proceed to Transfer Coin
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
       <StatusBar style="dark" backgroundColor="#fff" />
     </SafeAreaView>
