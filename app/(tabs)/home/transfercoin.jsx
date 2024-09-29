@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -11,6 +11,8 @@ import {
   ImageBackground,
   Alert,
 } from "react-native";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -18,10 +20,41 @@ import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import unlocked from "../../../assets/images/unlocked.webp";
 
+// Notification configuration
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 const TransferCoin = () => {
   const [showModal, setShowModal] = useState(false);
   const [accountHandle, setAccountHandle] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
+
+  const requestNotificationPermission = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission for notifications was not granted.");
+    }
+  };
+
+  useEffect(() => {
+    requestNotificationPermission();
+    registerNotificationCategories();
+  }, []);
+
+  const showNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Transfer Initiated!",
+        body: `You have initiated a transfer of ${transferAmount} Vybes coins to ${accountHandle}.`,
+      },
+      trigger: null,
+    });
+  };
 
   const handleTransfer = () => {
     const amount = Number(transferAmount);
@@ -32,7 +65,70 @@ const TransferCoin = () => {
       return;
     }
     setShowModal(true);
+    showNotification();
   };
+
+  const transferNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Transfer Success!",
+        body: `Transfer of ${transferAmount} Vybes coins to ${accountHandle} is successful.`,
+        sound: "default",
+        data: { accountHandle, transferAmount },
+        android: {
+          channelId: "default",
+          color: "#9a41ee",
+          actions: [
+            { identifier: "view-details", title: "View Details" },
+            { identifier: "chat-dhemmex", title: "Chat with Dhemmex" },
+          ],
+        },
+        ios: {
+          categoryIdentifier: "transferCategory",
+        },
+      },
+      trigger: null,
+    });
+  };
+
+  // Registering notification categories for iOS
+  const registerNotificationCategories = async () => {
+    await Notifications.setNotificationCategoryAsync("transferCategory", [
+      {
+        identifier: "view-details",
+        buttonTitle: "View Details",
+        options: { opensAppToForeground: true },
+      },
+      {
+        identifier: "chat-dhemmex",
+        buttonTitle: "Chat with Dhemmex",
+        options: { opensAppToForeground: true },
+      },
+    ]);
+  };
+
+  // Listener for notification responses
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const { actionIdentifier } = response;
+        switch (actionIdentifier) {
+          case "view-details":
+            console.log("View Details action pressed");
+            // Navigate to details screen
+            break;
+          case "chat-dhemmex":
+            console.log("Chat with Dhemmex action pressed");
+            // Open chat screen
+            break;
+          default:
+            break;
+        }
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
 
   return (
     <SafeAreaView>
@@ -106,7 +202,7 @@ const TransferCoin = () => {
               value={transferAmount}
               onChangeText={(text) =>
                 setTransferAmount(text.replace(/[^0-9]/g, ""))
-              } // Only allow numbers
+              }
               className="flex-1 ml-2 text-base text-gray-900 font-axiformaRegular"
             />
           </View>
@@ -167,15 +263,16 @@ const TransferCoin = () => {
                 view her stories, and you're already matched.
               </Text>
 
-              <TouchableOpacity className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-6 shadow-md mb-4">
-                <Text
-                  className="text-white-normal text-center font-axiformaRegular p-1"
-                  onPress={() => {
-                    setShowModal(false);
-                    router.push("/home");
-                  }}
-                >
-                  Go To Esther Profile
+              <TouchableOpacity
+                className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-6 mb-4"
+                onPress={() => {
+                  transferNotification();
+                  setShowModal(false);
+                  router.push("/profile/transferDetails");
+                }}
+              >
+                <Text className="font-axiformaBlack text-white-normal text-sm">
+                  Continue
                 </Text>
               </TouchableOpacity>
             </View>
