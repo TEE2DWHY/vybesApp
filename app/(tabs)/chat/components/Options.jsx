@@ -36,19 +36,7 @@ const options = [
 
 const Options = () => {
   return (
-    <View className="z-50 border border-[#F3F9FF] bg-white-normal rounded-xl items-center justify-center w-[230px] absolute right-2 p-4 gap-3 shadow-md">
-      {options.map(({ id, icon, text }) => (
-        <TouchableOpacity
-          key={id}
-          className="flex-row gap-2 items-center justify-center border-b border-[#54688118] w-full pb-2"
-        >
-          {icon}
-          <Text className="text-[#546881] font-axiformaRegular w-4/5">
-            {text}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <View className="z-50 border border-[#F3F9FF] bg-white-normal rounded-xl items-center justify-center w-[230px] absolute right-2 p-4 gap-3 shadow-md"></View>
   );
 };
 

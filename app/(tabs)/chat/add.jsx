@@ -121,66 +121,10 @@ const Add = () => {
   ];
 
   const renderItem = ({ item }) => (
-    <View className="flex-row items-center py-4 border-b border-gray-200">
-      <Image
-        source={{ uri: item.imageUrl }}
-        className="h-12 w-12 rounded-full mr-4"
-      />
-
-      <View className="flex-1">
-        <Text className="font-axiformaBlack text-sm text-[#314359]">
-          {item.username}
-        </Text>
-        <Text className="font-axiformaRegular text-xs text-[#909DAD]">
-          {item.description}
-        </Text>
-      </View>
-
-      <View
-        className="px-2 py-1 rounded-lg mr-4"
-        style={{ backgroundColor: item.badgeColor }}
-      >
-        <Text
-          className="font-axiformaBold text-xs"
-          style={{ color: item.badgeTextColor }}
-        >
-          {item.badge}
-        </Text>
-      </View>
-
-      <View className="mr-2">
-        {item.followStatus === "requested" ? (
-          <AntDesign name="rocket1" size={24} color="#AFA4F8" />
-        ) : (
-          <AntDesign
-            name={item.followStatus === "follow" ? "adduser" : "addusergroup"}
-            size={24}
-            color="#AFA4F8"
-          />
-        )}
-      </View>
-    </View>
+    <View className="flex-row items-center py-4 border-b border-gray-200"></View>
   );
 
-  return (
-    <SafeAreaView className="px-4">
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        ListHeaderComponent={() => (
-          <>
-            <HeaderComponent data={data} />
-          </>
-        )}
-        ListEmptyComponent={() => <Text>No suggestions available.</Text>}
-        contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
-    </SafeAreaView>
-  );
+  return <SafeAreaView className="px-4"></SafeAreaView>;
 };
 
 export default Add;

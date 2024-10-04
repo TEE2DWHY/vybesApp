@@ -73,21 +73,7 @@ const Chat = () => {
 
   return (
     <>
-      <SafeAreaView className="h-full">
-        <FlatList
-          data={recentConversations}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          ListHeaderComponent={() => (
-            <HeaderComponent
-              showChatModal={() => setShowChatModal(!showChatModal)}
-              data={recentConversations}
-            />
-          )}
-          ListEmptyComponent={() => <Empty />}
-          contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
-        />
-      </SafeAreaView>
+      <SafeAreaView className="h-full"></SafeAreaView>
       {showChatModal && <ChatModal />}
       <StatusBar backgroundColor="#fffff" style="dark" />
     </>
