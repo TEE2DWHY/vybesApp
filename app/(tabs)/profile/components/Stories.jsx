@@ -43,7 +43,7 @@ const Stories = () => {
         </Text>
         <Feather name="settings" size={24} color="#909DAD" />
       </View>
-      <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3">
+      <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3 mb-12">
         {storiesData.map((story, index) => (
           <TouchableOpacity
             key={story.id}

@@ -6,29 +6,43 @@
         {
           "faceIDPermission": "Allow $(VYBES_APP) to use Face ID."
         }
+      ],
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Axiforma-Black.ttf",
+            "./assets/fonts/Axiforma-Light.ttf",
+            "./assets/fonts/Axiforma-Regular.ttf",
+            "./assets/fonts/Axiforma-Book.ttf",
+            "./assets/fonts/Axiforma-BlackItalic.ttf"
+          ]
+        }
       ]
     ],
-    "name": "vybesapp",
+    "name": "VybesApp",
     "scheme": "vybesapp",
     "slug": "vybesapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/vybe.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffff"
     },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "We need to use Face ID to secure your account."
-      }
+      },
+      "bundleIdentifier": "com.tee2dwhy.vybesapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/vybe.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -38,7 +52,7 @@
       "package": "com.tee2dwhy.vybesapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/vybe.png"
     },
     "extra": {
       "eas": {

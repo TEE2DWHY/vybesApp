@@ -63,7 +63,7 @@ const SignIn = () => {
           <Text className="self-center text-2xl font-axiformaBlack mt-1">
             Lets Sign You In
           </Text>
-          <Text className="self-center text-sm font-axiformaLight mt-2 px-5 text-center">
+          <Text className="self-center text-sm font-axiformaRegular mt-2 px-5 text-center">
             Find Your Life Partner, Earn, Meet New People And Enjoy A Good Time
           </Text>
           <View className="mt-5 px-5">

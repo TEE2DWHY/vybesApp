@@ -21,7 +21,7 @@ const Likes = () => {
         </Text>
         <Text className="text-[#3D4C5E] font-axiformaRegular">15 Likes</Text>
       </View>
-      <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3">
+      <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3 mb-10">
         {likesData.map((likes, index) => (
           <TouchableOpacity
             key={likes.id}

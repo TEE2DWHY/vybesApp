@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Image,
   ScrollView,
@@ -6,7 +6,9 @@ import {
   View,
   TouchableOpacity,
   Modal,
+  Platform,
   Alert,
+  Animated,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { SafeAreaView } from "react-native";
@@ -25,6 +27,30 @@ import * as Linking from "expo-linking";
 const UserProfile = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("My Stories");
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  const colors = ["#800080", "#4B0082"];
+
+  useEffect(() => {
+    const startAnimation = () => {
+      animatedValue.setValue(0); // Reset to start
+      Animated.loop(
+        Animated.timing(animatedValue, {
+          toValue: 1, // Go from 0 to 1
+          duration: 5000, // 5 seconds for the transition
+          useNativeDriver: false,
+        })
+      ).start();
+    };
+
+    startAnimation();
+  }, [animatedValue]);
+
+  const backgroundColor = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: colors, // Smooth transition between colors
+  });
 
   useEffect(() => {
     (async () => {
@@ -98,7 +124,7 @@ const UserProfile = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="mt-10">
       <ScrollView className="px-4">
         <View className="mt-4">
           <AntDesign
@@ -131,7 +157,18 @@ const UserProfile = () => {
                 className="w-full h-full rounded-full self-center mt-8 object-center border-[#F0E3FC] border-4"
                 resizeMode="cover"
               />
-              <View className="rounded-full w-7 h-7 bg-purple-normal absolute bottom-0 right-2  z-9999"></View>
+              <Animated.View
+                style={{
+                  backgroundColor,
+                  borderRadius: 9999, // Make it rounded
+                  width: 20, // Adjust size as needed
+                  height: 20,
+                  position: "absolute",
+                  bottom: 0,
+                  right: 16, // Adjust as needed
+                  zIndex: 9999,
+                }}
+              />
             </View>
 
             <View className="flex-row items-center justify-center border border-[#EEF6FF] mt-6 p-4 rounded-2xl">
@@ -139,7 +176,18 @@ const UserProfile = () => {
                 I love meeting new people and love exploring new things.
               </Text>
             </View>
-            <View className="flex-row items-center  justify-between mt-6 border-b border-[#DBEBFF] pb-4">
+            <ScrollView
+              className="gap-2 mt-6 border-b border-[#DBEBFF] pb-4"
+              contentContainerStyle={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 2,
+              }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
               <View className="bg-[#B1C3FF] text-[#3E4459] rounded-md p-3">
                 <Text className="font-axiformaRegular">20 miles away</Text>
               </View>
@@ -153,13 +201,39 @@ const UserProfile = () => {
                   4.8 Rating
                 </Text>
               </View>
-            </View>
+            </ScrollView>
           </View>
 
           <View className="flex-row justify-between mt-4 mb-2">
-            <View className="flex-row items-center gap-4">
-              <Text className="text-base font-axiformaBlack">My Stories</Text>
-              <Text className="text-base font-axiformaBlack">My Media</Text>
+            <View className="flex-row items-center gap-8 border-b border-[#D6DDFD]  w-fit">
+              <View
+                className={`${
+                  activeTab === "My Stories"
+                    ? "border-b-[4px] border-[#7A91F9]"
+                    : ""
+                }`}
+              >
+                <Text
+                  className={`text-base font-axiformaBlack pb-2 text-[#3D4C5E]`}
+                  onPress={() => setActiveTab("My Stories")}
+                >
+                  My Stories
+                </Text>
+              </View>
+              <View
+                className={`${
+                  activeTab === "My Media"
+                    ? "border-b-[4px] border-[#7A91F9]"
+                    : ""
+                }`}
+              >
+                <Text
+                  className={`text-base font-axiformaBlack pb-2 text-[#3D4C5E]`}
+                  onPress={() => setActiveTab("My Media")}
+                >
+                  My Media
+                </Text>
+              </View>
             </View>
             <View>
               <Feather name="settings" size={24} color="#909DAD" />
@@ -208,11 +282,11 @@ const UserProfile = () => {
               className="w-40 h-40 self-center"
               resizeMode="contain"
             />
-            <TouchableOpacity className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md">
-              <Text
-                className="text-white-normal text-center font-axiformaRegular p-1"
-                onPress={() => setShowModal(true)}
-              >
+            <TouchableOpacity
+              className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md"
+              onPress={() => setShowModal(true)}
+            >
+              <Text className="text-white-normal text-center font-axiformaRegular p-1">
                 Proceed to Make Payment
               </Text>
             </TouchableOpacity>
@@ -259,7 +333,7 @@ const UserProfile = () => {
             </View>
           </View>
 
-          <View className="mt-4 bg-white-normal border-2 border-white-normal p-4 rounded-md">
+          <View className="mt-4 bg-white-normal border-2 border-white-normal p-4 rounded-md mb-8">
             <Text className="text-lg font-axiformaBlack pb-4 border-b border-[#DBEBFF]">
               My Interests and Personality
             </Text>

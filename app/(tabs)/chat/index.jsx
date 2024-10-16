@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ChatModal from "../../../modal/ChatModal";
@@ -63,8 +64,12 @@ const Chat = () => {
           </View>
         </View>
       </TouchableOpacity>
-      <View className="items-end">
-        <Text className="text-[#546881] font-axiformaRegular text-sm">
+      <View className="">
+        <Text
+          className={`text-[#546881] font-axiformaRegular text-sm items-end ${
+            Platform.OS !== "ios" ? "mt-[-20px] ml-[-26px]" : ""
+          }`}
+        >
           {item.time}
         </Text>
       </View>
@@ -73,9 +78,24 @@ const Chat = () => {
 
   return (
     <>
-      <SafeAreaView className="h-full"></SafeAreaView>
+      <SafeAreaView className="h-full mt-10">
+        <FlatList
+          className="mb-14"
+          data={recentConversations}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={() => (
+            <HeaderComponent
+              showChatModal={() => setShowChatModal(!showChatModal)}
+              data={recentConversations}
+            />
+          )}
+          ListEmptyComponent={() => <Empty />}
+          contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
+        />
+      </SafeAreaView>
       {showChatModal && <ChatModal />}
-      <StatusBar backgroundColor="#fffff" style="dark" />
+      <StatusBar backgroundColor="#fff" style="dark" />
     </>
   );
 };

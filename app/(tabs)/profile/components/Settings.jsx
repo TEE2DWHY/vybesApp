@@ -211,7 +211,7 @@ const Settings = () => {
             </View>
           )}
         </View>
-        <View className="flex-row justify-between mt-4 ">
+        <View className="flex-row justify-between mt-4 mb-12">
           <TouchableOpacity className="flex-1 items-center py-3 mr-2 border border-[#E4D7F5] rounded-lg">
             <Text className="text-[#C4B1F3] font-axiformaRegular">Log Out</Text>
           </TouchableOpacity>

@@ -41,7 +41,7 @@ const PrivacySettings = () => {
       <Text className="text-lg font-axiformaBlack mt-8 text-[#3D4C5E]">
         Privacy Settings
       </Text>
-      <ScrollView className="mt-4 bg-white px-4 py-4 rounded-md border border-[#dedee0]">
+      <ScrollView className="mt-4 bg-white px-4 py-4 rounded-md border border-[#dedee0] mb-12">
         <PrivacySwitch
           label="Turn Chat Privacy"
           value={privacySettings.chatPrivacy}

@@ -93,7 +93,7 @@ const Verify = () => {
               <Text className="text-2xl text-left font-axiformaBlack mb-2 mt-6">
                 Enter 6 Digit Code
               </Text>
-              <Text className="text-left text-sm font-axiformaLight text-gray-600 w-4/5">
+              <Text className="text-left text-sm font-axiformaRegular text-gray-600 w-4/5">
                 Your 6 Digit Verification Code Was Sent Via Your E-Mail
                 @Exa...@Gmail.Com
               </Text>

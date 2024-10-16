@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { router } from "expo-router";
 
 const transferDetails = () => {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white mt-10">
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         <View className="flex-row items-center justify-between mt-2 mx-4">
           <TouchableOpacity>
@@ -20,7 +21,7 @@ const transferDetails = () => {
               name="arrow-back-ios"
               size={24}
               style={{ color: "#546881" }}
-              onPress={() => console.log("Go Back")}
+              onPress={() => router.push("/home")}
             />
           </TouchableOpacity>
 
@@ -100,7 +101,7 @@ const transferDetails = () => {
 
         <View className="items-center mt-14">
           <View className="flex-row items-center gap-2">
-            <Text className="text-[#7A91F9] text-sm">
+            <Text className="text-[#7A91F9] text-sm w-4/5 self-center text-center">
               Contact Our Customer Support For More Assistance
             </Text>
             <MaterialIcons

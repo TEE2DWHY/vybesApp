@@ -38,10 +38,10 @@ const Home = () => {
 
   return (
     <>
-      <SafeAreaView className="h-full bg-gray-200">
+      <SafeAreaView className="h-full bg-gray-200 mt-8">
         <View className="pt-6 px-5">
           <View className="sticky top-0 z-10 bg-gray-200 pb-4">
-            <View className="flex-row items-center justify-between border-b-[#878a90] border-b-[1px] pb-4">
+            <View className="flex-row items-center justify-between border-b-[#a0ace2] border-b-[1px] pb-4">
               <TouchableOpacity
                 onPress={() => setShowFilterModal(!showFilterModal)}
                 className="bg-[#a241ee] rounded-md p-1"
@@ -59,7 +59,7 @@ const Home = () => {
                   name="search"
                   size={24}
                   style={{
-                    color: "gray",
+                    color: "#47586E",
                   }}
                 />
                 <TextInput
@@ -68,16 +68,19 @@ const Home = () => {
                 />
               </View>
 
-              <Feather
-                name="bell"
-                size={30}
-                style={{
-                  color: "gray",
-                }}
-              />
+              <View className="relative">
+                <View className="bg-purple-normal w-2 h-2 rounded-full absolute right-1 z-50"></View>
+                <Feather
+                  name="bell"
+                  size={28}
+                  style={{
+                    color: "#99A0C5",
+                  }}
+                />
+              </View>
             </View>
           </View>
-          <Text className="text-2xl text-purple-normal font-axiformaBlack pt-1 mb-3">
+          <Text className="text-[22px] text-purple-normal font-axiformaBlack pt-1 mb-3">
             Your Matches
           </Text>
         </View>
@@ -94,6 +97,7 @@ const Home = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
+          className="mb-12"
         />
         {showFilterModal && (
           <FilterModal onClose={() => setShowFilterModal(false)} />

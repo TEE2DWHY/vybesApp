@@ -85,7 +85,7 @@ const HeaderComponent = ({ showChatModal, data }) => {
         </View>
       </View>
       {data.length > 0 && (
-        <Text className="mt-6 mb-2 font-axiformaRegular text-[#909DAD] font-extrabold text-sm">
+        <Text className="mt-6 mb-2 font-axiformaRegular text-[#909DAD]  text-sm">
           {pathname === "/chat"
             ? "Recent Conversations"
             : pathname === "/chat/add"

@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const ConversationModal = ({
@@ -9,7 +9,7 @@ const ConversationModal = ({
   handleNext,
 }) => {
   return (
-    <View className="bg-white-normal w-[90%] items-center justify-center p-4 self-center rounded-t-[40px] mt-[22%]">
+    <View className="bg-white-normal w-[90%] items-center justify-center p-2 self-center rounded-t-[40px] mt-[8%]">
       <View className="self-start">
         <MaterialIcons
           name="cancel"

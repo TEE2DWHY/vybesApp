@@ -10,7 +10,7 @@ import Foundation from "@expo/vector-icons/Foundation";
 
 const TabIcon = ({ icon, name, focused }) => {
   return (
-    <View className="items-center justify-center gap-2 mb-2">
+    <View className="items-center justify-center gap-2 mb-2 w-full">
       <Text>{icon}</Text>
       <Text
         className={`${
@@ -34,7 +34,7 @@ const TabsLayout = () => {
           tabBarActiveTintColor: "#9941EE",
           tabBarInactiveTintColor: "#B2BBC6",
           tabBarStyle: {
-            backgroundColor: "#fffff",
+            // backgroundColor: "#fffff",
             borderTopWidth: 0,
             height: 100,
             bottom: 0,

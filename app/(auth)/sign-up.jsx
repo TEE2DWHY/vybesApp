@@ -79,7 +79,7 @@ const SignUp = () => {
           <Text className="self-center text-2xl font-axiformaBlack mt-1">
             Let's Know Your Gender
           </Text>
-          <Text className="self-center text-sm font-axiformaLight mt-2 px-5 text-center">
+          <Text className="self-center text-sm font-axiformaRegular mt-2 px-5 text-center">
             Selecting Your Gender Helps You Find Your Right Type Of Vybe.
           </Text>
           <View className="mt-5 px-5">
@@ -156,7 +156,7 @@ const SignUp = () => {
             <Text className="self-center text-2xl font-axiformaBlack mt-4">
               Sign Up
             </Text>
-            <Text className="self-center text-sm font-axiformaLight mt-2 px-5 text-center">
+            <Text className="self-center text-sm font-axiformaRegular mt-2 px-5 text-center">
               Let's Get Started By Connecting You To The Community Of Love
             </Text>
             <View className="mt-2 px-5">

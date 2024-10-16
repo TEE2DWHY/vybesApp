@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -36,7 +36,19 @@ const options = [
 
 const Options = () => {
   return (
-    <View className="z-50 border border-[#F3F9FF] bg-white-normal rounded-xl items-center justify-center w-[230px] absolute right-2 p-4 gap-3 shadow-md"></View>
+    <ScrollView className="z-50 border border-[#F3F9FF] bg-white-normal rounded-xl items-center justify-center w-[230px] absolute top-16 right-4 bg-white py-2  shadow-md">
+      {options.map(({ id, icon, text }) => (
+        <TouchableOpacity
+          key={id}
+          className="flex-row gap-2 items-center justify-center border-b border-[#54688118] w-full pb-2"
+        >
+          {icon}
+          <Text className="text-[#546881] font-axiformaRegular w-4/5">
+            {text}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 };
 

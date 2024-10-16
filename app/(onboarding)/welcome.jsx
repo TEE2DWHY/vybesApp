@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import iphone from "../../assets/images/iphone.png";
 import iphone2 from "../../assets/images/iphone2.png";
@@ -13,6 +14,7 @@ import multipleArrows from "../../assets/images/multipleArrows.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const Welcome = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -24,7 +26,9 @@ const Welcome = () => {
 
   return (
     <>
-      <SafeAreaView className="bg-white flex-1">
+      <SafeAreaView
+        className={`flex-1 ${Platform.OS === "android" && "mt-10"}`}
+      >
         <View className="flex-1 relative">
           <View className="flex-1 justify-center items-center">
             {activeIndex === 0 && (
@@ -51,7 +55,11 @@ const Welcome = () => {
               />
             )}
           </View>
-          <View className="absolute bottom-0 w-full  bg-purple-darker rounded-tr-[80px] px-6 pt-10 z-20">
+          <View
+            className={`absolute bottom-0 w-full h-fit  bg-purple-darker rounded-tr-[80px] ${
+              Platform.OS === "android" ? "pt-4" : "pt-10"
+            } px-6  z-20`}
+          >
             <View className="flex-row items-center gap-2 mb-4">
               {[0, 1, 2].map((index) => (
                 <TouchableOpacity
@@ -75,12 +83,14 @@ const Welcome = () => {
 
             {activeIndex === 0 && (
               <>
-                <Text className="text-[28px] font-bold text-white-normal mb-2 font-axiformaBlack leading-[45.67px]">
+                <Text className="text-[28px] text-white-normal mb-2 font-axiformaBlack leading-[45.67px]">
                   Are You Looking For The Right Match?
                 </Text>
-                <Text className="text-base text-white-normal font-axiformaLight font-light mb-6">
+                <Text className="text-base text-white-normal font-axiformaRegular font-light mb-6">
                   With{" "}
-                  <Text className="text-purple-dark font-extrabold">Vybes</Text>
+                  <Text className="text-purple-normal font-extrabold">
+                    Vybes
+                  </Text>
                   , finding your perfect date is just a few steps and clicks
                   away.
                 </Text>
@@ -89,10 +99,10 @@ const Welcome = () => {
 
             {activeIndex === 1 && (
               <>
-                <Text className="text-[28px] font-bold text-white-normal mb-2 font-axiformaBlack leading-[45.67px]">
+                <Text className="text-[28px]  text-white-normal mb-2 font-axiformaBlack leading-[45.67px]">
                   Explore Your Desires
                 </Text>
-                <Text className="text-base text-white-normal font-axiformaLight font-light mb-6 text-justify">
+                <Text className="text-base text-white-normal font-axiformaRegular font-light mb-6 text-justify">
                   Whether you're seeking passion, companionship, or just a
                   memorable night, our platform connects you with like-minded
                   individuals ready to explore.
@@ -102,10 +112,10 @@ const Welcome = () => {
 
             {activeIndex === 2 && (
               <>
-                <Text className="text-[28px] font-bold text-white-normal mb-2 font-axiformaBlack leading-[45.67px]">
+                <Text className="text-[24px] text-white-normal mb-2 font-axiformaBlack leading-[45.67px]">
                   Unlock Opportunities And Empower Yourself.
                 </Text>
-                <Text className="text-base text-white-normal font-axiformaLight font-light mb-6 text-justify">
+                <Text className="text-base text-white-normal font-axiformaRegular font-light mb-6 text-justify">
                   With vybes & dates creators have the option to create special
                   accounts for paid encounters.
                 </Text>
@@ -145,7 +155,7 @@ const Welcome = () => {
                   className="self-center bg-purple-dark px-16 py-4 mb-3 rounded-3xl flex-row items-center"
                   onPress={() => router.push("/sign-in")}
                 >
-                  <Text className="text-white-normal font-axiformaBlack font-extrabold">
+                  <Text className="text-white-normal font-axiformaBlack">
                     Now, Lets Get Started
                   </Text>
                   <FontAwesomeIcon
@@ -159,6 +169,7 @@ const Welcome = () => {
             )}
           </View>
         </View>
+        <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>
     </>
   );

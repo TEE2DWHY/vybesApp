@@ -14,8 +14,8 @@ const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
 
   const renderTransactions = (data, type) => (
-    <View>
-      <Text className="capitalize bg-[#F3F9FF] text-[#546881] mt-4 py-2 font-axiformaRegular">
+    <View className="mb-12">
+      <Text className="capitalize bg-[#6da1d6] text-[#fff] mt-4 py-2 font-axiformaRegular w-3/5 px-2">
         March 12 - March 19 2024
       </Text>
       <View className="mt-4 border-2 rounded-xl p-4 border-[#F3F9FF] bg-white-normal h-fit">

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Feather from "@expo/vector-icons/Feather";
@@ -76,9 +83,9 @@ const activities = [
 const Activities = () => {
   const [showActivitiesModal, setShowActivitiesModal] = useState(false);
   return (
-    <ScrollView className="mt-8">
+    <ScrollView className="mt-8 mb-14">
       <View className="flex-row justify-between item-center mb-4">
-        <Text className="text-lg font-axiformaBlack text-[#2E3E5C]">
+        <Text className="text-base font-axiformaBlack text-[#2E3E5C]">
           Recent Activities
         </Text>
         <TouchableOpacity
@@ -96,14 +103,16 @@ const Activities = () => {
       </View>
 
       <ScrollView
-        className="border border-[#dedee0] rounded-md  h-[454px] overflow-y-scroll"
+        className={`border border-[#dedee0] rounded-md  ${
+          Platform.OS === "ios" ? "h-[454px]" : ""
+        } overflow-y-scroll bg-white-light`}
         showsVerticalScrollIndicator={false}
       >
         {showActivitiesModal && <ActivitiesModal />}
         {activities.map((activity) => (
           <View
             key={activity.id}
-            className="flex-row items-center mb-4 px-3 py-4 bg-white rounded-lg"
+            className="flex-row items-center  px-3 py-4 bg-white rounded-lg"
           >
             <Image
               source={{ uri: activity.profileImage }}
@@ -127,7 +136,7 @@ const Activities = () => {
                 )}
               </View>
 
-              <Text className="text-xs font-axiformaLight text-[#546881] mt-3 capitalize">
+              <Text className="text-xs font-axiformaRegular text-[#546881] mt-3 capitalize">
                 {activity.activity}
               </Text>
             </View>

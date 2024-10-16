@@ -11,6 +11,7 @@ const ProfileLayout = () => {
         <Stack.Screen name="withdraw" options={{ headerShown: false }} />
         <Stack.Screen name="conversion" options={{ headerShown: false }} />
         <Stack.Screen name="transferDetails" options={{ headerShown: false }} />
+        <Stack.Screen name="ticketPayment" options={{ headerShown: false }} />
       </Stack>
     </>
   );

@@ -20,8 +20,8 @@ const Conversion = () => {
 
   return (
     <>
-      <SafeAreaView className="flex-1">
-        <ScrollView className="mt-4 bg-white-normal">
+      <SafeAreaView className="flex-1 bg-white-normal">
+        <ScrollView className="mt-10 ">
           <View className="flex-row justify-between items-center px-4">
             <AntDesign
               name="left"
@@ -135,7 +135,7 @@ const Conversion = () => {
                 </View>
               </View>
 
-              <View className="mt-8 px-6">
+              <View className="mt-8 px-6 mb-10">
                 <TouchableOpacity className="bg-purple-normal py-4 rounded-full">
                   <Text className="text-center text-white-normal text-lg font-semibold font-axiformaRegular ">
                     Convert
@@ -229,7 +229,7 @@ const Conversion = () => {
                 </View>
               </View>
 
-              <View className="mt-8 px-6">
+              <View className="mt-8 px-6 mb-10">
                 <TouchableOpacity className="bg-purple-normal py-4 rounded-full">
                   <Text className="text-center text-white-normal text-lg font-semibold font-axiformaRegular ">
                     Make Transfer

@@ -3,8 +3,9 @@ import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 
 SplashScreen.preventAutoHideAsync();
+
 const RootLayout = () => {
-  const [fontsLoaded, error] = useFonts({
+  const [loaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
     "Axiforma-Regular": require("../assets/fonts/Axiforma-Regular.ttf"),
@@ -13,11 +14,15 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if (error) throw error;
-    if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded, error]);
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
 
-  if (!fontsLoaded && !error) return null;
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
     <>
       <Stack

@@ -38,8 +38,8 @@ const Withdraw = () => {
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white">
-        <ScrollView className="mt-4">
+      <SafeAreaView className="flex-1 bg-white-normal">
+        <ScrollView className="mt-10">
           <View className="flex-row justify-between items-center px-4">
             <AntDesign
               name="left"
@@ -142,7 +142,7 @@ const Withdraw = () => {
             </View>
           </View>
 
-          <View className="mt-10 px-6">
+          <View className="mt-10 px-6 mb-12">
             <TouchableOpacity className="bg-purple-normal py-4 rounded-full">
               <Text className="text-center text-white-normal text-lg font-semibold font-axiformaRegular">
                 Withdraw
@@ -151,7 +151,7 @@ const Withdraw = () => {
           </View>
         </ScrollView>
 
-        <StatusBar style="dark" backgroundColor="#FFFFFF" />
+        <StatusBar style="dark" backgroundColor="#ffff" />
 
         <Modal
           animationType="fade"

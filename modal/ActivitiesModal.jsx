@@ -6,7 +6,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const ActivitiesModal = () => {
   return (
-    <View className="z-50 w-[200px] rounded-lg bg-white p-4 shadow-inn absolute bg-white-normal right-0">
+    <View className="z-50 w-[200px] rounded-lg bg-white p-4 shadow-2xl border border-[#eeecec] absolute bg-white-normal right-0">
       <View className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200">
         <Fontisto name={"bell-alt"} size={22} color="#FFB053" />
         <Text className="text-[#546881] font-axiformaRegular text-base">

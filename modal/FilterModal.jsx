@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-import { CheckBox } from "react-native-elements";
 
 const FilterModal = ({ onClose }) => {
   const [filters, setFilters] = useState({
@@ -20,6 +19,26 @@ const FilterModal = ({ onClose }) => {
     }));
   };
 
+  const renderCheckbox = (title, filterName) => (
+    <TouchableOpacity
+      onPress={() => toggleFilter(filterName)}
+      className="flex-row items-center py-2 px-1"
+    >
+      <View
+        className={`w-5 h-5 border border-white-normal rounded-md flex justify-center items-center ${
+          filters[filterName] ? "bg-white" : "bg-transparent"
+        }`}
+      >
+        {filters[filterName] && (
+          <Feather name="check" size={14} color="#a241ee" />
+        )}
+      </View>
+      <Text className="text-white-normal ml-2 font-axiformaRegular">
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View className="absolute bottom-0 left-0 right-0 z-10 bg-purple-darker rounded-t-[40px] h-fit py-10">
       <View className="flex-row items-center justify-between px-5">
@@ -33,36 +52,38 @@ const FilterModal = ({ onClose }) => {
       <ScrollView className="px-5 mt-4">
         <View className="flex-row justify-around mb-4">
           <TouchableOpacity
-            className={`flex-1 items-center py-2 rounded-md mx-1 ${
+            className={`flex-1 items-center justify-center px-2 rounded-md mx-1 ${
               selectedTab === "Account"
-                ? "bg-purple-800"
+                ? "bg-purple-normal"
                 : "border-[#B2BBC6] border-[1px]"
             }`}
             onPress={() => setSelectedTab("Account")}
           >
-            <Text className="text-white-normal font-axiformaLight">
+            <Text className="text-white-normal font-axiformaRegular text-xs">
               Account
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className={`flex-1 items-center py-2 rounded-md mx-1 ${
+            className={`flex-1 items-center justify-center py-2 rounded-md mx-1 ${
               selectedTab === "Sex"
-                ? "bg-purple-800"
+                ? "bg-purple-normal"
                 : "border-[#B2BBC6] border-[1px]"
             }`}
             onPress={() => setSelectedTab("Sex")}
           >
-            <Text className="text-white-normal font-axiformaLight">Sex</Text>
+            <Text className="text-white-normal font-axiformaRegular text-xs">
+              Sex
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className={`flex-1 items-center py-2 rounded-md mx-1 ${
+            className={`flex-2 items-center justify-center py-2 rounded-md mx-1 ${
               selectedTab === "Availability"
                 ? "bg-purple-800"
                 : "border-[#B2BBC6] border-[1px]"
             }`}
             onPress={() => setSelectedTab("Availability")}
           >
-            <Text className="text-white-normal font-axiformaLight">
+            <Text className="text-white-normal font-axiformaRegular text-xs px-2">
               Availability
             </Text>
           </TouchableOpacity>
@@ -74,7 +95,7 @@ const FilterModal = ({ onClose }) => {
             }`}
             onPress={() => setSelectedTab("Distance")}
           >
-            <Text className="text-white-normal font-axiformaLight">
+            <Text className="text-white-normal font-axiformaRegular text-xs">
               Distance
             </Text>
           </TouchableOpacity>
@@ -82,113 +103,47 @@ const FilterModal = ({ onClose }) => {
 
         {selectedTab === "Account" && (
           <>
-            <Text className="text-gray-300 mb-2 font-axiformaLight w-4/5 leading-5 pb-2">
+            <Text className="text-gray-300 mb-2 font-axiformaRegular w-4/5 leading-5 pb-2">
               Select the type of account you want to see match from
             </Text>
-            <CheckBox
-              title="Female Vybers"
-              checked={filters.femaleVybers}
-              checkedColor="white"
-              onPress={() => toggleFilter("femaleVybers")}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                padding: 0,
-                margin: 0,
-              }}
-              textStyle={{ color: "white" }}
-            />
-            <CheckBox
-              title="Male Vybers"
-              checked={filters.maleVybers}
-              checkedColor="white"
-              onPress={() => toggleFilter("maleVybers")}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                padding: 0,
-                margin: 0,
-              }}
-              textStyle={{ color: "white" }}
-            />
-            <CheckBox
-              title="Female Baddie"
-              checked={filters.femaleBaddie}
-              checkedColor="white"
-              onPress={() => toggleFilter("femaleBaddie")}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                padding: 0,
-                margin: 0,
-              }}
-              textStyle={{ color: "white" }}
-            />
-            <CheckBox
-              title="Male Content Creators"
-              checked={filters.maleContentCreators}
-              checkedColor="white"
-              onPress={() => toggleFilter("maleContentCreators")}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                padding: 0,
-                margin: 0,
-              }}
-              textStyle={{ color: "white" }}
-            />
+            {renderCheckbox("Female Vybers", "femaleVybers")}
+            {renderCheckbox("Male Vybers", "maleVybers")}
+            {renderCheckbox("Female Baddie", "femaleBaddie")}
+            {renderCheckbox("Male Content Creators", "maleContentCreators")}
           </>
         )}
 
         {selectedTab === "Sex" && (
           <>
-            <Text className="text-gray-300 mb-2 font-axiformaLight  leading-5 pb-2">
-              Select your preferred gender you would like see
+            <Text className="text-gray-300 mb-2 font-axiformaRegular leading-5 pb-2">
+              Select your preferred gender you would like to see
             </Text>
-            <CheckBox
-              title="Male"
-              checked={false}
-              checkedColor="white"
-              onPress={() => toggleFilter("femaleVybers")}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                padding: 0,
-                margin: 0,
-              }}
-              textStyle={{ color: "white" }}
-            />
-            <CheckBox
-              title="Female"
-              checked={true}
-              checkedColor="white"
-              onPress={() => toggleFilter("maleVybers")}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                padding: 0,
-                margin: 0,
-              }}
-              textStyle={{ color: "white" }}
-            />
+            {renderCheckbox("Male", "maleVybers")}
+            {renderCheckbox("Female", "femaleVybers")}
           </>
         )}
 
         {selectedTab === "Availability" && (
           <>
-            <Text className="text-gray-300 mb-2 font-axiformaLight w-4/5 leading-5 pb-2">
-              Select matches based on their availability would
+            <Text className="text-gray-300 mb-2 font-axiformaRegular w-4/5 leading-5 pb-2">
+              Select matches based on their availability
             </Text>
             <TouchableOpacity className="flex-row items-center justify-between py-4">
-              <Text className="text-white-normal">30 Minutes</Text>
+              <Text className="text-white-normal font-axiformaRegular">
+                30 Minutes
+              </Text>
               <Feather name="clock" size={24} style={{ color: "#fff" }} />
             </TouchableOpacity>
             <TouchableOpacity className="flex-row items-center justify-between py-4">
-              <Text className="text-white-normal">1 Hour</Text>
+              <Text className="text-white-normal font-axiformaRegular">
+                1 Hour
+              </Text>
               <Feather name="clock" size={24} style={{ color: "#fff" }} />
             </TouchableOpacity>
             <TouchableOpacity className="flex-row items-center justify-between py-4">
-              <Text className="text-white-normal">3 Hours</Text>
+              <Text className="text-white-normal font-axiformaRegular">
+                3 Hours
+              </Text>
               <Feather name="clock" size={24} style={{ color: "#fff" }} />
             </TouchableOpacity>
           </>
@@ -196,19 +151,25 @@ const FilterModal = ({ onClose }) => {
 
         {selectedTab === "Distance" && (
           <>
-            <Text className="text-gray-300 mb-2 font-axiformaLight w-4/5 leading-5 pb-2">
+            <Text className="text-gray-300 mb-2 font-axiformaRegular w-4/5 leading-5 pb-2">
               Select matches based on their distance
             </Text>
             <TouchableOpacity className="flex-row items-center justify-between py-4">
-              <Text className="text-white-normal">10 Miles Away</Text>
+              <Text className="text-white-normal font-axiformaRegular">
+                10 Miles Away
+              </Text>
               <Feather name="map-pin" size={24} style={{ color: "#fff" }} />
             </TouchableOpacity>
             <TouchableOpacity className="flex-row items-center justify-between py-4">
-              <Text className="text-white-normal">20 Miles Away</Text>
+              <Text className="text-white-normal font-axiformaRegular">
+                20 Miles Away
+              </Text>
               <Feather name="map-pin" size={24} style={{ color: "#fff" }} />
             </TouchableOpacity>
             <TouchableOpacity className="flex-row items-center justify-between py-4">
-              <Text className="text-white-normal">30 Miles Away</Text>
+              <Text className="text-white-normal font-axiformaRegular">
+                30 Miles Away
+              </Text>
               <Feather name="map-pin" size={24} style={{ color: "#fff" }} />
             </TouchableOpacity>
           </>

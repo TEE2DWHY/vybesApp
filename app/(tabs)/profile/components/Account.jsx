@@ -13,13 +13,13 @@ const Account = () => {
           source={{
             uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           }}
-          className="w-[150px] h-[150px] rounded-[80px] border-[10px]  border-[#EEF6FF]"
+          className="w-[150px] h-[150px] rounded-[80px] border-[4px]  border-[#9ec2ec]"
         />
       </View>
 
-      <View className="mt-4">
+      <View className="mt-8">
         <View className="flex-row justify-between">
-          <Text className="font-axiformaBlack text-lg">
+          <Text className="font-axiformaBlack text-base text-[#3D4C5E]">
             Account Information
           </Text>
           <TouchableOpacity
@@ -36,61 +36,88 @@ const Account = () => {
             />
           </TouchableOpacity>
         </View>
-        <View className="p-4 mt-2 rounded-lg border-[#FFFFFF] border-2">
+        <View className="p-4 mt-2 rounded-lg border-[#FFFFFF] border bg-white-normal ">
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2 mt-3">
-            <Text className="text-[#546881] font-axiformaBlack">Name:</Text>
-            <Text className="font-axiformaBlack">Penelope Bridgerton</Text>
+            <Text className="text-[#546881] font-axiformaRegular">Name:</Text>
+            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+              Penelope Bridgerton
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">UserName:</Text>
-            <Text className="font-axiformaBlack"> @WhistleDown</Text>
+            <Text className="text-[#546881] font-axiformaRegular">
+              UserName:
+            </Text>
+            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+              {" "}
+              @WhistleDown
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">
+            <Text className="text-[#546881] font-axiformaRegular">
               Date Of Birth:
             </Text>
-            <Text className="font-axiformaBlack"> 12-Aug-1990</Text>
+            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+              12-Aug-1990
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">
+            <Text className="text-[#546881] font-axiformaRegular">
               Account Type:
             </Text>
-            <Text className="font-axiformaBlack">Vyber</Text>
+            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+              Vyber
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">Password:</Text>
-            <Text className="font-axiformaBlack"> 12ab34cd56ef</Text>
+            <Text className="text-[#546881] font-axiformaRegular">
+              Password:
+            </Text>
+            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+              12ab34cd56ef
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">
+            <Text className="text-[#546881] font-axiformaRegular">
               Wallet Balance:
             </Text>
-            <Text className="font-axiformaBlack">15,000 Vybes Coin</Text>
+            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+              15,000 Vybes Coin
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">
+            <Text className="text-[#546881] font-axiformaRegular">
               Gifted Coins:
             </Text>
-            <Text className="font-axiformaBlack">5,000 Vybes Coin</Text>
+            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+              5,000 Vybes Coin
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">
+            <Text className="text-[#546881] font-axiformaRegular">
               Subscribers:
             </Text>
-            <Text className="font-axiformaBlack"> 15</Text>
+            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+              15
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">E-Mail:</Text>
-            <Text className="font-axiformaBlack">Pen...Bridge@gmail.com.</Text>
+            <Text className="text-[#546881] font-axiformaRegular">E-Mail:</Text>
+            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+              Pen...Bridge@gmail.com.
+            </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
-            <Text className="text-[#546881] font-axiformaBlack">Phone No:</Text>
-            <Text className="font-axiformaBlack">08167715252</Text>
+            <Text className="text-[#546881] font-axiformaRegular">
+              Phone No:
+            </Text>
+            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+              08167715252
+            </Text>
           </View>
         </View>
       </View>
 
-      <Text className="font-axiformaBlack mt-8 text-lg">
+      <Text className="font-axiformaBlack mt-8 text-lg ">
         Penelope Bridgerton
       </Text>
 
@@ -141,7 +168,7 @@ const Account = () => {
       </View>
 
       <View className="mt-4 space-y-4">
-        <View className="bg-white rounded-lg shadow-lg">
+        <View className="bg-[#fff] rounded-lg shadow-lg">
           <TouchableOpacity className="px-4 py-4 border-b border-[#EEF1F4] flex-row justify-between items-center">
             <Text className="text-[#546881] font-axiformaBlack">Analytics</Text>
             <MaterialIcons
@@ -182,7 +209,7 @@ const Account = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="flex-row justify-between mt-8">
+        <View className="flex-row justify-between mt-8 mb-14">
           <TouchableOpacity className="flex-1 items-center py-3 mr-2 border border-[#E4D7F5] rounded-lg">
             <Text className="text-[#C4B1F3] font-axiformaRegular">Log Out</Text>
           </TouchableOpacity>
