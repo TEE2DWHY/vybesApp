@@ -116,7 +116,7 @@ const SignIn = () => {
           <TouchableOpacity
             className="self-center bg-purple-dark rounded-full py-4 px-20 mt-2 w-[90%]"
             onPress={handleLogin}
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />

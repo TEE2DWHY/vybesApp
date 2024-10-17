@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import userImages from "../../assets/images/user-images.png";
 import logoTwo from "../../assets/images/logo2.png";
@@ -19,6 +20,7 @@ import { setItem } from "../../utils/AsyncStorage";
 
 const SignUp = () => {
   const [section, setSection] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     gender: "",
     email: "",
@@ -59,7 +61,7 @@ const SignUp = () => {
       Alert.alert("Passwords do not match");
       return;
     }
-
+    setIsLoading(true);
     try {
       const response = await authInstance.post("/register", formData);
       await setItem("userEmail", response.data.payload.email);
@@ -79,6 +81,8 @@ const SignUp = () => {
     } catch (error) {
       console.log(error);
       Alert.alert(error.response?.data?.message || "An error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -263,9 +267,13 @@ const SignUp = () => {
               className="self-center bg-purple-dark rounded-full py-4 px-20 mt-2 w-[90%]"
               onPress={handleSignUp}
             >
-              <Text className="text-white-normal text-lg text-center font-axiformaBlack">
-                Sign-Up
-              </Text>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text className="text-white-normal text-lg text-center font-axiformaBlack">
+                  Sign-Up
+                </Text>
+              )}
             </TouchableOpacity>
             <View className="flex-row justify-center items-center mt-3">
               <Text className="text-sm">Already A Member?</Text>
