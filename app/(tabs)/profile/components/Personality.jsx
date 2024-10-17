@@ -7,8 +7,33 @@ import {
   TextInput,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { userInstance } from "../../../../config/axios";
+import { useEffect, useState } from "react";
+import { getItem } from "../../../../utils/AsyncStorage";
 
 const Personality = ({ active, handleNext }) => {
+  const [user, setUser] = useState({});
+  const [authToken, setAuthToken] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await getItem("token");
+        if (token) {
+          setAuthToken(token);
+          const userRoute = userInstance(token);
+          const response = await userRoute.get("/get-user");
+          console.log(response.data.payload);
+          setUser(response.data.payload.user);
+        }
+      } catch (error) {
+        console.log(error.response?.data || error.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -29,6 +54,8 @@ const Personality = ({ active, handleNext }) => {
                 <TextInput
                   placeholder="John Doe"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
+                  value={user?.fullName}
+                  readOnly
                 />
               </View>
 
@@ -37,7 +64,7 @@ const Personality = ({ active, handleNext }) => {
                   Your User Name
                 </Text>
                 <TextInput
-                  placeholder="12ab34cd56ef78gh"
+                  placeholder="Enter a Username Here"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                 />
               </View>
@@ -109,6 +136,8 @@ const Personality = ({ active, handleNext }) => {
                 <TextInput
                   placeholder="John@gmail.com"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
+                  value={user?.email}
+                  readOnly
                 />
               </View>
 

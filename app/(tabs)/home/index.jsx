@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -14,6 +14,7 @@ import UserDetails from "./components/UserDetails";
 import { users } from "../../../data/data";
 import Empty from "../../../components/Empty";
 import FilterModal from "../../../modal/FilterModal";
+import { getItem } from "../../../utils/AsyncStorage";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -24,6 +25,13 @@ const Home = () => {
     setRefreshing(false);
     console.log("app refreshing is successful.");
   };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const token = await getItem("token");
+  //     console.log(token);
+  //   })();
+  // });
 
   const renderItem = ({ item }) => (
     <UserDetails
