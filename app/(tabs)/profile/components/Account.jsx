@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
 
 const Account = () => {
   return (
@@ -210,7 +211,10 @@ const Account = () => {
         </View>
 
         <View className="flex-row justify-between mt-8 mb-14">
-          <TouchableOpacity className="flex-1 items-center py-3 mr-2 border border-[#E4D7F5] rounded-lg">
+          <TouchableOpacity
+            className="flex-1 items-center py-3 mr-2 border border-[#E4D7F5] rounded-lg"
+            onPress={() => router.push("/sign-in")}
+          >
             <Text className="text-[#C4B1F3] font-axiformaRegular">Log Out</Text>
           </TouchableOpacity>
           <TouchableOpacity className="flex-1 items-center py-3 ml-2 border border-[#FFDBDB] rounded-lg">

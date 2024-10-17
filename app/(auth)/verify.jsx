@@ -15,12 +15,24 @@ import verifyImage from "../../assets/images/verify-img.png";
 import topVerify from "../../assets/images/top-verify.png";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
+import { getItem } from "../../utils/AsyncStorage";
+import { authInstance } from "../../config/axios";
+import { formatTime } from "../../utils/formatTime";
 
 const Verify = () => {
   const [verificationCode, setVerificationCode] = useState(Array(6).fill(""));
-  const [timer, setTimer] = useState(58);
+  const [timer, setTimer] = useState(600); // Set timer to 10 minutes (600 seconds)
   const [buttonText, setButtonText] = useState("Verify");
   const inputsRef = useRef([]);
+  const [email, setEmail] = useState("");
+  const [isInputDisabled, setInputDisabled] = useState(false); // Track if inputs should be disabled
+
+  useEffect(() => {
+    (async () => {
+      const userMail = await getItem("userEmail");
+      setEmail(userMail);
+    })();
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -29,19 +41,47 @@ const Verify = () => {
       }, 1000);
       return () => clearInterval(interval);
     } else {
+      setInputDisabled(true); // Disable inputs when timer expires
       setButtonText("Send Code Again");
     }
   }, [timer]);
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (buttonText === "Send Code Again") {
-      setTimer(58);
-      setButtonText("Verify");
+      try {
+        await authInstance.post("/send-verification-code", { email });
+        setTimer(600); // Reset timer
+        setButtonText("Verify");
+        setVerificationCode(Array(6).fill("")); // Clear the code fields
+        setInputDisabled(false); // Enable inputs for new code entry
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          error?.response?.data?.message || "Failed to send new code."
+        );
+      }
     } else if (verificationCode.includes("")) {
       return Alert.alert("Please provide the complete verification code.");
     } else {
-      // Proceed with verification logic
-      console.log("Verification Code:", verificationCode.join(""));
+      const registrationToken = verificationCode.join("");
+      try {
+        const response = await authInstance.post("/verify-account", {
+          email: email,
+          registrationToken: registrationToken,
+        });
+        console.log(response.data);
+        Alert.alert("Success!", "Account Verification is Successful", [
+          {
+            text: "Proceed to Login",
+            onPress: () => {
+              router.push("/sign-in");
+            },
+          },
+        ]);
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Error", error?.response?.data?.message);
+      }
     }
   };
 
@@ -94,8 +134,8 @@ const Verify = () => {
                 Enter 6 Digit Code
               </Text>
               <Text className="text-left text-sm font-axiformaRegular text-gray-600 w-4/5">
-                Your 6 Digit Verification Code Was Sent Via Your E-Mail
-                @Exa...@Gmail.Com
+                Your 6 Digit Verification Code Was Sent Via Your E-Mail {"  "}
+                {`${email.split("@")[0].slice(0, 3)}...@${email.split("@")[1]}`}
               </Text>
             </View>
             <View className="flex-row justify-center space-x-2 my-8">
@@ -109,15 +149,17 @@ const Verify = () => {
                   value={verificationCode[index]}
                   onChangeText={(value) => handleChangeText(value, index)}
                   onKeyPress={(e) => handleKeyPress(e, index)}
+                  editable={!isInputDisabled} // Disable input if timer expired
                 />
               ))}
             </View>
             <Text className="text-left text-sm text-gray-600 px-">
-              Resend Code {timer}s
+              Resend Code {formatTime(timer)}
             </Text>
             <TouchableOpacity
               className="self-center bg-purple-dark rounded-full py-4 px-20 mt-8"
               onPress={handleVerify}
+              disabled={isInputDisabled} // Disable button if timer expired
             >
               <Text className="text-white-normal text-base text-center font-axiformaBlack">
                 {buttonText}

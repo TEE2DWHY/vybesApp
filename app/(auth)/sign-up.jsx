@@ -14,6 +14,8 @@ import logoTwo from "../../assets/images/logo2.png";
 import union from "../../assets/images/union.png";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { authInstance } from "../../config/axios";
+import { setItem } from "../../utils/AsyncStorage";
 
 const SignUp = () => {
   const [section, setSection] = useState(1);
@@ -33,17 +35,51 @@ const SignUp = () => {
     setSection(2);
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     const { email, fullName, password, confirmPassword } = formData;
-    if (!email || !fullName || !password || !confirmPassword) {
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert("Please enter a valid email address.");
+      return;
+    }
+
+    const namePattern = /^[A-Za-z\s]+$/;
+    if (!namePattern.test(fullName)) {
+      Alert.alert("Please enter a valid full name (letters only).");
+      return;
+    }
+
+    if (!fullName || !password || !confirmPassword) {
       Alert.alert("Please fill in all fields");
       return;
     }
+
     if (password !== confirmPassword) {
       Alert.alert("Passwords do not match");
       return;
     }
-    router.push("/verify");
+
+    try {
+      const response = await authInstance.post("/register", formData);
+      await setItem("userEmail", response.data.payload.email);
+      Alert.alert(
+        "Success!",
+        response.data.message,
+        [
+          {
+            text: "Verify My Account",
+            onPress: () => {
+              router.push("/verify");
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.log(error);
+      Alert.alert(error.response?.data?.message || "An error occurred");
+    }
   };
 
   const handleInputChange = (name, value) => {
@@ -94,7 +130,7 @@ const SignUp = () => {
               <Text
                 className={
                   formData.gender === "Male"
-                    ? "bg-purple-darker text-white-normal  text-base font-axiformaBlack"
+                    ? "bg-purple-darker text-white-normal text-base font-axiformaBlack"
                     : "text-purple-darker text-base font-axiformaBlack"
                 }
               >
@@ -113,7 +149,7 @@ const SignUp = () => {
               <Text
                 className={
                   formData.gender === "Female"
-                    ? "bg-purple-darker text-white-normal  text-base font-axiformaBlack"
+                    ? "bg-purple-darker text-white-normal text-base font-axiformaBlack"
                     : "text-purple-darker text-base font-axiformaBlack"
                 }
               >
@@ -132,7 +168,7 @@ const SignUp = () => {
               <Text
                 className={
                   formData.gender === "Non-Binary"
-                    ? "bg-purple-darker text-white-normal  text-base font-axiformaBlack"
+                    ? "bg-purple-darker text-white-normal text-base font-axiformaBlack"
                     : "text-purple-darker text-base font-axiformaBlack"
                 }
               >
@@ -142,7 +178,7 @@ const SignUp = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            className="self-center bg-purple-dark rounded-full py-2 px-20  w-[90%]"
+            className="self-center bg-purple-dark rounded-full my-2 py-4 px-20 w-[90%]"
             onPress={handleNext}
           >
             <Text className="text-white-normal text-lg text-center font-axiformaBlack">
@@ -169,6 +205,10 @@ const SignUp = () => {
                   className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
                   value={formData.email}
                   onChangeText={(value) => handleInputChange("email", value)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCompleteType="email"
+                  textContentType="emailAddress"
                 />
               </View>
               <View className="mb-4">
@@ -180,6 +220,16 @@ const SignUp = () => {
                   className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
                   value={formData.fullName}
                   onChangeText={(value) => handleInputChange("fullName", value)}
+                  keyboardType="default"
+                  onBlur={() => {
+                    // Validate to remove numbers when input loses focus
+                    if (!/^[A-Za-z\s]*$/.test(formData.fullName)) {
+                      Alert.alert(
+                        "Please enter a valid full name (letters only)."
+                      );
+                      handleInputChange("fullName", ""); // Clear invalid input
+                    }
+                  }}
                 />
               </View>
               <View className="mb-4">

@@ -1,10 +1,15 @@
 import { useEffect } from "react";
 import { SplashScreen, Stack } from "expo-router";
+import * as Linking from "expo-linking";
 import { useFonts } from "expo-font";
 
 SplashScreen.preventAutoHideAsync();
+const prefix = Linking.createURL("/");
 
 const RootLayout = () => {
+  const linking = {
+    prefixes: [prefix],
+  };
   const [loaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),

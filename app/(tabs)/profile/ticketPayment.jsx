@@ -32,13 +32,13 @@ const ticketPayment = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white-normal mt-10">
-      <ScrollView className="mt-4 ">
+      <ScrollView className="mt-4 i">
         <View className="flex-row justify-between items-center px-4 mt-6">
           <AntDesign
             name="left"
             size={24}
             color="#B2BBC6"
-            onPress={() => router.push("/ticket")}
+            onPress={() => router.push("/profile")}
           />
           <View className="w-10 h-10 rounded-full overflow-hidden">
             <Image
