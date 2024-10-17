@@ -207,7 +207,7 @@ const SignUp = () => {
                   onChangeText={(value) => handleInputChange("email", value)}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  autoCompleteType="email"
+                  autoComplete="email"
                   textContentType="emailAddress"
                 />
               </View>

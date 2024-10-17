@@ -8,18 +8,22 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import userImages from "../../assets/images/user-images.png";
 import logoTwo from "../../assets/images/logo2.png";
 import union from "../../assets/images/union.png";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
+import { authInstance } from "../../config/axios";
+import { setItem } from "../../utils/AsyncStorage";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -28,13 +32,31 @@ const SignIn = () => {
     });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const { email, password } = formData;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert("Please enter a valid email address.");
+      return;
+    }
     if (!email || !password) {
       Alert.alert("Please fill in all fields");
       return;
     }
-    router.push("/home");
+    setLoading(true);
+    try {
+      const response = await authInstance.post("/login", formData);
+      await setItem("token", response.data.payload.token);
+      router.push("/home");
+    } catch (error) {
+      console.log(error);
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "An error occurred"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,8 +97,12 @@ const SignIn = () => {
               className="border-b border-purple-300 py-2 text-base font-axiformaRegular mb-4"
               value={formData.email}
               onChangeText={(value) => handleInputChange("email", value)}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoComplete="email"
+              autoCapitalize="none"
             />
-            <Text className="text-base font-axiformaBlack  mb-2">
+            <Text className="text-base font-axiformaBlack mb-2">
               Your Vybes & Date Password
             </Text>
             <TextInput
@@ -90,10 +116,15 @@ const SignIn = () => {
           <TouchableOpacity
             className="self-center bg-purple-dark rounded-full py-4 px-20 mt-2 w-[90%]"
             onPress={handleLogin}
+            disabled={loading} // Disable button while loading
           >
-            <Text className="text-white-normal text-lg text-center font-axiformaBlack">
-              Login
-            </Text>
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text className="text-white-normal text-lg text-center font-axiformaBlack">
+                Login
+              </Text>
+            )}
           </TouchableOpacity>
           <View className="flex-row items-center justify-center mt-3">
             <Text className="text-sm font-axiformaRegular">
