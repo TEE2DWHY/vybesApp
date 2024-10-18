@@ -126,7 +126,7 @@ const SignIn = () => {
               </Text>
             )}
           </TouchableOpacity>
-          <View className="flex-row items-center justify-center mt-3">
+          <View className="flex-row items-center justify-center mt-3 mb-10">
             <Text className="text-sm font-axiformaRegular">
               Don't Have An Account?
             </Text>

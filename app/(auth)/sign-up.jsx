@@ -115,7 +115,7 @@ const SignUp = () => {
         />
       </View>
       {section === 1 ? (
-        <View className="bg-white-normal h-full -mt-[50px] pt-5 rounded-tr-[80px]">
+        <ScrollView className="bg-white-normal h-full -mt-[50px] pt-5 rounded-tr-[80px]">
           <Text className="self-center text-2xl font-axiformaBlack mt-1">
             Let's Know Your Gender
           </Text>
@@ -166,7 +166,7 @@ const SignUp = () => {
                 formData.gender === "Non-Binary"
                   ? "bg-purple-darker text-white-normal"
                   : "border-blue-300"
-              } rounded-full py-4 px-6 mb-4 flex-row items-center justify-between`}
+              } rounded-full py-4 px-6  flex-row items-center justify-between`}
               onPress={() => handleInputChange("gender", "Non-Binary")}
             >
               <Text
@@ -182,14 +182,14 @@ const SignUp = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            className="self-center bg-purple-dark rounded-full my-2 py-4 px-20 w-[90%]"
+            className="self-center bg-purple-dark rounded-full my-2 py-4 px-20 w-[90%] mb-10"
             onPress={handleNext}
           >
             <Text className="text-white-normal text-lg text-center font-axiformaBlack">
               Next
             </Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       ) : (
         <ScrollView className="bg-white-normal h-full -mt-[50px] rounded-tr-[80px]">
           <View>
