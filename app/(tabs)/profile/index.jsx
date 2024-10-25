@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -24,13 +24,15 @@ import Settings from "./components/Settings";
 import Transactions from "./components/Transactions";
 import Stories from "./components/Stories";
 import Likes from "./components/Likes";
+import { userInstance } from "../../../config/axios";
+import { getItem } from "../../../utils/AsyncStorage";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState("Account");
   const [personalityTab, setPersonalityTab] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [token, setToken] = useState("");
   const router = useRouter();
 
   const handlePrevious = () => {
@@ -38,8 +40,18 @@ const Profile = () => {
       setPersonalityTab((prevState) => prevState - 1);
   };
 
-  const handleNext = () => {
+  const handleNext = async (formData) => {
     if (personalityTab < 4) setPersonalityTab((prevState) => prevState + 1);
+    else {
+      console.log(formData);
+      try {
+        const userRoute = userInstance(token);
+        const response = await userRoute.patch("/update-details", formData);
+        // console.log(response.data);
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
   };
 
   const onRefresh = async () => {
@@ -47,6 +59,13 @@ const Profile = () => {
     setRefreshing(false);
     console.log("Profile details fetched successfully.");
   };
+
+  useEffect(() => {
+    (async () => {
+      const token = await getItem("token");
+      setToken(token);
+    })();
+  }, []);
 
   return (
     <>
@@ -306,7 +325,7 @@ const Profile = () => {
           {activeTab === "Personality" && (
             <Personality
               active={personalityTab}
-              handleNext={() => handleNext()}
+              handleNext={(formData) => handleNext(formData)}
             />
           )}
 

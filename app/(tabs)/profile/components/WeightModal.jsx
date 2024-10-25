@@ -2,63 +2,63 @@ import React, { useState } from "react";
 import { Text, View } from "react-native";
 import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
 
-const HeightModal = ({ selectedHeight, setSelectedHeight, fn }) => {
+const WeightModal = ({ selectedWeight, setSelectedWeight, fn }) => {
   return (
     <View className="bg-purple-darker rounded-xl rounded-tl-[40px] rounded-tr-[40px] py-8 px-5 shadow-2xl">
       <View className="border-b border-[#fff] pb-1 mb-4">
         <Text className="capitalize font-axiformaBlack text-white-normal text-base">
-          your assumed height (m)
+          your assumed Weight (Kg)
         </Text>
       </View>
 
       <RadioButtonGroup
         containerStyle={{ marginBottom: 10 }}
-        selected={selectedHeight}
+        selected={selectedWeight}
         onSelected={(value) => {
-          setSelectedHeight(value);
+          setSelectedWeight(value);
           fn();
         }}
         radioBackground="#16A34A"
       >
         <RadioButtonItem
-          value="60m - 70m"
+          value="50kg - 60kg"
           label={
             <View className="flex-row items-center py-3">
               <Text className="text-white-normal font-axiformaRegular text-base ml-3">
-                60m - 70m
+                50kg -60kg
               </Text>
             </View>
           }
         />
 
         <RadioButtonItem
-          value="71m - 80m"
+          value="60kg - 70kg"
           label={
             <View className="flex-row items-center py-3">
               <Text className="text-white-normal font-axiformaRegular text-base ml-3">
-                71m - 80m
+                60kg -70kg
               </Text>
             </View>
           }
         />
 
         <RadioButtonItem
-          value="81m - 90m"
+          value="70kg - 80kg"
           label={
             <View className="flex-row items-center py-3">
               <Text className="text-white-normal font-axiformaRegular text-base ml-3">
-                81m - 90m
+                70kg -80kg
               </Text>
             </View>
           }
         />
 
         <RadioButtonItem
-          value="91m - 100m"
+          value="80kg - 90kg"
           label={
             <View className="flex-row items-center py-3">
               <Text className="text-white-normal font-axiformaRegular text-base ml-3">
-                91m - 100m
+                80kg -90kg
               </Text>
             </View>
           }
@@ -68,4 +68,4 @@ const HeightModal = ({ selectedHeight, setSelectedHeight, fn }) => {
   );
 };
 
-export default HeightModal;
+export default WeightModal;

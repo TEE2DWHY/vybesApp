@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import { getItem } from "../../../../utils/AsyncStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import HeightModal from "./HeightModal";
+import GenderModal from "./GenderModal";
+import WeightModal from "./WeightModal";
 
 const Personality = ({ active, handleNext }) => {
   const [user, setUser] = useState({});
@@ -24,15 +26,22 @@ const Personality = ({ active, handleNext }) => {
     bio: user?.bio || "",
     accountType: user?.accountType || "",
     email: user?.email || "",
-    phonNumber: user?.phonNumber || "",
+    phoneNumber: user?.phonNumber || "",
     location: user?.location || "",
     dateOfBirth: user?.dateOfBirth || "",
     availabilityStatus: user?.availabilityStatus || "",
+    gender: user?.gender || "",
+    height: user?.height || "",
+    weight: user?.weight || "",
+    premiumRate: user?.premiumRate || "",
   });
   const [authToken, setAuthToken] = useState("");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  const [heightModal, setHeightModal] = useState(true);
+  const [heightModal, setHeightModal] = useState(false);
+  const [genderModal, setGenderModal] = useState(false);
+  const [weightModal, setWeightModal] = useState(false);
+
   const slideAnim = useState(new Animated.Value(300))[0];
 
   const onChange = (event, selectedDate) => {
@@ -99,6 +108,41 @@ const Personality = ({ active, handleNext }) => {
     }
   };
 
+  const toggleGenderModal = () => {
+    setGenderModal(!genderModal);
+    if (!genderModal) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      // Slide down when closing the modal
+      Animated.timing(slideAnim, {
+        toValue: 300,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
+  const toggleWeightModal = () => {
+    setWeightModal(!weightModal);
+    if (!weightModal) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 300,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -157,22 +201,40 @@ const Personality = ({ active, handleNext }) => {
                 </Text>
                 <View className="flex-row justify-between mt-2">
                   <TouchableOpacity
-                    className="flex-1 p-5 rounded-md mr-2 bg-[#E4D7F5] border-none"
+                    className={`flex-1 p-5 rounded-md mr-2 bg-[#E4D7F5] border-none ${
+                      formData.accountType === "baddie" ? "bg-blue-600" : ""
+                    }`}
                     onPress={() =>
-                      setFormData({ ...formData, accountType: "Baddie" })
+                      setFormData({ ...formData, accountType: "baddie" })
                     }
                   >
-                    <Text className="text-center text-[#C4B1F3] font-axiformaRegular">
+                    <Text
+                      className={`text-center text-[#C4B1F3] font-axiformaRegular ${
+                        formData.accountType === "baddie"
+                          ? " text-white-normal"
+                          : ""
+                      }`}
+                    >
                       Baddie
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    className="flex-1 p-5 rounded-md ml-2 bg-[#D6DDFD] border-none"
+                    className={`flex-1 p-5 rounded-md ml-2 bg-[#D6DDFD] border-none ${
+                      formData.accountType === "vyber"
+                        ? "bg-blue-600 text-white-normal"
+                        : ""
+                    }`}
                     onPress={() =>
-                      setFormData({ ...formData, accountType: "Vyber" })
+                      setFormData({ ...formData, accountType: "vyber" })
                     }
                   >
-                    <Text className="text-center text-[#6274C7] font-axiformaRegular">
+                    <Text
+                      className={`text-center text-[#6274C7] font-axiformaRegular ${
+                        formData.accountType === "vyber"
+                          ? "text-white-normal"
+                          : ""
+                      }`}
+                    >
                       Vyber
                     </Text>
                   </TouchableOpacity>
@@ -246,7 +308,7 @@ const Personality = ({ active, handleNext }) => {
                     handleInputChange("phoneNumber", value)
                   }
                   editable={!user?.phoneNumber}
-                  value={formData.phonNumber}
+                  value={formData.phoneNumber}
                 />
               </View>
 
@@ -303,7 +365,7 @@ const Personality = ({ active, handleNext }) => {
                   </Text>
                   <View className="flex-row items-center justify-between">
                     <TextInput
-                      placeholder="DD/MM/YY"
+                      placeholder="YY/MM/DD"
                       className="py-2 text-base font-axiformaRegular"
                       editable={false}
                       value={formData.dateOfBirth}
@@ -336,18 +398,80 @@ const Personality = ({ active, handleNext }) => {
                 >
                   <View className="mt-1">
                     <View className="flex-row justify-between mt-2">
-                      <TouchableOpacity className="flex-1 bg-[#E6F3EC] p-3 rounded-md mr-2">
-                        <Text className="text-center text-[#3AB04D] font-axiformaRegular">
+                      {/* Available Button */}
+                      <TouchableOpacity
+                        className={`flex-1 bg-[#E6F3EC] p-3 rounded-md mr-2 ${
+                          formData.availabilityStatus === "Available"
+                            ? "bg-blue-600"
+                            : ""
+                        }`}
+                        onPress={() =>
+                          setFormData({
+                            ...formData,
+                            availabilityStatus: "Available",
+                          })
+                        }
+                      >
+                        <Text
+                          className={`text-center text-[#3AB04D] font-axiformaRegular ${
+                            formData.availabilityStatus === "Available"
+                              ? "text-white-normal"
+                              : ""
+                          }`}
+                        >
                           Available
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity className="flex-1 bg-[#FBE8E7] p-3 rounded-md mx-2">
-                        <Text className="text-center text-[#E2341D] font-axiformaRegular">
+
+                      {/* Not Available Button */}
+                      <TouchableOpacity
+                        className={`flex-1 bg-[#FBE8E7] p-3 rounded-md mx-2 ${
+                          formData.availabilityStatus === "Not Available"
+                            ? "bg-blue-600"
+                            : ""
+                        }`}
+                        onPress={() =>
+                          setFormData({
+                            ...formData,
+                            availabilityStatus: "Not Available",
+                          })
+                        }
+                      >
+                        <Text
+                          className={`text-center text-[#E2341D] font-axiformaRegular ${
+                            formData.availabilityStatus === "Not Available"
+                              ? "text-white-normal"
+                              : ""
+                          }`}
+                        >
                           Not Available
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity className="flex-1 bg-[#F8F3E7] p-3 rounded-md ml-2">
-                        <Text className="text-center text-[#F6C535] font-axiformaRegular">
+
+                      {/* Should Be Available In Next Hour Button */}
+                      <TouchableOpacity
+                        className={`flex-1 bg-[#F8F3E7] p-3 rounded-md ml-2 ${
+                          formData.availabilityStatus ===
+                          "Should Be Available In Next Hour"
+                            ? "bg-blue-600"
+                            : ""
+                        }`}
+                        onPress={() =>
+                          setFormData({
+                            ...formData,
+                            availabilityStatus:
+                              "Should Be Available In Next Hour",
+                          })
+                        }
+                      >
+                        <Text
+                          className={`text-center text-[#F6C535] font-axiformaRegular ${
+                            formData.availabilityStatus ===
+                            "Should Be Available In Next Hour"
+                              ? "text-white-normal"
+                              : ""
+                          }`}
+                        >
                           Should Be Available In Next Hour
                         </Text>
                       </TouchableOpacity>
@@ -358,7 +482,9 @@ const Personality = ({ active, handleNext }) => {
                 <View className="mt-4">
                   <View className="w-full flex-row items-center justify-between py-2">
                     <Text className="text-base font-axiformaRegular text-[#47586E]">
-                      Your Assumed Height (m)
+                      Your Assumed Height{" "}
+                      {formData.height && `(${formData.height})`}{" "}
+                      {!formData.height && `(m)`}
                     </Text>
                     <TouchableOpacity onPress={() => setHeightModal(true)}>
                       <AntDesign name="caretdown" size={18} color="gray" />
@@ -369,9 +495,11 @@ const Personality = ({ active, handleNext }) => {
                 <View className="mt-4">
                   <View className="w-full flex-row items-center justify-between  py-2">
                     <Text className="text-base font-axiformaRegular text-[#47586E]">
-                      Your Assumed Weight (Kg)
+                      Your Assumed Weight{" "}
+                      {formData.weight && `(${formData.weight})`}{" "}
+                      {!formData.weight && `(kg)`}
                     </Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setWeightModal(true)}>
                       <AntDesign name="caretdown" size={18} color="gray" />
                     </TouchableOpacity>
                   </View>
@@ -380,9 +508,9 @@ const Personality = ({ active, handleNext }) => {
                 <View className="mt-4">
                   <View className="w-full flex-row items-center justify-between py-2">
                     <Text className="text-base font-axiformaRegular text-[#47586E]">
-                      Gender
+                      Gender {formData.gender && `(${formData.gender})`}
                     </Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setGenderModal(true)}>
                       <AntDesign name="caretdown" size={18} color="gray" />
                     </TouchableOpacity>
                   </View>
@@ -415,7 +543,70 @@ const Personality = ({ active, handleNext }) => {
                   }}
                   className="absolute bottom-[300px] left-0 right-0"
                 >
-                  <HeightModal />
+                  <HeightModal
+                    fn={() => setHeightModal(false)}
+                    selectedHeight={formData.height}
+                    setSelectedHeight={(newHeight) =>
+                      setFormData({ ...formData, height: newHeight })
+                    }
+                  />
+                </Animated.View>
+              </Modal>
+
+              <Modal
+                transparent={true}
+                visible={genderModal}
+                animationType="fade"
+              >
+                {/* Backdrop */}
+                <TouchableOpacity
+                  className="flex-1 bg-[#1b1b1b67]"
+                  onPress={toggleGenderModal}
+                  activeOpacity={1} // Dismiss modal on backdrop click
+                />
+
+                {/* Modal content sliding from the bottom */}
+                <Animated.View
+                  style={{
+                    transform: [{ translateY: slideAnim }],
+                  }}
+                  className="absolute bottom-[300px] left-0 right-0"
+                >
+                  <GenderModal
+                    fn={() => setGenderModal(false)}
+                    gender={formData.gender}
+                    setGender={(newGender) =>
+                      setFormData({ ...formData, gender: newGender })
+                    }
+                  />
+                </Animated.View>
+              </Modal>
+
+              <Modal
+                transparent={true}
+                visible={weightModal}
+                animationType="fade"
+              >
+                {/* Backdrop */}
+                <TouchableOpacity
+                  className="flex-1 bg-[#1b1b1b67]"
+                  onPress={toggleWeightModal}
+                  activeOpacity={1}
+                />
+
+                <Animated.View
+                  style={{
+                    transform: [{ translateY: slideAnim }],
+                  }}
+                  className="absolute bottom-[300px] left-0 right-0"
+                >
+                  <WeightModal
+                    fn={() => setWeightModal(false)}
+                    selectedWeight={formData.weight}
+                    setSelectedWeight={(newWeight) =>
+                      setFormData({ ...formData, weight: newWeight })
+                    }
+                  />
                 </Animated.View>
               </Modal>
             </View>
@@ -450,6 +641,10 @@ const Personality = ({ active, handleNext }) => {
                 <TextInput
                   placeholder="60 vybe coin"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
+                  onChangeText={(value) =>
+                    handleInputChange("premiumRate", value)
+                  }
+                  value={formData.premiumRate}
                 />
               </View>
               <Text className="mt-2 text-xs text-[#909DAD] font-axiformaBook">
@@ -457,7 +652,7 @@ const Personality = ({ active, handleNext }) => {
               </Text>
               <TouchableOpacity
                 className="bg-purple-600 mt-8 py-4 rounded-3xl w-2/5 self-center mb-14"
-                onPress={handleNext}
+                onPress={() => handleNext(formData)}
               >
                 <Text className="text-center text-white-normal font-axiformaBlack">
                   {active === 4 ? "Complete" : "Next"}

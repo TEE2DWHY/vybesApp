@@ -2,9 +2,34 @@ import { Text, TouchableOpacity, View, Image } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
-import { clear } from "../../../../utils/AsyncStorage";
+import { clear, getItem } from "../../../../utils/AsyncStorage";
+import { useEffect, useState } from "react";
+import { userInstance } from "../../../../config/axios";
 
 const Account = () => {
+  const [user, setUser] = useState({});
+  const [authToken, setAuthToken] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await getItem("token");
+        if (token) {
+          setAuthToken(token);
+          const userRoute = userInstance(token);
+          const response = await userRoute.get("/get-user");
+          setUser(response.data.payload.user);
+        }
+      } catch (error) {
+        console.log(error.response?.data || error.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  console.log(user);
+
   return (
     <>
       <View className="items-center mt-4">
@@ -42,7 +67,7 @@ const Account = () => {
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2 mt-3">
             <Text className="text-[#546881] font-axiformaRegular">Name:</Text>
             <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
-              Penelope Bridgerton
+              {user?.fullName}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -51,7 +76,7 @@ const Account = () => {
             </Text>
             <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
               {" "}
-              @WhistleDown
+              @{user?.userName}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -59,7 +84,7 @@ const Account = () => {
               Date Of Birth:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              12-Aug-1990
+              {user?.dateOfBirth}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -67,7 +92,7 @@ const Account = () => {
               Account Type:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              Vyber
+              {user?.accountType}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -75,7 +100,7 @@ const Account = () => {
               Password:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              12ab34cd56ef
+              {user?.password || "*****"}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -83,7 +108,7 @@ const Account = () => {
               Wallet Balance:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              15,000 Vybes Coin
+              {user?.walletBalance || "-------"}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -91,7 +116,7 @@ const Account = () => {
               Gifted Coins:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              5,000 Vybes Coin
+              {user?.giftedCoins || "-------"}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -99,13 +124,13 @@ const Account = () => {
               Subscribers:
             </Text>
             <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
-              15
+              {user?.subscribers || 0}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">E-Mail:</Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              Pen...Bridge@gmail.com.
+              {`${user?.email.slice(0, 5)}...@${user?.email.split("@")[1]}`}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -113,15 +138,13 @@ const Account = () => {
               Phone No:
             </Text>
             <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
-              08167715252
+              {user?.phoneNumber}
             </Text>
           </View>
         </View>
       </View>
 
-      <Text className="font-axiformaBlack mt-8 text-lg ">
-        Penelope Bridgerton
-      </Text>
+      <Text className="font-axiformaBlack mt-8 text-lg ">{user?.fullName}</Text>
 
       <View className="mt-4">
         <Text className="font-axiformaBook text-sm text-[#546881] mb-3">
