@@ -15,7 +15,7 @@ import { router } from "expo-router";
 import { getItem } from "../utils/AsyncStorage";
 
 const App = () => {
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -31,7 +31,7 @@ const App = () => {
           router.push("/welcome");
         }, 2000);
       }
-      setLoading(false); // Set loading to false after checking
+      setLoading(false);
     };
 
     checkLoginStatus();
@@ -40,7 +40,7 @@ const App = () => {
   if (loading) {
     return (
       <SafeAreaView className="bg-white h-full flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#9941EE" />
       </SafeAreaView>
     );
   }

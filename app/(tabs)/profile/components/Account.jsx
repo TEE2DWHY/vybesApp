@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Image } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
-import { clear, getItem } from "../../../../utils/AsyncStorage";
+import { clear, getItem, removeItem } from "../../../../utils/AsyncStorage";
 import { useEffect, useState } from "react";
 import { userInstance } from "../../../../config/axios";
 
@@ -235,8 +235,10 @@ const Account = () => {
         <View className="flex-row justify-between mt-8 mb-14">
           <TouchableOpacity
             className="flex-1 items-center py-3 mr-2 border border-[#E4D7F5] rounded-lg"
-            onPress={() => {
-              clear();
+            onPress={async () => {
+              await removeItem("token");
+              await removeItem("isLoggedIn");
+              // await removeItem("isAppLaunched");
               router.push("/sign-in");
             }}
           >
