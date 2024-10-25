@@ -15,10 +15,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { setItem } from "../../utils/AsyncStorage";
 
 const Welcome = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      await setItem("isAppLaunched", true);
+    })();
+  }, []);
 
   useEffect(() => {
     // Handle any navigation-related side effects here if needed

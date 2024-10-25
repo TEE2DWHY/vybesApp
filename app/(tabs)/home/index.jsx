@@ -101,7 +101,7 @@ const Home = () => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           numColumns={2}
-          ListEmptyComponent={<Empty text={"No users found in your area."} />}
+          ListEmptyComponent={<Empty text={"No users found."} />}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }

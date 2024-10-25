@@ -28,8 +28,6 @@ const Account = () => {
     fetchUser();
   }, []);
 
-  console.log(user);
-
   return (
     <>
       <View className="items-center mt-4">
@@ -130,7 +128,7 @@ const Account = () => {
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">E-Mail:</Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              {`${user?.email.slice(0, 5)}...@${user?.email.split("@")[1]}`}
+              {`${user?.email?.slice(0, 5)}...@${user?.email?.split("@")[1]}`}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -244,7 +242,12 @@ const Account = () => {
           >
             <Text className="text-[#C4B1F3] font-axiformaRegular">Log Out</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="flex-1 items-center py-3 ml-2 border border-[#FFDBDB] rounded-lg">
+          <TouchableOpacity
+            className="flex-1 items-center py-3 ml-2 border border-[#FFDBDB] rounded-lg"
+            onPress={() => {
+              router.push("/");
+            }}
+          >
             <Text className="text-[#FF7474] font-axiformaRegular">
               Delete Account
             </Text>

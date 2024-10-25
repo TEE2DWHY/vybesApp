@@ -51,6 +51,7 @@ const SignIn = () => {
     try {
       const response = await authInstance.post("/login", formData);
       await setItem("token", response.data.payload.token);
+      await setItem("isLoggedIn", true);
       router.push("/home");
     } catch (error) {
       console.log(error);

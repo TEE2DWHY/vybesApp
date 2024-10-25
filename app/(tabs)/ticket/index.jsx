@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -12,28 +12,30 @@ import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { StatusBar } from "expo-status-bar";
 import ticketHeaderImage from "../../../assets/images/ticker-header-image.png";
-import ticketOne from "../../../assets/images/ticket-1.png";
-import ticketTwo from "../../../assets/images/ticket-2.png";
-import ticketThree from "../../../assets/images/ticket-3.png";
-import ticketFour from "../../../assets/images/ticket-4.png";
-import ticketFive from "../../../assets/images/ticket-5.png";
-import ticketSix from "../../../assets/images/ticket-6.png";
-import ticketSeven from "../../../assets/images/ticket-7.png";
-import ticketEight from "../../../assets/images/ticket-8.png";
-import ticketNine from "../../../assets/images/ticket-9.png";
-import ticketTen from "../../../assets/images/ticket-10.png";
-import ticketEleven from "../../../assets/images/ticket-11.png";
-import ticketTwelve from "../../../assets/images/ticket-12.png";
-import ticketThirteen from "../../../assets/images/ticket-13.png";
-import ticketFourteen from "../../../assets/images/ticket-14.png";
-import ticketFifteen from "../../../assets/images/ticket-15.png";
-import ticketSixteen from "../../../assets/images/ticket-16.png";
-import ticketSeventeen from "../../../assets/images/ticket-17.png";
-import ticketEighteen from "../../../assets/images/ticket-18.png";
+// import ticketOne from "../../../assets/images/ticket-1.png";
+// import ticketTwo from "../../../assets/images/ticket-2.png";
+// import ticketThree from "../../../assets/images/ticket-3.png";
+// import ticketFour from "../../../assets/images/ticket-4.png";
+// import ticketFive from "../../../assets/images/ticket-5.png";
+// import ticketSix from "../../../assets/images/ticket-6.png";
+// import ticketSeven from "../../../assets/images/ticket-7.png";
+// import ticketEight from "../../../assets/images/ticket-8.png";
+// import ticketNine from "../../../assets/images/ticket-9.png";
+// import ticketTen from "../../../assets/images/ticket-10.png";
+// import ticketEleven from "../../../assets/images/ticket-11.png";
+// import ticketTwelve from "../../../assets/images/ticket-12.png";
+// import ticketThirteen from "../../../assets/images/ticket-13.png";
+// import ticketFourteen from "../../../assets/images/ticket-14.png";
+// import ticketFifteen from "../../../assets/images/ticket-15.png";
+// import ticketSixteen from "../../../assets/images/ticket-16.png";
+// import ticketSeventeen from "../../../assets/images/ticket-17.png";
+// import ticketEighteen from "../../../assets/images/ticket-18.png";
 import { router } from "expo-router";
+import axios from "axios";
 
 const Ticket = () => {
   const [activeTab, setActiveTab] = useState("All Events");
+  const [ticketImages, setTicketImages] = useState([]);
 
   const tabs = [
     "All Events",
@@ -44,26 +46,44 @@ const Ticket = () => {
   ];
 
   // Array of ticket images
-  const ticketImages = [
-    ticketOne,
-    ticketTwo,
-    ticketThree,
-    ticketFour,
-    ticketFive,
-    ticketSix,
-    ticketSeven,
-    ticketEight,
-    ticketNine,
-    ticketTen,
-    ticketEleven,
-    ticketTwelve,
-    ticketThirteen,
-    ticketFourteen,
-    ticketFifteen,
-    ticketSixteen,
-    ticketSeventeen,
-    ticketEighteen,
-  ];
+  // const ticketImages = [
+  //   ticketOne,
+  //   ticketTwo,
+  //   ticketThree,
+  //   ticketFour,
+  //   ticketFive,
+  //   ticketSix,
+  //   ticketSeven,
+  //   ticketEight,
+  //   ticketNine,
+  //   ticketTen,
+  //   ticketEleven,
+  //   ticketTwelve,
+  //   ticketThirteen,
+  //   ticketFourteen,
+  //   ticketFifteen,
+  //   ticketSixteen,
+  //   ticketSeventeen,
+  //   ticketEighteen,
+  // ];
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const events = await axios.get(
+          "http://localhost:8000/v1/event/all-events"
+        );
+        // console.log(events.data.payload);
+        const images = events.data.payload.map((event) => event.image);
+        setTicketImages(images);
+      } catch (error) {
+        console.log(error.response?.data.message);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  console.log(ticketImages);
 
   return (
     <>
@@ -162,7 +182,7 @@ const Ticket = () => {
                 onPress={() => router.push(`/ticket/event/${index}`)}
               >
                 <Image
-                  source={ticket}
+                  source={{ uri: ticket }}
                   className="rounded-md h-full w-full"
                   resizeMode="cover"
                 />
