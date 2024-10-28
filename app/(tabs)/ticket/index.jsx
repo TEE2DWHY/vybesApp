@@ -11,13 +11,13 @@ import {
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { StatusBar } from "expo-status-bar";
-import ticketHeaderImage from "../../../assets/images/ticker-header-image.png";
 import { router } from "expo-router";
 import axios from "axios";
 
 const Ticket = () => {
   const [activeTab, setActiveTab] = useState("All Events");
   const [events, setEvents] = useState([]);
+  const [firstEvent, setFirstEvent] = useState(null);
 
   const tabs = [
     "All Events",
@@ -34,6 +34,13 @@ const Ticket = () => {
           "http://localhost:8000/v1/event/all-events"
         );
         setEvents(response.data.payload);
+
+        if (response.data.payload.length > 0) {
+          const randomIndex = Math.floor(
+            Math.random() * response.data.payload.length
+          );
+          setFirstEvent(response.data.payload[randomIndex]); // Store the entire event object
+        }
       } catch (error) {
         console.error(error.response?.data.message || error.message);
       }
@@ -99,18 +106,27 @@ const Ticket = () => {
         </ScrollView>
 
         {/* Header Image */}
-        <View className="w-[90%] h-[240px] rounded-2xl self-center my-4 relative">
-          <Image
-            source={ticketHeaderImage}
-            resizeMode="contain"
-            className="w-full"
-          />
+        <TouchableOpacity
+          className="w-[90%] h-[240px] rounded-2xl self-center my-4 relative"
+          onPress={() => {
+            if (firstEvent) {
+              router.push(`/ticket/event/${firstEvent._id}`);
+            }
+          }}
+        >
+          {firstEvent && (
+            <Image
+              source={{ uri: firstEvent.image }}
+              resizeMode="cover"
+              className="w-full h-full rounded-2xl"
+            />
+          )}
           <TouchableOpacity className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50">
             <Text className="text-white-normal font-axiformaRegular">
               Buy Ticket
             </Text>
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
 
         {/* Filter By Date */}
         <View className="self-end flex-row items-center px-4 gap-2 pr-4 mt-4">
