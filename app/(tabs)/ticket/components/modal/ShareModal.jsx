@@ -10,13 +10,13 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Entypo from "@expo/vector-icons/Entypo";
 import Foundation from "@expo/vector-icons/Foundation";
 
-const ShareModal = () => {
+const ShareModal = ({ image }) => {
   return (
     <View className="p-5 bg-[#FCFDFD] rounded-tr-[40px] rounded-tl-[40px] mx-2  z-50 absolute bottom-0  shadow-2xl">
       <View className="flex items-center justify-center my-4">
         <View className="relative rounded-full h-24 w-24">
           <Image
-            source={ticketFour}
+            source={{ uri: image }}
             className="w-full h-full rounded-full"
             resizeMode="cover"
           />

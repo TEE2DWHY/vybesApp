@@ -17,9 +17,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import HeightModal from "./HeightModal";
 import GenderModal from "./GenderModal";
 import WeightModal from "./WeightModal";
+import { useAccount } from "../../../../hooks/useAccount";
 
 const Personality = ({ active, handleNext }) => {
-  const [user, setUser] = useState({});
+  const { user } = useAccount();
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
     userName: user?.userName || "",

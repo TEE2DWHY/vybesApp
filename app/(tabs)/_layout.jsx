@@ -7,6 +7,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Foundation from "@expo/vector-icons/Foundation";
+import AccountWrapper from "../../hooks/useAccount";
 
 const TabIcon = ({ icon, name, focused }) => {
   return (
@@ -27,7 +28,7 @@ const TabIcon = ({ icon, name, focused }) => {
 
 const TabsLayout = () => {
   return (
-    <>
+    <AccountWrapper>
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
@@ -152,7 +153,7 @@ const TabsLayout = () => {
         />
       </Tabs>
       <StatusBar backgroundColor="#ffff" style="dark" />
-    </>
+    </AccountWrapper>
   );
 };
 

@@ -1,12 +1,14 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import { likesData } from "../../../../data/data";
+import { useAccount } from "../../../../hooks/useAccount";
 
 const Likes = () => {
+  const { user } = useAccount();
   return (
     <>
       <View className="items-center justify-center mt-10">
         <Text className="capitalize font-axiformaBlack text-xl mb-4 bg-white-normal p-1 text-[#1D242D]">
-          @WhistleDown
+          @{user?.userName}
         </Text>
         <Image
           source={{

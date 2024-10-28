@@ -11,6 +11,7 @@ import {
 import { storiesData } from "../../../../data/data";
 import { useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
+import { useAccount } from "../../../../hooks/useAccount";
 const Stories = () => {
   const [selectedStory, setSelectedStory] = useState(null);
 
@@ -18,11 +19,12 @@ const Stories = () => {
   //   setSelectedStory(story);
   //   setModalVisible(true);
   // };
+  const { user } = useAccount();
   return (
     <>
       <View className="items-center justify-center mt-10">
         <Text className="capitalize font-axiformaBlack text-xl mb-4 bg-white-normal p-1 text-[#1D242D]">
-          @WhistleDown
+          {user?.fullName}
         </Text>
         <Image
           source={{

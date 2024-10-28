@@ -3,17 +3,15 @@ import { Stack } from "expo-router";
 
 const ProfileLayout = () => {
   return (
-    <>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="deposit" options={{ headerShown: false }} />
-        <Stack.Screen name="txDashboard" options={{ headerShown: false }} />
-        <Stack.Screen name="withdraw" options={{ headerShown: false }} />
-        <Stack.Screen name="conversion" options={{ headerShown: false }} />
-        <Stack.Screen name="transferDetails" options={{ headerShown: false }} />
-        <Stack.Screen name="ticketPayment" options={{ headerShown: false }} />
-      </Stack>
-    </>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="deposit" options={{ headerShown: false }} />
+      <Stack.Screen name="txDashboard" options={{ headerShown: false }} />
+      <Stack.Screen name="withdraw" options={{ headerShown: false }} />
+      <Stack.Screen name="conversion" options={{ headerShown: false }} />
+      <Stack.Screen name="transferDetails" options={{ headerShown: false }} />
+      <Stack.Screen name="ticketPayment" options={{ headerShown: false }} />
+    </Stack>
   );
 };
 

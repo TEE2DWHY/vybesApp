@@ -5,34 +5,16 @@ import { router } from "expo-router";
 import { clear, getItem, removeItem } from "../../../../utils/AsyncStorage";
 import { useEffect, useState } from "react";
 import { userInstance } from "../../../../config/axios";
+import { useAccount } from "../../../../hooks/useAccount";
 
 const Account = () => {
-  const [user, setUser] = useState({});
-  const [authToken, setAuthToken] = useState("");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = await getItem("token");
-        if (token) {
-          setAuthToken(token);
-          const userRoute = userInstance(token);
-          const response = await userRoute.get("/get-user");
-          setUser(response.data.payload.user);
-        }
-      } catch (error) {
-        console.log(error.response?.data || error.message);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  const { user } = useAccount();
 
   return (
     <>
       <View className="items-center mt-4">
         <Text className="capitalize font-axiformaBlack text-xl my-3">
-          @WhistleDown112
+          @{user?.userName}
         </Text>
         <Image
           source={{
