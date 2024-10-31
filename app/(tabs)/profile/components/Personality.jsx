@@ -8,6 +8,8 @@ import {
   Platform,
   Animated,
   Modal,
+  ActivityIndicator,
+  Image,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { userInstance } from "../../../../config/axios";
@@ -18,8 +20,10 @@ import HeightModal from "./HeightModal";
 import GenderModal from "./GenderModal";
 import WeightModal from "./WeightModal";
 import { useAccount } from "../../../../hooks/useAccount";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import * as ImagePicker from "expo-image-picker";
 
-const Personality = ({ active, handleNext }) => {
+const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
   const { user } = useAccount();
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
@@ -27,8 +31,9 @@ const Personality = ({ active, handleNext }) => {
     bio: user?.bio || "",
     accountType: user?.accountType || "",
     email: user?.email || "",
-    phoneNumber: user?.phonNumber || "",
+    phoneNumber: user?.phoneNumber || "",
     location: user?.location || "",
+    image: user?.image || "",
     dateOfBirth: user?.dateOfBirth || "",
     availabilityStatus: user?.availabilityStatus || "",
     gender: user?.gender || "",
@@ -76,7 +81,7 @@ const Personality = ({ active, handleNext }) => {
           }));
         }
       } catch (error) {
-        console.log(error.response?.data || error.message);
+        console.log(error || error.message);
       }
     };
 
@@ -84,10 +89,19 @@ const Personality = ({ active, handleNext }) => {
   }, []);
 
   const handleInputChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === "file") {
+      const fileData = new FormData();
+      fileData.append("file", value);
+      setFormData((prevData) => ({
+        ...prevData,
+        ...fileData,
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const toggleModal = () => {
@@ -144,6 +158,22 @@ const Personality = ({ active, handleNext }) => {
     }
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        image: result.assets[0].uri,
+      }));
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -166,7 +196,7 @@ const Personality = ({ active, handleNext }) => {
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   value={formData.fullName.toLowerCase()}
                   onChangeText={(value) => handleInputChange("fullName", value)}
-                  editable={!user?.fullName}
+                  // editable={!user?.fullName}
                 />
               </View>
 
@@ -179,7 +209,7 @@ const Personality = ({ active, handleNext }) => {
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   onChangeText={(value) => handleInputChange("userName", value)}
                   value={formData.userName}
-                  editable={!user?.userName}
+                  // editable={!user?.userName}
                 />
               </View>
 
@@ -192,7 +222,7 @@ const Personality = ({ active, handleNext }) => {
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   onChangeText={(value) => handleInputChange("bio", value)}
                   value={formData.bio}
-                  editable={!user?.bio}
+                  // editable={!user?.bio}
                 />
               </View>
 
@@ -293,7 +323,7 @@ const Personality = ({ active, handleNext }) => {
                   placeholder="John@gmail.com"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   value={formData.email}
-                  editable={!user?.email}
+                  // editable={!user?.email}
                   onChangeText={(value) => handleInputChange("email", value)}
                 />
               </View>
@@ -308,7 +338,7 @@ const Personality = ({ active, handleNext }) => {
                   onChangeText={(value) =>
                     handleInputChange("phoneNumber", value)
                   }
-                  editable={!user?.phoneNumber}
+                  // editable={!user?.phoneNumber}
                   value={formData.phoneNumber}
                 />
               </View>
@@ -321,7 +351,7 @@ const Personality = ({ active, handleNext }) => {
                   placeholder="Abeokuta Ogun State"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   onChangeText={(value) => handleInputChange("location", value)}
-                  editable={!user?.location}
+                  // editable={!user?.location}
                   value={formData.location}
                 />
               </View>
@@ -651,12 +681,46 @@ const Personality = ({ active, handleNext }) => {
               <Text className="mt-2 text-xs text-[#909DAD] font-axiformaBook">
                 Vybers often choose rates between 50-70 Vybes Coins.
               </Text>
+
+              <Text className="mt-6 text-base text-[#47586E] font-axiformaBlack">
+                Add Profile Photo
+              </Text>
+
+              <View className="w-40 h-40 p-2 mt-4 rounded-full justify-center items-center self-center border-2 border-[#accbee] relative">
+                {formData.image ? (
+                  <Image
+                    source={{ uri: formData.image }}
+                    className="w-40 h-40 rounded-full"
+                  />
+                ) : (
+                  <Text className="text-[#6F9ACB] font-axiformaBlack">
+                    Image
+                  </Text>
+                )}
+                <View className="absolute bottom-2 w-8 h-8 right-4 bg-blue-400 rounded-full justify-center items-center">
+                  <MaterialCommunityIcons
+                    name="format-color-highlight"
+                    size={24}
+                    color="#fff"
+                    onPress={pickImage}
+                  />
+                </View>
+              </View>
+
               <TouchableOpacity
-                className="bg-purple-600 mt-8 py-4 rounded-3xl w-2/5 self-center mb-14"
+                className="bg-purple-600 mt-8  py-4 rounded-3xl w-2/5 self-center mb-14 flex items-center justify-center"
                 onPress={() => handleNext(formData)}
               >
-                <Text className="text-center text-white-normal font-axiformaBlack">
-                  {active === 4 ? "Complete" : "Next"}
+                <Text className="text-white-normal font-axiformaBlack">
+                  {active === 4 ? (
+                    isLoading ? (
+                      <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                      "Complete"
+                    )
+                  ) : (
+                    "Next"
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>

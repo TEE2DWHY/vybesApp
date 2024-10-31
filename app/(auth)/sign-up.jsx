@@ -17,10 +17,14 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { authInstance } from "../../config/axios";
 import { setItem } from "../../utils/AsyncStorage";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const SignUp = () => {
   const [section, setSection] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     gender: "",
     email: "",
@@ -236,30 +240,36 @@ const SignUp = () => {
                   }}
                 />
               </View>
-              <View className="mb-4">
-                <Text className="text-base font-axiformaRegular text-purple-darker mb-1">
-                  Password
-                </Text>
+              <View className="border-b border-purple-300 py-2 mb-4 flex-row items-center">
                 <TextInput
                   placeholder="Your Password"
-                  secureTextEntry
-                  className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
+                  secureTextEntry={!showPassword}
+                  className="text-base font-axiformaRegular  flex-1"
                   value={formData.password}
                   onChangeText={(value) => handleInputChange("password", value)}
                 />
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color="#A0A0A0"
+                  onPress={() => setShowPassword(!showPassword)}
+                />
               </View>
-              <View className="mb-4">
-                <Text className="text-base font-axiformaRegular text-purple-darker mb-1">
-                  Confirm Password
-                </Text>
+              <View className="border-b border-purple-300 py-2 mb-4 flex-row items-center">
                 <TextInput
-                  placeholder="Confirm Password"
-                  secureTextEntry
-                  className="border-b border-purple-300 py-2 text-base font-axiformaRegular"
+                  placeholder="Your Password"
+                  secureTextEntry={!showConfirmPassword}
+                  className="text-base font-axiformaRegular  flex-1"
                   value={formData.confirmPassword}
                   onChangeText={(value) =>
                     handleInputChange("confirmPassword", value)
                   }
+                />
+                <Ionicons
+                  name={showConfirmPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color="#A0A0A0"
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 />
               </View>
             </View>

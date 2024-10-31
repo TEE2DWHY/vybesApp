@@ -27,7 +27,7 @@ const AccountWrapper = ({ children }) => {
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
 
   return (
     <accountContext.Provider value={{ user, setUser, loading }}>

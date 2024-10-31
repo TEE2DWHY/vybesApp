@@ -17,6 +17,7 @@ import axios from "axios";
 const Ticket = () => {
   const [activeTab, setActiveTab] = useState("All Events");
   const [events, setEvents] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
   const [firstEvent, setFirstEvent] = useState(null);
 
   const tabs = [
@@ -39,7 +40,7 @@ const Ticket = () => {
           const randomIndex = Math.floor(
             Math.random() * response.data.payload.length
           );
-          setFirstEvent(response.data.payload[randomIndex]); // Store the entire event object
+          setFirstEvent(response.data.payload[randomIndex]);
         }
       } catch (error) {
         console.error(error.response?.data.message || error.message);
@@ -121,7 +122,14 @@ const Ticket = () => {
               className="w-full h-full rounded-2xl"
             />
           )}
-          <TouchableOpacity className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50">
+          <TouchableOpacity
+            className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50"
+            onPress={() => {
+              if (firstEvent) {
+                router.push(`/ticket/event/${firstEvent._id}`);
+              }
+            }}
+          >
             <Text className="text-white-normal font-axiformaRegular">
               Buy Ticket
             </Text>

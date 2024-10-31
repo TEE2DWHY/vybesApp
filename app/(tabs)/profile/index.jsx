@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
+  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -32,6 +33,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("Account");
   const [personalityTab, setPersonalityTab] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState("");
   const router = useRouter();
 
@@ -39,17 +41,28 @@ const Profile = () => {
     if (personalityTab > 4 || personalityTab > 1)
       setPersonalityTab((prevState) => prevState - 1);
   };
+  useEffect(() => {
+    (async () => {
+      const token = await getItem("token");
+      setToken(token);
+    })();
+  }, []);
 
   const handleNext = async (formData) => {
     if (personalityTab < 4) setPersonalityTab((prevState) => prevState + 1);
     else {
       console.log(formData);
+      setIsLoading(true);
       try {
         const userRoute = userInstance(token);
         const response = await userRoute.patch("/update-details", formData);
         // console.log(response.data);
+        Alert.alert("Success", response?.data.message);
       } catch (error) {
         console.log("error", error);
+        Alert.alert("Error", "An error occurred with user update.");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -90,13 +103,13 @@ const Profile = () => {
                   Step {personalityTab}/4
                 </Text>
               </View>
-              <TouchableOpacity onPress={handleNext}>
-                <AntDesign
-                  name="right"
-                  size={24}
-                  style={{ color: "#B2BBC6" }}
-                />
-              </TouchableOpacity>
+              <AntDesign
+                name="right"
+                size={24}
+                style={{ color: "#B2BBC6" }}
+                disabled={personalityTab === 4 ? true : false}
+                onPress={handleNext}
+              />
             </View>
           )}
           {(activeTab === "Account" ||
@@ -326,6 +339,8 @@ const Profile = () => {
             <Personality
               active={personalityTab}
               handleNext={(formData) => handleNext(formData)}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />
           )}
 
