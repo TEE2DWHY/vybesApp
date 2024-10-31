@@ -249,7 +249,7 @@ const ticketPayment = () => {
           </>
         )}
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#FFFFFF" />
+      <StatusBar style="dark" backgroundColor="#fff" />
     </SafeAreaView>
   );
 };

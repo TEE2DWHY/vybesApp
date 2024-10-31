@@ -28,7 +28,7 @@ const Stories = () => {
         </Text>
         <Image
           source={{
-            uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            uri: user?.image,
           }}
           style={{
             width: 150,

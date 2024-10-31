@@ -1,4 +1,12 @@
-import { Text, TouchableOpacity, View, Image } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Modal,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
@@ -9,6 +17,24 @@ import { useAccount } from "../../../../hooks/useAccount";
 
 const Account = () => {
   const { user } = useAccount();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userData, setUserData] = useState({
+    fullName: user?.fullName || "",
+    userName: user?.userName || "",
+    dateOfBirth: user?.dateOfBirth || "",
+    accountType: user?.accountType || "",
+    password: "", // Don't pre-fill the password for security reasons
+    walletBalance: "15,000 Vybes Coin",
+    giftedCoins: "5,000 Vybes Coin",
+    completedHooks: 15,
+  });
+
+  const handleInputChange = (key, value) => {
+    setUserData((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
 
   return (
     <>
@@ -18,7 +44,7 @@ const Account = () => {
         </Text>
         <Image
           source={{
-            uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            uri: user?.image,
           }}
           className="w-[150px] h-[150px] rounded-[80px] border-[4px]  border-[#9ec2ec]"
         />
@@ -238,6 +264,124 @@ const Account = () => {
           </TouchableOpacity>
         </View>
       </View>
+      {modalVisible && (
+        <Modal visible={modalVisible} transparent={true} animationType="fade">
+          <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+            className="flex-1 bg-[#1b1b1b67] justify-center items-center"
+          />
+          <View className="flex-1 justify-center items-center">
+            <ScrollView className="p-4 bg-purple-darker w-full">
+              <View className="flex-row justify-between items-center mb-4 mt-2">
+                <Text className="text-white-normal font-axiformaBlack">
+                  Edit Profile Account
+                </Text>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Text className="text-[#16A34A] font-axiformaBlack">
+                    Done
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View className="bg-white-normal rounded-tl-[40px] rounded-tr-[40px] p-6">
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Name:
+                  </Text>
+                  <TextInput
+                    value={userData.fullName}
+                    onChangeText={(text) => handleInputChange("fullName", text)}
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    User Name:
+                  </Text>
+                  <TextInput
+                    value={userData.userName}
+                    onChangeText={(text) => handleInputChange("userName", text)}
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Date of Birth:
+                  </Text>
+                  <TextInput
+                    value={userData.dateOfBirth}
+                    onChangeText={(text) =>
+                      handleInputChange("dateOfBirth", text)
+                    }
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Account Type:
+                  </Text>
+                  <TextInput
+                    value={userData.accountType}
+                    onChangeText={(text) =>
+                      handleInputChange("accountType", text)
+                    }
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Password:
+                  </Text>
+                  <TextInput
+                    value={userData.password}
+                    onChangeText={(text) => handleInputChange("password", text)}
+                    secureTextEntry
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Wallet Balance:
+                  </Text>
+                  <TextInput
+                    value={userData.walletBalance}
+                    onChangeText={(text) =>
+                      handleInputChange("walletBalance", text)
+                    }
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Gifted Coins:
+                  </Text>
+                  <TextInput
+                    value={userData.giftedCoins}
+                    onChangeText={(text) =>
+                      handleInputChange("giftedCoins", text)
+                    }
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+                <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+                  <Text className="text-[#546881] font-axiformaRegular">
+                    Completed Hooks:
+                  </Text>
+                  <TextInput
+                    value={userData.completedHooks.toString()} // Ensure it's a string
+                    onChangeText={(text) =>
+                      handleInputChange(
+                        "completedHooks",
+                        parseInt(text, 10) || 0
+                      )
+                    } // Fallback to 0 if NaN
+                    className="font-axiformaRegular text-[#1D242D] text-[14px]"
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
+      )}
     </>
   );
 };
