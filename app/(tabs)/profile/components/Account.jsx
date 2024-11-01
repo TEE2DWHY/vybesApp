@@ -23,7 +23,7 @@ const Account = () => {
     userName: user?.userName || "",
     dateOfBirth: user?.dateOfBirth || "",
     accountType: user?.accountType || "",
-    password: "", // Don't pre-fill the password for security reasons
+    password: "",
     walletBalance: "15,000 Vybes Coin",
     giftedCoins: "5,000 Vybes Coin",
     completedHooks: 15,
@@ -282,7 +282,7 @@ const Account = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <View className="bg-white-normal rounded-tl-[40px] rounded-tr-[40px] p-6">
+              <View className="bg-white-normal rounded-xl p-6">
                 <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
                   <Text className="text-[#546881] font-axiformaRegular">
                     Name:
@@ -298,7 +298,7 @@ const Account = () => {
                     User Name:
                   </Text>
                   <TextInput
-                    value={userData.userName}
+                    value={`@${userData.userName}`}
                     onChangeText={(text) => handleInputChange("userName", text)}
                     className="font-axiformaRegular text-[#1D242D] text-[14px]"
                   />

@@ -15,6 +15,7 @@ import { users } from "../../../data/data";
 import Empty from "../../../components/Empty";
 import FilterModal from "../../../modal/FilterModal";
 import { getItem } from "../../../utils/AsyncStorage";
+import axios from "axios";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -26,13 +27,6 @@ const Home = () => {
     console.log("app refreshing is successful.");
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const token = await getItem("token");
-  //     console.log(token);
-  //   })();
-  // });
-
   const renderItem = ({ item }) => (
     <UserDetails
       img={item.img}
@@ -43,6 +37,27 @@ const Home = () => {
       country={item.country}
     />
   );
+
+  const filterUsers = async () => {
+    const { accountType, gender, availability, distance } = filterCriteria;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/user/filter-users",
+        {
+          accountType: accountType.length ? accountType : undefined,
+          gender,
+          availability,
+          distance,
+        }
+      );
+
+      console.log(response.data);
+      // Handle the filtered users (e.g., update state or show in UI)
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>

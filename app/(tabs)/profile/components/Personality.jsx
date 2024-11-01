@@ -24,7 +24,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
 
 const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
-  const { user } = useAccount();
+  const { user, setUser } = useAccount();
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
     userName: user?.userName || "",

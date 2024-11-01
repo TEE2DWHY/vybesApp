@@ -122,6 +122,7 @@ const Profile = () => {
                 name="arrow-back-ios"
                 size={24}
                 style={{ color: "#546881" }}
+                onPress={() => router.back()}
               />
               <TouchableOpacity
                 className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 rounded-md"

@@ -7,7 +7,6 @@
           "faceIDPermission": "Allow $(VYBES_APP) to use Face ID."
         }
       ],
-      "expo-router",
       [
         "expo-font",
         {
@@ -31,7 +30,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffff"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
@@ -56,8 +55,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "65410b64-1a30-44ac-a6de-b97a9555dbbc"
+        "projectId": "047d1cbe-1a25-476d-b437-7a7c4fa2ab6e"
       }
-    }
+    },
+    "owner": "tee2dwhy"
   }
 }

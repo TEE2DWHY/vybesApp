@@ -3,13 +3,13 @@ import { SplashScreen, Stack } from "expo-router";
 import * as Linking from "expo-linking";
 import { useFonts } from "expo-font";
 
-SplashScreen.preventAutoHideAsync();
 const prefix = Linking.createURL("/");
 
 const RootLayout = () => {
   const linking = {
     prefixes: [prefix],
   };
+
   const [loaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
@@ -19,14 +19,26 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
+    const hideSplashScreen = async () => {
+      try {
+        if (loaded) {
+          await SplashScreen.hideAsync();
+        } else if (error) {
+          console.error("Font loading error:", error);
+          await SplashScreen.hideAsync();
+        }
+      } catch (e) {
+        console.error("Error hiding splash screen:", e);
+      }
+    };
+
+    hideSplashScreen();
   }, [loaded, error]);
 
-  if (!loaded && !error) {
-    return null;
-  }
+  // // Display null while fonts are loading
+  // if (!loaded && !error) {
+  //   return null;
+  // }
 
   return (
     <>
@@ -40,5 +52,8 @@ const RootLayout = () => {
     </>
   );
 };
+
+// Prevent the splash screen from auto-hiding
+SplashScreen.preventAutoHideAsync();
 
 export default RootLayout;

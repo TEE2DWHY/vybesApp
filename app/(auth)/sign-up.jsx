@@ -257,7 +257,7 @@ const SignUp = () => {
               </View>
               <View className="border-b border-purple-300 py-2 mb-4 flex-row items-center">
                 <TextInput
-                  placeholder="Your Password"
+                  placeholder="Confirm Password"
                   secureTextEntry={!showConfirmPassword}
                   className="text-base font-axiformaRegular  flex-1"
                   value={formData.confirmPassword}
