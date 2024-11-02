@@ -3,13 +3,7 @@ import { SplashScreen, Stack } from "expo-router";
 import * as Linking from "expo-linking";
 import { useFonts } from "expo-font";
 
-const prefix = Linking.createURL("/");
-
 const RootLayout = () => {
-  const linking = {
-    prefixes: [prefix],
-  };
-
   const [loaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
@@ -35,10 +29,10 @@ const RootLayout = () => {
     hideSplashScreen();
   }, [loaded, error]);
 
-  // // Display null while fonts are loading
-  // if (!loaded && !error) {
-  //   return null;
-  // }
+  // Display null while fonts are loading
+  if (!loaded && !error) {
+    return null;
+  }
 
   return (
     <>

@@ -2,17 +2,17 @@
   "build": {
     "production": {
       "android": {
-        "buildType": "app-bundle" // Generates .aab file
+        "buildType": "app-bundle"
       }
     },
     "preview": {
       "android": {
-        "buildType": "apk" // Generates .apk file for testing
+        "buildType": "apk"
       }
     },
     "development": {
       "android": {
-        "buildType": "apk" // Generates .apk file for internal testing
+        "buildType": "apk"
       },
       "distribution": "internal"
     }

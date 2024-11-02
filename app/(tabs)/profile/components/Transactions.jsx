@@ -15,9 +15,11 @@ const Transactions = () => {
 
   const renderTransactions = (data, type) => (
     <View className="mb-12">
-      <Text className="capitalize bg-[#6da1d6] text-[#fff] mt-4 py-2 font-axiformaRegular w-3/5 px-2">
-        March 12 - March 19 2024
-      </Text>
+      <View className=" bg-[#6da1d6] mt-4 py-3 font-axiformaRegular w-3/5 px-2 rounded-md">
+        <Text className="capitalize text-[#fff] text-center font-axiformaBook">
+          March 12 - March 19 2024
+        </Text>
+      </View>
       <View className="mt-4 border-2 rounded-xl p-4 border-[#F3F9FF] bg-white-normal h-fit">
         {data.map((transaction) => (
           <View
@@ -91,6 +93,7 @@ const Transactions = () => {
           <ScrollView
             className="flex-row mt-10"
             showsHorizontalScrollIndicator={false}
+            horizontal
           >
             <View className="flex-row items-center gap-6 border-b border-[#DBEBFF] pb-3">
               <Text
