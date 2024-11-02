@@ -254,7 +254,8 @@ const Account = () => {
           </TouchableOpacity>
           <TouchableOpacity
             className="flex-1 items-center py-3 ml-2 border border-[#FFDBDB] rounded-lg"
-            onPress={() => {
+            onPress={async () => {
+              await clear();
               router.push("/");
             }}
           >

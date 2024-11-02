@@ -3,8 +3,10 @@ import { SplashScreen, Stack } from "expo-router";
 import * as Linking from "expo-linking";
 import { useFonts } from "expo-font";
 
+SplashScreen.preventAutoHideAsync();
+
 const RootLayout = () => {
-  const [loaded, error] = useFonts({
+  const [fontsLoaded, error] = useFonts({
     "Axiforma-Black": require("../assets/fonts/Axiforma-Black.ttf"),
     "Axiforma-Light": require("../assets/fonts/Axiforma-Light.ttf"),
     "Axiforma-Regular": require("../assets/fonts/Axiforma-Regular.ttf"),
@@ -13,24 +15,14 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    const hideSplashScreen = async () => {
-      try {
-        if (loaded) {
-          await SplashScreen.hideAsync();
-        } else if (error) {
-          console.error("Font loading error:", error);
-          await SplashScreen.hideAsync();
-        }
-      } catch (e) {
-        console.error("Error hiding splash screen:", e);
-      }
-    };
+    if (error) throw error;
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded, error]);
 
-    hideSplashScreen();
-  }, [loaded, error]);
+  if (!fontsLoaded && !error) return null;
 
   // Display null while fonts are loading
-  if (!loaded && !error) {
+  if (!fontsLoaded && !error) {
     return null;
   }
 
@@ -46,8 +38,5 @@ const RootLayout = () => {
     </>
   );
 };
-
-// Prevent the splash screen from auto-hiding
-SplashScreen.preventAutoHideAsync();
 
 export default RootLayout;
