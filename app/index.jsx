@@ -21,20 +21,22 @@ const App = () => {
     const checkLoginStatus = async () => {
       const isAppLaunched = await getItem("isAppLaunched");
       const isLoggedIn = await getItem("isLoggedIn");
+
       if (isAppLaunched && !isLoggedIn) {
         return router.replace("/sign-in");
       }
       if (isLoggedIn) {
         return router.replace("/home");
       } else {
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           router.push("/welcome");
         }, 2000);
+
+        return () => clearTimeout(timeoutId);
       }
-      setLoading(false);
     };
 
-    checkLoginStatus();
+    checkLoginStatus().finally(() => setLoading(false));
   }, []);
 
   if (loading) {

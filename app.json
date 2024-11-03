@@ -1,25 +1,5 @@
 {
   "expo": {
-    "plugins": [
-      [
-        "expo-local-authentication",
-        {
-          "faceIDPermission": "Allow $(VYBES_APP) to use Face ID."
-        }
-      ],
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Axiforma-Black.ttf",
-            "./assets/fonts/Axiforma-Light.ttf",
-            "./assets/fonts/Axiforma-Regular.ttf",
-            "./assets/fonts/Axiforma-Book.ttf",
-            "./assets/fonts/Axiforma-BlackItalic.ttf"
-          ]
-        }
-      ]
-    ],
     "name": "vybesapp",
     "scheme": "vybesapp",
     "slug": "vybesapp",
@@ -36,28 +16,33 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "We need to use Face ID to secure your account."
-      },
-      "bundleIdentifier": "com.tee2dwhy.vybesapp"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/vybe.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.USE_BIOMETRIC",
-        "android.permission.USE_FINGERPRINT"
-      ],
+      "permissions": ["android.permission.USE_BIOMETRIC"],
       "package": "com.tee2dwhy.vybesapp"
     },
     "web": {
       "favicon": "./assets/images/vybe.png"
     },
+    "plugins": [
+      ["expo-router"],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(VYBES_APP) to use Face ID."
+        }
+      ]
+    ],
+    "owner": "tee2dwhy",
     "extra": {
       "eas": {
-        "projectId": "047d1cbe-1a25-476d-b437-7a7c4fa2ab6e"
+        "projectId": "48162003-e4cf-4ac2-b042-0a903be00549"
       }
-    },
-    "owner": "tee2dwhy"
+    }
   }
 }

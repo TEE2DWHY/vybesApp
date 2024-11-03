@@ -414,7 +414,7 @@ const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
                       value={date}
                       mode="date"
                       onChange={onChange}
-                      display={Platform.OS === "ios" ? "spinner" : "default"} // Customize display as needed
+                      display={Platform.OS === "ios" ? "spinner" : "default"}
                     />
                   )}
                 </View>

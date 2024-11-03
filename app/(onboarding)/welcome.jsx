@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, StrictMode } from "react";
 import {
   Image,
   SafeAreaView,
@@ -31,7 +31,6 @@ const Welcome = () => {
     <SafeAreaView className={`flex-1 ${Platform.OS === "android" && "mt-10"}`}>
       <View className="flex-1 relative">
         <View className="flex-1 justify-center items-center">
-          {/* Display images based on activeIndex */}
           {activeIndex === 0 && (
             <Image
               source={iphone}

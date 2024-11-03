@@ -7,6 +7,7 @@ import {
   View,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { StatusBar } from "expo-status-bar";
@@ -16,10 +17,13 @@ import Empty from "../../../components/Empty";
 import FilterModal from "../../../modal/FilterModal";
 import { getItem } from "../../../utils/AsyncStorage";
 import axios from "axios";
+import SearchModal from "../../../modal/SearchModal";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [search, setSearch] = useState("");
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -37,27 +41,6 @@ const Home = () => {
       country={item.country}
     />
   );
-
-  const filterUsers = async () => {
-    const { accountType, gender, availability, distance } = filterCriteria;
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/user/filter-users",
-        {
-          accountType: accountType.length ? accountType : undefined,
-          gender,
-          availability,
-          distance,
-        }
-      );
-
-      console.log(response.data);
-      // Handle the filtered users (e.g., update state or show in UI)
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <>
@@ -84,10 +67,17 @@ const Home = () => {
                   style={{
                     color: "#47586E",
                   }}
+                  onPress={() => {
+                    if (search === "")
+                      return Alert.alert("Error", "Please Enter a Username");
+                    setShowSearchModal(true);
+                  }}
                 />
                 <TextInput
                   placeholder="Find a Fellow Vyber..."
                   className="w-[80%] font-axiformaRegular"
+                  onChangeText={setSearch}
+                  value={search}
                 />
               </View>
 
@@ -124,6 +114,9 @@ const Home = () => {
         />
         {showFilterModal && (
           <FilterModal onClose={() => setShowFilterModal(false)} />
+        )}
+        {showSearchModal && (
+          <SearchModal closeModal={() => setShowSearchModal(false)} />
         )}
         <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>

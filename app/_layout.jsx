@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { StrictMode, useEffect } from "react";
 import { SplashScreen, Stack } from "expo-router";
-import * as Linking from "expo-linking";
 import { useFonts } from "expo-font";
 
 SplashScreen.preventAutoHideAsync();
@@ -15,27 +14,19 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if (error) throw error;
-    if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded, error]);
-
-  if (!fontsLoaded && !error) return null;
-
-  // Display null while fonts are loading
-  if (!fontsLoaded && !error) {
-    return null;
-  }
+    if (fontsLoaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded || error]);
 
   return (
-    <>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
-    </>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
   );
 };
 
