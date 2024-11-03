@@ -9,9 +9,9 @@ import {
   Platform,
   Alert,
   Animated,
+  SafeAreaView,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { SafeAreaView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";

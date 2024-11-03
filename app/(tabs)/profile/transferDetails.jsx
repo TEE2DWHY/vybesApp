@@ -21,7 +21,7 @@ const transferDetails = () => {
               name="arrow-back-ios"
               size={24}
               style={{ color: "#546881" }}
-              onPress={() => router.push("/home")}
+              onPress={() => router.back()}
             />
           </TouchableOpacity>
 

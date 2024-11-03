@@ -98,7 +98,7 @@ const Withdraw = () => {
                 </TouchableOpacity>
               </View>
 
-              <View className="flex-row justify-between items-center p-4 rounded-lg shadow border border-gray-200">
+              <View className="flex-row justify-between items-center p-4 rounded-lg shadow-lg border border-gray-200">
                 <View className="flex-row items-center">
                   <AntDesign name="user" size={24} color="#47586E" />
                   <TextInput

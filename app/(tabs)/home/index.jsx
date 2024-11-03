@@ -68,8 +68,6 @@ const Home = () => {
                     color: "#47586E",
                   }}
                   onPress={() => {
-                    if (search === "")
-                      return Alert.alert("Error", "Please Enter a Username");
                     setShowSearchModal(true);
                   }}
                 />

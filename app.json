@@ -16,21 +16,27 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "We need to use Face ID to secure your account."
-      }
+      },
+      "bundleIdentifier": "com.tee2dwhy.vybesapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/vybe.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.USE_BIOMETRIC"],
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ],
       "package": "com.tee2dwhy.vybesapp"
     },
     "web": {
       "favicon": "./assets/images/vybe.png"
     },
     "plugins": [
-      ["expo-router"],
+      [
+        "expo-router"
+      ],
       [
         "expo-local-authentication",
         {

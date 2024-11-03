@@ -14,10 +14,14 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if (fontsLoaded || error) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
+    } else if (error) {
+      console.error(error);
     }
-  }, [fontsLoaded || error]);
+  }, [fontsLoaded, error]);
+
+  if (!fontsLoaded && !error) return null;
 
   return (
     <Stack
