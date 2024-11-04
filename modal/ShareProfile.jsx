@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, Modal } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -7,93 +7,101 @@ import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-const ShareProfile = ({ closeModal }) => {
+const ShareProfile = ({ closeModal, showProfile, userImage }) => {
   return (
     <>
-      <View className="bg-purple-darker rounded-tl-[40px] rounded-tr-[40px] z-20 w-[100%] fixed bottom-0 p-4 mt-[-30px]">
-        <Image
-          source={{ uri: "https://randomuser.me/api/portraits/women/2.jpg" }}
-          alt="user-image"
-          className="rounded-[50%] w-[40px] h-[40px] self-center"
-        />
-        <View className="flex-row items-center justify-between mt-6">
-          <Text className="capitalize text-white-normal font-axiformaBlack">
-            share your profile via
-          </Text>
-          <View className="flex-row items-center">
-            <Text className="text-[#B2BBC6] font-axiformaRegular mr-3">
-              Copy Link
-            </Text>
-            <Ionicons name="link-sharp" size={24} color="#9941EE" />
-          </View>
-        </View>
-        <View className="bg-white-normal rounded-[2px] flex-wrap  mt-3 border border-b-gray-500 pb-2">
-          <View className="w-[100%] flex-row items-center justify-center mb-8 mt-3">
-            <TouchableOpacity className="w-1/4 items-center">
-              <FontAwesome
-                name="facebook-square"
-                size={24}
-                style={{ color: "#000AFF" }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/4 items-center">
-              <Fontisto
-                name="messenger"
-                size={24}
-                style={{ color: "#B2BBC6" }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/4 items-center">
-              <FontAwesome6
-                name="tiktok"
-                size={24}
-                style={{ color: "#3A1078" }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/4 items-center">
-              <Entypo name="instagram" size={24} style={{ color: "#3795BD" }} />
-            </TouchableOpacity>
-          </View>
-          <View className="w-[100%] flex-row items-center justify-center mb-4">
-            <View className="w-1/4 items-center">
-              <FontAwesome
-                name="reddit"
-                size={24}
-                style={{ color: "#FF8343" }}
-              />
-            </View>
-            <TouchableOpacity className="w-1/4 items-center">
-              <AntDesign
-                name="linkedin-square"
-                size={24}
-                style={{ color: "#3FA2F6" }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/4 items-center">
-              <Entypo
-                name="twitter-with-circle"
-                size={24}
-                style={{ color: "#1A2130" }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/4 items-center">
-              <FontAwesome5
-                name="whatsapp-square"
-                size={24}
-                style={{ color: "#88D66C" }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+      <Modal visible={showProfile} transparent={true} animationType="fade">
         <TouchableOpacity
           onPress={closeModal}
-          className="mt-4 border-t border-t-white-normal w-full items-center"
-        >
-          <Text className="font-axiformaBlack text-[#909DAD] pt-4 mb-4">
-            Cancel
-          </Text>
-        </TouchableOpacity>
-      </View>
+          className="flex-1 bg-[#1b1b1b67] justify-center items-center"
+        />
+        <View className="bg-purple-darker rounded-tl-[40px] rounded-tr-[40px] z-20 fixed bottom-0 p-6 mt-[-30px] w-full">
+          <Image
+            source={{ uri: userImage }}
+            alt="user-image"
+            className="rounded-full mt-4 w-[70px] h-[70px] self-center border-2 border-white-normal"
+          />
+          <View className="flex-row items-center justify-between mt-8">
+            <View className="flex-row items-center gap-2">
+              <Text className="capitalize text-white-normal font-axiformaRegular text-sm">
+                Share Your Profile Via
+              </Text>
+              <AntDesign name="sharealt" size={20} color="#ffff" />
+            </View>
+
+            <View className="flex-row items-center">
+              <Text className="text-[#B2BBC6] font-axiformaRegular mr-2">
+                Copy Link
+              </Text>
+              <Ionicons name="link-sharp" size={20} color="#9941EE" />
+            </View>
+          </View>
+          <View className="bg-white-normal rounded-[8px] flex-wrap mt-4 p-3 border border-gray-300">
+            <View className="w-full flex-row items-center justify-evenly mb-6">
+              <TouchableOpacity className="items-center">
+                <FontAwesome name="facebook-square" size={24} color="#000AFF" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  Facebook
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="items-center">
+                <Fontisto name="messenger" size={24} color="#B2BBC6" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  Messenger
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="items-center">
+                <FontAwesome6 name="tiktok" size={24} color="#3A1078" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  Tiktok
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="items-center">
+                <Entypo name="instagram" size={24} color="#3795BD" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  Instagram
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="w-full flex-row items-center justify-evenly mb-2">
+              <TouchableOpacity className="items-center">
+                <FontAwesome name="reddit" size={24} color="#FF8343" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  Reddit
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="items-center">
+                <AntDesign name="linkedin-square" size={24} color="#3FA2F6" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  LinkedIn
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="items-center">
+                <Entypo name="twitter-with-circle" size={24} color="#1A2130" />
+                <Text className="text-xs text-gray-800 font-axiformaRegular">
+                  Twitter
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="items-center">
+                <FontAwesome5
+                  name="whatsapp-square"
+                  size={24}
+                  color="#88D66C"
+                />
+                <Text className="text-xs text-gray-800">WhatsApp</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={closeModal}
+            className="mt-4 border-t border-white-normal w-full items-center pt-4"
+          >
+            <Text className="font-axiformaRegular text-[#909DAD] text-sm">
+              Cancel
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </>
   );
 };
