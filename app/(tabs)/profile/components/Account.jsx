@@ -1,4 +1,11 @@
-import { Text, TouchableOpacity, View, Image, Modal } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Modal,
+  Dimensions,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
@@ -12,6 +19,7 @@ import ShareQr from "../../../../modal/ShareQr";
 
 const Account = () => {
   const { user } = useAccount();
+  const [imageModalVisible, setImageModalVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [showShareProfile, setShareProfileModal] = useState(false);
   const [showQr, setShowQr] = useState(false);
@@ -33,19 +41,46 @@ const Account = () => {
     }));
   };
 
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
   return (
     <>
       <View className="items-center mt-4">
         <Text className="capitalize font-axiformaBlack text-xl my-3">
           @{user?.userName}
         </Text>
-        <Image
-          source={{
-            uri: user?.image,
-          }}
-          className="w-[150px] h-[150px] rounded-[80px] border-[4px]  border-[#9ec2ec]"
-        />
+        <TouchableOpacity onPress={() => setImageModalVisible(true)}>
+          <Image
+            source={{
+              uri: user?.image,
+            }}
+            className="w-[150px] h-[150px] rounded-[80px] border-[4px]  border-[#9ec2ec]"
+          />
+        </TouchableOpacity>
       </View>
+
+      <Modal
+        visible={imageModalVisible}
+        onRequestClose={() => setImageModalVisible(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <View className="flex-1 justify-center items-center bg-[#1b1b1bb7] bg-opacity-80">
+          <TouchableOpacity
+            className="flex-1 justify-center items-center"
+            onPress={() => setImageModalVisible(false)}
+          >
+            <Image
+              source={{ uri: user?.image }}
+              style={{
+                width: screenWidth,
+                height: screenHeight,
+                resizeMode: "contain",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       <View className="mt-8">
         <View className="flex-row justify-between">
@@ -284,7 +319,11 @@ const Account = () => {
         />
       )}
       {showQr && (
-        <ShareQr closeModal={() => setShowQr(false)} showQr={showQr} />
+        <ShareQr
+          closeModal={() => setShowQr(false)}
+          showQr={showQr}
+          userImage={user?.image}
+        />
       )}
     </>
   );

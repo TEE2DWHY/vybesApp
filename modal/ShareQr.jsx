@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import qr from "../assets/images/qr.png";
 
-const ShareQr = ({ closeModal, showQr }) => {
+const ShareQr = ({ closeModal, showQr, userImage }) => {
   return (
     <>
       <Modal visible={showQr} transparent={true} animationType="fade">
@@ -20,7 +20,7 @@ const ShareQr = ({ closeModal, showQr }) => {
               <Image source={qr} className="w-32 h-32" />
             </View>
             <Image
-              source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+              source={{ uri: userImage }}
               className="w-10 h-10 rounded-full absolute -top-2 -right-5 border-2 border-white-normal"
             />
           </View>
