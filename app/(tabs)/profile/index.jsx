@@ -27,6 +27,7 @@ import Stories from "./components/Stories";
 import Likes from "./components/Likes";
 import { userInstance } from "../../../config/axios";
 import { getItem } from "../../../utils/AsyncStorage";
+import { useToken } from "../../../hooks/useToken";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,19 +35,13 @@ const Profile = () => {
   const [personalityTab, setPersonalityTab] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [token, setToken] = useState("");
+  const token = useToken();
   const router = useRouter();
 
   const handlePrevious = () => {
     if (personalityTab > 4 || personalityTab > 1)
       setPersonalityTab((prevState) => prevState - 1);
   };
-  useEffect(() => {
-    (async () => {
-      const token = await getItem("token");
-      setToken(token);
-    })();
-  }, []);
 
   const handleNext = async (formData) => {
     if (personalityTab < 4) setPersonalityTab((prevState) => prevState + 1);
@@ -72,13 +67,6 @@ const Profile = () => {
     setRefreshing(false);
     console.log("Profile details fetched successfully.");
   };
-
-  useEffect(() => {
-    (async () => {
-      const token = await getItem("token");
-      setToken(token);
-    })();
-  }, []);
 
   return (
     <>

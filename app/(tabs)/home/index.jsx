@@ -18,12 +18,40 @@ import FilterModal from "../../../modal/FilterModal";
 import { getItem } from "../../../utils/AsyncStorage";
 import axios from "axios";
 import SearchModal from "../../../modal/SearchModal";
+import useFetch from "../../../hooks/useFetch";
+import { userInstance } from "../../../config/axios";
+import { useToken } from "../../../hooks/useToken";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [search, setSearch] = useState("");
+  const token = useToken();
+
+  const {
+    payload: allUsers,
+    message,
+    error: fetchUsersError,
+    isLoading: isUsersLoading,
+    fetchData: getAllUsers,
+  } = useFetch({
+    fn: userInstance,
+    endpoint: "/get-users",
+    param: {},
+    token: token,
+  });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        await getAllUsers();
+      } catch (error) {
+        console.log("Error fetching users:", error);
+      }
+    };
+    fetchUsers();
+  }, [getAllUsers]);
 
   const onRefresh = async () => {
     setRefreshing(true);

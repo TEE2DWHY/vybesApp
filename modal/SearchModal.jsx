@@ -10,35 +10,29 @@ import {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getItem } from "../utils/AsyncStorage";
+import { useToken } from "../hooks/useToken";
 
 const SearchModal = ({ closeModal, modalVisible }) => {
+  const token = useToken();
   const [searchText, setSearchText] = useState("");
   const [users, setUsers] = useState([]);
-  const [token, setToken] = useState("");
   const [searchedUser, setSearchedUser] = useState(null);
   const [searchError, setSearchError] = useState(""); // State for handling search errors
 
-  const suggestedResults = [
-    {
-      id: "1",
-      name: "Joshyxno12",
-      accountType: "Vyber",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: "2",
-      name: "Jjsoxynbaby",
-      accountType: "Baddie",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  ];
-
-  useEffect(() => {
-    (async () => {
-      const storedToken = await getItem("token");
-      if (storedToken) setToken(storedToken);
-    })();
-  }, []);
+  // const suggestedResults = [
+  //   {
+  //     id: "1",
+  //     name: "Joshyxno12",
+  //     accountType: "Vyber",
+  //     avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Jjsoxynbaby",
+  //     accountType: "Baddie",
+  //     avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+  //   },
+  // ];
 
   useEffect(() => {
     if (token) {

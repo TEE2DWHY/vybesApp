@@ -69,17 +69,17 @@ const EditProfileModal = ({
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
             </View>
-            <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+            {/* <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
               <Text className="text-[#546881] font-axiformaRegular">
                 Password:
               </Text>
               <TextInput
-                value={userData.password}
+                value={userData.password || "******"}
                 onChangeText={(text) => handleInputChange("password", text)}
                 secureTextEntry
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
-            </View>
+            </View> */}
             <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
               <Text className="text-[#546881] font-axiformaRegular">
                 Wallet Balance:

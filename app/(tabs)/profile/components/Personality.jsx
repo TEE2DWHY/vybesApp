@@ -14,7 +14,6 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { userInstance } from "../../../../config/axios";
 import { useEffect, useState } from "react";
-import { getItem } from "../../../../utils/AsyncStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import HeightModal from "./HeightModal";
 import GenderModal from "./GenderModal";
@@ -22,9 +21,11 @@ import WeightModal from "./WeightModal";
 import { useAccount } from "../../../../hooks/useAccount";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
+import { useToken } from "../../../../hooks/useToken";
 
 const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
   const { user, setUser } = useAccount();
+  const token = useToken();
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
     userName: user?.userName || "",
@@ -41,7 +42,6 @@ const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
     weight: user?.weight || "",
     premiumRate: user?.premiumRate || "",
   });
-  const [authToken, setAuthToken] = useState("");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [heightModal, setHeightModal] = useState(false);
@@ -68,9 +68,7 @@ const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = await getItem("token");
         if (token) {
-          setAuthToken(token);
           const userRoute = userInstance(token);
           const response = await userRoute.get("/get-user");
           setUser(response.data.payload.user);

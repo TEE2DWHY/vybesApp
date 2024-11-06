@@ -10,22 +10,16 @@ import {
 import Feather from "@expo/vector-icons/Feather";
 import axios from "axios";
 import { getItem } from "../utils/AsyncStorage";
+import { useToken } from "../hooks/useToken";
 
 const FilterModal = ({ onClose }) => {
-  const [token, setToken] = useState("");
+  const token = useToken();
   const [filterCriteria, setFilterCriteria] = useState({
     accountType: [],
     gender: null,
     availability: null,
     distance: null,
   });
-
-  useEffect(() => {
-    (async () => {
-      const token = await getItem("token");
-      setToken(token);
-    })();
-  }, []);
 
   const [selectedTab, setSelectedTab] = useState("Account");
 

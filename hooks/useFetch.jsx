@@ -1,32 +1,26 @@
 import { useState, useEffect, useCallback } from "react";
-import { router } from "expo-router";
-import { getItem } from "../utils/AsyncStorage";
 
-const useFetch = ({ fn, endpoint, param }) => {
+const useFetch = ({ fn, endpoint, param, token }) => {
   const [message, setMessage] = useState(null);
   const [payload, setPayload] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
+    if (!token) return;
     try {
-      const token = getItem("token");
       setIsLoading(true);
       const fnRouter = fn(token);
       const res = await fnRouter.get(endpoint, { params: param });
       setMessage(res.data.message);
-      setPayload(res.data.payload);
+      setPayload(res.data.payload.users);
     } catch (err) {
-      console.log("Fetch error:", err);
-      setError(err?.response.data.message || "An error occurred");
+      console.error("Fetch error:", err);
+      setError(err?.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
-  }, [fn, endpoint, param, router]);
-
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, [fetchData]);
+  }, []);
 
   return { message, payload, error, isLoading, fetchData };
 };

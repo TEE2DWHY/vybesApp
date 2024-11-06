@@ -9,15 +9,11 @@ export const authInstance = axios.create({
 });
 
 export const userInstance = (token) => {
-  const headers = {
-    Accept: "application/json",
-  };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
   return axios.create({
     baseURL: user,
-    headers,
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
 };

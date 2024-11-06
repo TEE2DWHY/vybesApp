@@ -90,11 +90,26 @@ const Event = () => {
 
         {/* Event Image */}
         <View className="relative w-[90%] h-[280px] self-center mb-4">
-          <Image
-            source={{ uri: ticket?.image }}
-            resizeMode="cover"
-            className="w-full h-full rounded-xl"
-          />
+          <TouchableOpacity
+            className="absolute left-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
+            onPress={() => console.log("Scroll Left")}
+          >
+            <AntDesign name="left" size={16} color="#fff" />
+          </TouchableOpacity>
+          <View className="w-full h-full rounded-[20px] overflow-hidden">
+            <Image
+              source={{ uri: ticket?.image }}
+              resizeMode="cover"
+              className="h-full w-full"
+            />
+          </View>
+
+          <TouchableOpacity
+            className="absolute right-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
+            onPress={() => console.log("Scroll Right")}
+          >
+            <AntDesign name="right" size={16} color="#fff" />
+          </TouchableOpacity>
         </View>
 
         {/* Event Description */}

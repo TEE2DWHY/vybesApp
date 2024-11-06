@@ -16,6 +16,7 @@ import { useAccount } from "../../../../hooks/useAccount";
 import EditProfileModal from "./EditProfileModal";
 import ShareProfile from "../../../../modal/ShareProfile";
 import ShareQr from "../../../../modal/ShareQr";
+import useFetch from "../../../../hooks/useFetch";
 
 const Account = () => {
   const { user } = useAccount();
@@ -29,8 +30,8 @@ const Account = () => {
     dateOfBirth: user?.dateOfBirth || "",
     accountType: user?.accountType || "",
     password: "",
-    walletBalance: "15,000 Vybes Coin",
-    giftedCoins: "5,000 Vybes Coin",
+    walletBalance: user?.walletBalance || "",
+    giftedCoins: "",
     completedHooks: 15,
   });
 
@@ -146,7 +147,7 @@ const Account = () => {
               Wallet Balance:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              {user?.walletBalance || "-------"}
+              {user?.walletBalance}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
@@ -154,7 +155,7 @@ const Account = () => {
               Gifted Coins:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              {user?.giftedCoins || "-------"}
+              {user?.giftedCoins || 0}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
