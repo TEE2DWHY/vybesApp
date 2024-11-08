@@ -9,30 +9,20 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { getItem } from "../utils/AsyncStorage";
 import { useToken } from "../hooks/useToken";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-const SearchModal = ({ closeModal, modalVisible }) => {
+const SearchModal = ({
+  closeModal,
+  modalVisible,
+  searchText,
+  setSearchText,
+  clearSearch,
+}) => {
   const token = useToken();
-  const [searchText, setSearchText] = useState("");
   const [users, setUsers] = useState([]);
   const [searchedUser, setSearchedUser] = useState(null);
-  const [searchError, setSearchError] = useState(""); // State for handling search errors
-
-  // const suggestedResults = [
-  //   {
-  //     id: "1",
-  //     name: "Joshyxno12",
-  //     accountType: "Vyber",
-  //     avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Jjsoxynbaby",
-  //     accountType: "Baddie",
-  //     avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-  //   },
-  // ];
+  const [searchError, setSearchError] = useState("");
 
   useEffect(() => {
     if (token) {
@@ -68,10 +58,10 @@ const SearchModal = ({ closeModal, modalVisible }) => {
           },
         }
       );
-      setSearchedUser(response.data.payload.user); // Set the search result
-      setSearchError(""); // Clear any previous errors
+      setSearchedUser(response.data.payload.user);
+      setSearchError("");
     } catch (error) {
-      setSearchedUser(null); // Clear search result on error
+      setSearchedUser(null);
       setSearchError(error.response.data.message);
     }
   };
@@ -127,23 +117,29 @@ const SearchModal = ({ closeModal, modalVisible }) => {
 
           {/* Search Bar */}
           <View className="bg-white-normal p-3 flex-row items-center rounded-3xl mb-4">
-            <TouchableOpacity onPress={search}>
-              <Text className="text-[#4D2478] text-xl mr-3">🔍</Text>
-            </TouchableOpacity>
-            <TextInput
-              className="flex-1 font-axiformaRegular text-[#1D242D]"
-              placeholder="Search username"
-              placeholderTextColor="#6B6B6B"
-              value={searchText}
-              onChangeText={setSearchText}
-            />
+            <View className="flex-row items-center justify-between w-[92%]">
+              <View className="flex-row items-center">
+                <TouchableOpacity onPress={search}>
+                  <Text className="text-[#4D2478] text-xl mr-3">🔍</Text>
+                </TouchableOpacity>
+                <TextInput
+                  className="flex-1 font-axiformaRegular text-[#1D242D]"
+                  placeholder="Search username"
+                  placeholderTextColor="#6B6B6B"
+                  value={searchText}
+                  onChangeText={setSearchText}
+                />
+              </View>
+              <TouchableOpacity onPress={clearSearch}>
+                <MaterialIcons name="cancel" size={20} color="#909DAD" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <Text className="font-axiformaBlack text-[#909DAD] mb-4">
             {searchedUser ? "Search Result" : "Suggested Result"}
           </Text>
 
-          {/* Conditionally render either search result, "User not found" message, or suggested results */}
           {searchedUser ? (
             renderUserDetails()
           ) : searchError ? (
@@ -167,7 +163,7 @@ const SearchModal = ({ closeModal, modalVisible }) => {
                     </Text>
                   </View>
                   <View
-                    className={`px-1 py-2  font-axiformaRegular capitalize rounded-md border-2 border-white-normal ${
+                    className={`px-1 py-2 font-axiformaRegular capitalize rounded-md border-2 border-white-normal ${
                       item.accountType === "Vyber"
                         ? "bg-[#E0E4FF] text-[#4D2478]"
                         : "bg-purple-normal"
@@ -188,7 +184,6 @@ const SearchModal = ({ closeModal, modalVisible }) => {
             />
           )}
 
-          {/* Done Button */}
           <TouchableOpacity onPress={closeModal} className="self-end mt-4">
             <Text className="text-[#FFFFFF] font-axiformaBook">Done</Text>
           </TouchableOpacity>

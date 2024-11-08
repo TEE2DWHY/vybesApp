@@ -6,7 +6,6 @@ import {
   View,
   TouchableOpacity,
   Modal,
-  Platform,
   Alert,
   Animated,
   SafeAreaView,
@@ -63,11 +62,11 @@ const UserProfile = () => {
 
   useEffect(() => {
     const startAnimation = () => {
-      animatedValue.setValue(0); // Reset to start
+      animatedValue.setValue(0);
       Animated.loop(
         Animated.timing(animatedValue, {
-          toValue: 1, // Go from 0 to 1
-          duration: 5000, // 5 seconds for the transition
+          toValue: 1,
+          duration: 5000,
           useNativeDriver: false,
         })
       ).start();
@@ -78,7 +77,7 @@ const UserProfile = () => {
 
   const backgroundColor = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: colors, // Smooth transition between colors
+    outputRange: colors,
   });
 
   useEffect(() => {
@@ -116,7 +115,7 @@ const UserProfile = () => {
           promptMessage: "Authenticate with Face ID",
           cancelLabel: "Cancel",
           fallbackLabel: "Use Passcode",
-          disableDeviceFallback: false, // Keep this to allow fallback to passcode in case Face ID fails
+          disableDeviceFallback: false,
         });
 
         if (result.success) {
@@ -189,12 +188,12 @@ const UserProfile = () => {
               <Animated.View
                 style={{
                   backgroundColor,
-                  borderRadius: 9999, // Make it rounded
-                  width: 20, // Adjust size as needed
+                  borderRadius: 9999,
+                  width: 20,
                   height: 20,
                   position: "absolute",
                   bottom: 0,
-                  right: 16, // Adjust as needed
+                  right: 16,
                   zIndex: 9999,
                 }}
               />
@@ -272,7 +271,6 @@ const UserProfile = () => {
             {storiesData.map((story, index) => (
               <TouchableOpacity
                 key={story.id}
-                // If story is locked, it should not be clickable
                 disabled={story.locked}
                 className="w-[49%] mb-4"
               >

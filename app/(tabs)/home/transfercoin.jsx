@@ -18,6 +18,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import unlocked from "../../../assets/images/unlocked.webp";
+import { useAccount } from "../../../hooks/useAccount";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -32,6 +33,8 @@ const TransferCoin = () => {
   const [showModal, setShowModal] = useState(false);
   const [accountHandle, setAccountHandle] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
+  const { user } = useAccount();
+  console.log(user);
 
   const requestNotificationPermission = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -137,7 +140,7 @@ const TransferCoin = () => {
             name="arrow-back-ios"
             size={24}
             style={{ color: "#546881" }}
-            onPress={() => router.push("/home/userprofile")}
+            onPress={() => router.back()}
           />
           <TouchableOpacity
             className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 rounded-md"
@@ -192,7 +195,9 @@ const TransferCoin = () => {
           </View>
           <Text className="mt-3 text-gray-700 font-medium text-base px-4 font-axiformaRegular text-right">
             Available Balance:{" "}
-            <Text className="font-axiformaBlackItalic">5,000 Vybes Coin</Text>
+            <Text className="font-axiformaBlackItalic">
+              {user?.walletBalance} Vybes Coin
+            </Text>
           </Text>
           <View className="flex-row items-center px-2 py-3 bg-white rounded-lg border border-[#E9E9EB] mt-6">
             <TextInput
