@@ -119,7 +119,7 @@ const SearchModal = ({ closeModal, modalVisible }) => {
         onPress={closeModal}
         activeOpacity={1}
       />
-      <View className="justify-end items-center bg-[#1b1b1b67] bg-opacity-50 w-full">
+      <View className="justify-end items-center bg-[#1b1b1b67] bg-opacity-50 w-full h-[200px]">
         <View className="w-full bg-purple-darker rounded-tl-[20px] rounded-tr-[20px] p-5">
           <Text className="text-lg font-axiformaBlack text-[#FFFFFF] mb-4">
             Search
@@ -154,6 +154,7 @@ const SearchModal = ({ closeModal, modalVisible }) => {
             <FlatList
               data={users}
               keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
                 <View className="flex-row items-center justify-between mb-4 border-b border-[#DEEDFF] pb-2">
                   <View className="flex-row items-center">
@@ -189,7 +190,7 @@ const SearchModal = ({ closeModal, modalVisible }) => {
 
           {/* Done Button */}
           <TouchableOpacity onPress={closeModal} className="self-end mt-4">
-            <Text className="text-[#FFFFFF] font-axiformaBold">Done</Text>
+            <Text className="text-[#FFFFFF] font-axiformaBook">Done</Text>
           </TouchableOpacity>
         </View>
       </View>

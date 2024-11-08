@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 const useFetch = ({ fn, endpoint, param, token }) => {
   const [message, setMessage] = useState(null);
@@ -20,7 +20,7 @@ const useFetch = ({ fn, endpoint, param, token }) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [fn, endpoint, param, token]);
 
   return { message, payload, error, isLoading, fetchData };
 };

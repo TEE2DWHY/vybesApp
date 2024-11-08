@@ -8,19 +8,17 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
+  Animated,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { StatusBar } from "expo-status-bar";
 import UserDetails from "./components/UserDetails";
-import { users } from "../../../data/data";
 import Empty from "../../../components/Empty";
 import FilterModal from "../../../modal/FilterModal";
-import { getItem } from "../../../utils/AsyncStorage";
-import axios from "axios";
-import SearchModal from "../../../modal/SearchModal";
 import useFetch from "../../../hooks/useFetch";
 import { userInstance } from "../../../config/axios";
 import { useToken } from "../../../hooks/useToken";
+import SearchModal from "../../../modal/SearchModal";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -38,37 +36,60 @@ const Home = () => {
   } = useFetch({
     fn: userInstance,
     endpoint: "/get-users",
-    param: {},
     token: token,
   });
 
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        await getAllUsers();
-      } catch (error) {
-        console.log("Error fetching users:", error);
-      }
+      await getAllUsers();
     };
     fetchUsers();
   }, [getAllUsers]);
 
   const onRefresh = async () => {
     setRefreshing(true);
+    await getAllUsers();
     setRefreshing(false);
     console.log("app refreshing is successful.");
   };
 
   const renderItem = ({ item }) => (
     <UserDetails
-      img={item.img}
-      username={item.username}
-      firstName={item.firstName}
-      age={item.age}
-      state={item.state}
-      country={item.country}
+      img={item.image}
+      accountType={item.accountType}
+      firstName={item?.fullName.split(" ")[0]}
+      age={2024 - Number(item.dateOfBirth?.split("-")[0])}
+      state={item.location}
+      country={"Nigeria"}
     />
   );
+
+  const Spinner = () => {
+    const spinValue = new Animated.Value(0);
+
+    useEffect(() => {
+      const startSpin = () => {
+        spinValue.setValue(0);
+        Animated.timing(spinValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }).start(() => startSpin());
+      };
+      startSpin();
+    }, [spinValue]);
+
+    const spin = spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["0deg", "360deg"],
+    });
+
+    return (
+      <Animated.View style={{ transform: [{ rotate: spin }] }}>
+        <View className="w-[40px] h-[40px] rounded-full border-[4px] border-transparent border-t-[#a241ee]" />
+      </Animated.View>
+    );
+  };
 
   return (
     <>
@@ -123,21 +144,29 @@ const Home = () => {
             Your Matches
           </Text>
         </View>
-        <FlatList
-          data={users}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          numColumns={2}
-          ListEmptyComponent={<Empty text={"No users found."} />}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          className="mb-12"
-        />
+
+        {isUsersLoading ? (
+          <View className="flex-1 justify-center items-center">
+            <Spinner />
+          </View>
+        ) : (
+          <FlatList
+            data={allUsers}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            numColumns={2}
+            ListEmptyComponent={<Empty text={"No users found."} />}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            className="mb-12"
+          />
+        )}
+
         {showFilterModal && (
           <FilterModal onClose={() => setShowFilterModal(false)} />
         )}
