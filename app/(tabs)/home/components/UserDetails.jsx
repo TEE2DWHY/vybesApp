@@ -3,14 +3,22 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Image, Text, View } from "react-native";
 
-const UserDetails = ({ img, accountType, firstName, age, state, country }) => {
+const UserDetails = ({
+  img,
+  accountType,
+  firstName,
+  age,
+  state,
+  country,
+  userId,
+}) => {
   const badgeColor = accountType === "vyber" ? "#7A91F9" : "#9941EE";
 
   return (
     <TouchableOpacity
       className="bg-white rounded-lg overflow-hidden mb-4"
       style={{ width: "47%" }}
-      onPress={() => router.push("/home/userprofile")}
+      onPress={() => router.push(`/home/user/${userId}`)}
     >
       <Image
         source={{ uri: img }}

@@ -61,6 +61,7 @@ const Home = () => {
       age={2024 - Number(item.dateOfBirth?.split("-")[0])}
       state={item.location}
       country={"Nigeria"}
+      userId={item._id}
     />
   );
 
@@ -151,7 +152,7 @@ const Home = () => {
           </View>
         ) : (
           <FlatList
-            data={allUsers}
+            data={allUsers?.users}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={{ paddingHorizontal: 20 }}

@@ -13,14 +13,14 @@ const useFetch = ({ fn, endpoint, param, token }) => {
       const fnRouter = fn(token);
       const res = await fnRouter.get(endpoint, { params: param });
       setMessage(res.data.message);
-      setPayload(res.data.payload.users);
+      setPayload(res.data.payload);
     } catch (err) {
       console.error("Fetch error:", err);
       setError(err?.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
-  }, [fn, endpoint, param, token]);
+  }, [fn, endpoint, token]);
 
   return { message, payload, error, isLoading, fetchData };
 };
