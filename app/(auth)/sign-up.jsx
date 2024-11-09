@@ -129,15 +129,15 @@ const SignUp = () => {
           <View className="mt-5 px-5">
             <TouchableOpacity
               className={`border ${
-                formData.gender === "Male"
+                formData.gender === "male"
                   ? "bg-purple-darker"
                   : "border-blue-300"
               } rounded-full py-4 px-6 mb-4 flex-row items-center justify-between`}
-              onPress={() => handleInputChange("gender", "Male")}
+              onPress={() => handleInputChange("gender", "male")}
             >
               <Text
                 className={
-                  formData.gender === "Male"
+                  formData.gender === "male"
                     ? "bg-purple-darker text-white-normal text-base font-axiformaBlack"
                     : "text-purple-darker text-base font-axiformaBlack"
                 }
@@ -148,15 +148,15 @@ const SignUp = () => {
             </TouchableOpacity>
             <TouchableOpacity
               className={`border ${
-                formData.gender === "Female"
+                formData.gender === "female"
                   ? "bg-purple-darker text-white-normal"
                   : "border-blue-300"
               } rounded-full py-4 px-6 mb-4 flex-row items-center justify-between`}
-              onPress={() => handleInputChange("gender", "Female")}
+              onPress={() => handleInputChange("gender", "female")}
             >
               <Text
                 className={
-                  formData.gender === "Female"
+                  formData.gender === "female"
                     ? "bg-purple-darker text-white-normal text-base font-axiformaBlack"
                     : "text-purple-darker text-base font-axiformaBlack"
                 }
@@ -167,15 +167,15 @@ const SignUp = () => {
             </TouchableOpacity>
             <TouchableOpacity
               className={`border ${
-                formData.gender === "Non-Binary"
+                formData.gender === "non-binary"
                   ? "bg-purple-darker text-white-normal"
                   : "border-blue-300"
               } rounded-full py-4 px-6  flex-row items-center justify-between`}
-              onPress={() => handleInputChange("gender", "Non-Binary")}
+              onPress={() => handleInputChange("gender", "non-binary")}
             >
               <Text
                 className={
-                  formData.gender === "Non-Binary"
+                  formData.gender === "non-binary"
                     ? "bg-purple-darker text-white-normal text-base font-axiformaBlack"
                     : "text-purple-darker text-base font-axiformaBlack"
                 }

@@ -39,7 +39,7 @@ const Transfer = () => {
   const [accountHandle, setAccountHandle] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
   const [isTransferLoading, setIsTransferLoading] = useState(false);
-  const { user } = useAccount();
+  const { user, refetchUser } = useAccount();
   const [error, setError] = useState("");
   const token = useToken();
   const params = useLocalSearchParams();
@@ -101,8 +101,7 @@ const Transfer = () => {
       return setError("Insufficient Balance");
     }
 
-    // Check if accountHandle is empty and if transferAmount is a valid number greater than 0
-    const amount = Number(transferAmount); // Ensure transferAmount is a number
+    const amount = Number(transferAmount);
     if (!accountHandle.trim() || isNaN(amount) || amount <= 0) {
       Alert.alert(
         "Note",
@@ -128,6 +127,8 @@ const Transfer = () => {
       console.log(response.data);
       setShowModal(true);
       showNotification();
+      setError("");
+      await refetchUser();
     } catch (err) {
       console.log(err);
       setError(err.response.data.message);
