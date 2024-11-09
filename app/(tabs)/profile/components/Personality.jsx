@@ -665,7 +665,7 @@ const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
               </View>
               <View className="mt-4">
                 <Text className="text-gray-500 font-axiformaBook">
-                  VybeCoin
+                  VybeCoin Rate
                 </Text>
                 <TextInput
                   placeholder="60 vybe coin"

@@ -138,7 +138,7 @@ const UserProfile = () => {
   };
 
   const handleCall = () => {
-    const phoneNumber = "+2349032533461";
+    const phoneNumber = payload?.user?.phoneNumber;
     const url = `tel:${phoneNumber}`;
     Linking.canOpenURL(url)
       .then((supported) => {
@@ -302,7 +302,10 @@ const UserProfile = () => {
             <Text className="text-center text-sm my-2 text-[#47586E] font-axiformaRegular leading-6">
               Get matched with {payload?.user?.userName} or unlock chat and
               calls instantly with a monthly subscription of{" "}
-              <Text className="text-[#7A91F9]">60 Vybes Coins</Text>.
+              <Text className="text-[#7A91F9]">
+                {payload?.user?.premiumRate} Vybes Coins
+              </Text>
+              .
             </Text>
             <Image
               source={locked}
@@ -405,9 +408,13 @@ const UserProfile = () => {
                 Instant Match
               </Text>
               <Text className="text-center text-sm my-2 text-[#47586E] font-axiformaRegular leading-6">
-                Get exclusive access to chat, calls, and instant matching with
-                Dhemmex for{" "}
-                <Text className="text-[#7A91F9]">60 Vybes Coins</Text>.
+                Get exclusive access to chat, calls, and instant matching with{" "}
+                <Text className="capitalize">{payload?.user?.userName}</Text>{" "}
+                for{" "}
+                <Text className="text-[#7A91F9]">
+                  {payload?.user?.premiumRate} Vybes Coins
+                </Text>
+                .
               </Text>
               <Image
                 source={locked}
@@ -419,7 +426,7 @@ const UserProfile = () => {
                   className="text-white-normal text-center font-axiformaRegular p-1"
                   onPress={() => {
                     setShowModal(false);
-                    router.push("/home/transfercoin");
+                    router.push(`/home/transfer/${id}`);
                   }}
                 >
                   Proceed to Transfer Coin

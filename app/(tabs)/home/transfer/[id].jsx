@@ -10,15 +10,20 @@ import {
   Image,
   ImageBackground,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import * as Notifications from "expo-notifications";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
-import { router } from "expo-router";
-import unlocked from "../../../assets/images/unlocked.webp";
-import { useAccount } from "../../../hooks/useAccount";
+import { router, useLocalSearchParams } from "expo-router";
+import unlocked from "../../../../assets/images/unlocked.webp";
+import { useAccount } from "../../../../hooks/useAccount";
+import axios from "axios";
+import { useToken } from "../../../../hooks/useToken";
+import useFetch from "../../../../hooks/useFetch";
+import { userInstance } from "../../../../config/axios";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -29,12 +34,45 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const TransferCoin = () => {
+const Transfer = () => {
   const [showModal, setShowModal] = useState(false);
   const [accountHandle, setAccountHandle] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
+  const [isTransferLoading, setIsTransferLoading] = useState(false);
   const { user } = useAccount();
-  console.log(user);
+  const [error, setError] = useState("");
+  const token = useToken();
+  const params = useLocalSearchParams();
+  const { id } = params;
+
+  const {
+    payload,
+    isLoading,
+    message,
+    error: getUserError,
+    fetchData: getUser,
+  } = useFetch({
+    fn: userInstance,
+    endpoint: `/get-user-by-id/${id}`,
+    token: token,
+    // param: { userId: id },
+  });
+
+  useEffect(() => {
+    if (payload?.user) {
+      setAccountHandle(payload?.user?.userName || "");
+      setTransferAmount(payload?.user?.premiumRate || "");
+    }
+  }, [payload]);
+
+  useEffect(() => {
+    if (token) {
+      const fetchUsers = async () => {
+        await getUser();
+      };
+      fetchUsers();
+    }
+  }, [getUser]);
 
   const requestNotificationPermission = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -58,16 +96,44 @@ const TransferCoin = () => {
     });
   };
 
-  const handleTransfer = () => {
-    const amount = Number(transferAmount);
+  const handleTransfer = async () => {
+    if (transferAmount > user?.walletBalance) {
+      return setError("Insufficient Balance");
+    }
+
+    // Check if accountHandle is empty and if transferAmount is a valid number greater than 0
+    const amount = Number(transferAmount); // Ensure transferAmount is a number
     if (!accountHandle.trim() || isNaN(amount) || amount <= 0) {
       Alert.alert(
+        "Note",
         "Please specify a valid account handle and Vybes coin to be sent."
       );
       return;
     }
-    setShowModal(true);
-    showNotification();
+
+    setIsTransferLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/user/transfer-coin",
+        {
+          amountToSend: transferAmount,
+          receiverUserName: accountHandle,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setShowModal(true);
+      showNotification();
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+    } finally {
+      setIsTransferLoading(false);
+    }
   };
 
   const transferNotification = async () => {
@@ -166,7 +232,7 @@ const TransferCoin = () => {
           <FontAwesome5 name="coins" size={24} color="#fff" />
         </View>
 
-        {accountHandle.trim() && transferAmount.trim() && (
+        {accountHandle && transferAmount && (
           <View className="bg-[#5c71dd] mt-8 p-4 w-[90%] self-center rounded-2xl">
             <Text className="text-white-normal font-axiformaRegular text-center leading-6 capitalize text-base">
               You are about to initiate a transfer of {transferAmount} Vybes
@@ -183,10 +249,14 @@ const TransferCoin = () => {
             <View className="flex-row items-center">
               <AntDesign name="user" size={24} color="#47586E" />
               <TextInput
-                className="ml-2 text-gray-800 text-sm font-medium font-axiformaRegular mt-[-2px]"
-                placeholder="Enter account name here"
+                className="ml-2 text-gray-800 text-base font-medium font-axiformaRegular mt-[-2px] capitalize"
+                placeholder="Enter recipient username here"
                 value={accountHandle}
-                onChangeText={setAccountHandle}
+                onChangeText={(text) => {
+                  setAccountHandle(text);
+                  setError("");
+                }}
+                onKeyPress={() => setError("")}
               />
             </View>
             <TouchableOpacity>
@@ -201,22 +271,32 @@ const TransferCoin = () => {
           </Text>
           <View className="flex-row items-center px-2 py-3 bg-white rounded-lg border border-[#E9E9EB] mt-6">
             <TextInput
-              placeholder="Enter Amount of Vybe Coin to Transfer"
+              placeholder="Enter amount of vybe coin to transfer"
               keyboardType="numeric"
               value={transferAmount}
-              onChangeText={(text) =>
-                setTransferAmount(text.replace(/[^0-9]/g, ""))
-              }
+              onChangeText={(text) => {
+                const numericValue = text.replace(/[^0-9]/g, "");
+                setTransferAmount(numericValue);
+                setError("");
+              }}
+              onKeyPress={() => setError("")}
               className="flex-1 ml-2 text-base text-gray-900 font-axiformaRegular"
             />
           </View>
+          <Text className="text-red-600 font-axiformaRegular text-center mt-6">
+            {error}
+          </Text>
           <TouchableOpacity
-            className="mt-10 bg-purple-500 py-3 rounded-3xl items-center mx-4 mb-12"
+            className="mt-4 bg-purple-500 py-3 rounded-3xl items-center mx-4 mb-12"
             onPress={handleTransfer}
           >
-            <Text className="text-white-normal font-semibold text-lg font-axiformaRegular">
-              Transfer
-            </Text>
+            {isTransferLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text className="text-white-normal font-semibold text-lg font-axiformaRegular">
+                Transfer
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
         <Modal
@@ -230,9 +310,9 @@ const TransferCoin = () => {
               <View className="flex-row items-center justify-center">
                 <ImageBackground
                   source={{
-                    uri: "https://images.unsplash.com/photo-1627130596911-985450bd4d63?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    uri: payload?.user?.image,
                   }}
-                  className="w-full h-[300px] overflow-hidden rounded-t-2xl"
+                  className="w-full h-[250px] overflow-hidden rounded-t-2xl"
                   resizeMode="cover"
                   blurRadius={5}
                 />
@@ -288,4 +368,4 @@ const TransferCoin = () => {
   );
 };
 
-export default TransferCoin;
+export default Transfer;
