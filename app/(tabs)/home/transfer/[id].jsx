@@ -39,11 +39,13 @@ const Transfer = () => {
   const [accountHandle, setAccountHandle] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
   const [isTransferLoading, setIsTransferLoading] = useState(false);
+  const [transactionId, setTransactionId] = useState("");
   const { user, refetchUser } = useAccount();
   const [error, setError] = useState("");
   const token = useToken();
   const params = useLocalSearchParams();
   const { id } = params;
+  console.log(user);
 
   const {
     payload,
@@ -124,7 +126,8 @@ const Transfer = () => {
           },
         }
       );
-      console.log(response.data);
+      console.log(response.data.payload);
+      setTransactionId(response?.data?.payload.tx.transactionId);
       setShowModal(true);
       showNotification();
       setError("");
@@ -353,7 +356,7 @@ const Transfer = () => {
                 onPress={() => {
                   transferNotification();
                   setShowModal(false);
-                  router.push("/profile/transferDetails");
+                  router.push(`/profile/transaction/${transactionId}`);
                 }}
               >
                 <Text className="font-axiformaBlack text-white-normal text-sm">

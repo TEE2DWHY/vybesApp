@@ -18,6 +18,7 @@ import useFetch from "../../../hooks/useFetch";
 import { userInstance } from "../../../config/axios";
 import { useToken } from "../../../hooks/useToken";
 import SearchModal from "../../../modal/SearchModal";
+import { Spinner } from "../../../components/Spinner";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -60,33 +61,6 @@ const Home = () => {
       userId={item._id}
     />
   );
-
-  const Spinner = () => {
-    const spinValue = new Animated.Value(0);
-
-    useEffect(() => {
-      const startSpin = () => {
-        spinValue.setValue(0);
-        Animated.timing(spinValue, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }).start(() => startSpin());
-      };
-      startSpin();
-    }, [spinValue]);
-
-    const spin = spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-    });
-
-    return (
-      <Animated.View style={{ transform: [{ rotate: spin }] }}>
-        <View className="w-[40px] h-[40px] rounded-full border-[4px] border-transparent border-t-[#a241ee]" />
-      </Animated.View>
-    );
-  };
 
   return (
     <SafeAreaView className="h-full bg-gray-200 mt-8">

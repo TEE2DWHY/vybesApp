@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -9,9 +9,85 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import axios from "axios";
+import { Spinner } from "../../../../components/Spinner";
+import { useToken } from "../../../../hooks/useToken";
+import { useAccount } from "../../../../hooks/useAccount";
 
-const transferDetails = () => {
+const TransferDetails = () => {
+  const params = useLocalSearchParams();
+  const { transactionId } = params;
+  const token = useToken();
+  const [isLoading, setIsLoading] = useState(true);
+  const [transactionData, setTransactionData] = useState(null);
+  const { user } = useAccount();
+
+  useEffect(() => {
+    if (token && transactionId) {
+      const getTransaction = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:8000/v1/transaction/${transactionId.toString()}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data);
+          setTransactionData(response.data);
+        } catch (error) {
+          console.error("Error fetching transaction details", error);
+        } finally {
+          setIsLoading(false); // Set loading state to false after request
+        }
+      };
+      getTransaction();
+    }
+  }, [token, transactionId]);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 bg-white mt-10">
+        <View className="flex-1 justify-center items-center">
+          <Spinner />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // If transaction data is not available, return an error view or empty state
+  if (!transactionData) {
+    return (
+      <SafeAreaView className="flex-1 bg-white mt-10">
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-xl text-[#546881]">Transaction not found.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const {
+    amount,
+    status,
+    createdAt, // You should use createdAt instead of timestamp if it's the correct field
+    receiver,
+    sender,
+    transactionId: txId,
+  } = transactionData.payload;
+
+  // Format the createdAt timestamp correctly
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    if (isNaN(date)) {
+      return "Invalid Date"; // Return a fallback if date is invalid
+    }
+
+    // Format the date in a readable format
+    return date.toLocaleString(); // Or use other formatting options as needed
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white mt-10">
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
@@ -34,7 +110,7 @@ const transferDetails = () => {
               Bal
             </Text>
             <Text className="font-axiformaBlack text-sm text-white-normal ml-4">
-              50 Vybes Coin
+              {user?.walletBalance} Vybes Coin
             </Text>
           </TouchableOpacity>
         </View>
@@ -49,7 +125,7 @@ const transferDetails = () => {
               Amount
             </Text>
             <Text className="font-axiformaBold text-base text-[#7A91F9]">
-              60 Vybes Coin
+              {amount} Vybes Coin
             </Text>
           </View>
 
@@ -58,25 +134,34 @@ const transferDetails = () => {
               Status
             </Text>
             <Text className="font-axiformaBold text-base text-[#546881]">
-              Success
+              {status}
             </Text>
           </View>
 
           <View className="flex-row justify-between items-center my-2">
             <Text className="font-axiformaRegular text-base text-[#546881]">
-              Time
+              Date/Time
             </Text>
             <Text className="font-axiformaBold text-base text-[#546881]">
-              02/03/24 16:10:00
+              {formatTimestamp(createdAt)} {/* Use the formatted timestamp */}
             </Text>
           </View>
 
           <View className="flex-row justify-between items-center my-2">
             <Text className="font-axiformaRegular text-base text-[#546881]">
-              Sent
+              Sender
             </Text>
             <Text className="font-axiformaBold text-base text-[#546881]">
-              @Esther
+              @{sender}
+            </Text>
+          </View>
+
+          <View className="flex-row justify-between items-center my-2">
+            <Text className="font-axiformaRegular text-base text-[#546881]">
+              Recipient
+            </Text>
+            <Text className="font-axiformaBold text-base text-[#546881]">
+              @{receiver}
             </Text>
           </View>
 
@@ -85,7 +170,7 @@ const transferDetails = () => {
               Transaction No
             </Text>
             <Text className="font-axiformaBold text-base text-[#546881]">
-              2345678901123456789
+              {txId}
             </Text>
           </View>
 
@@ -94,7 +179,7 @@ const transferDetails = () => {
               Wallet Balance
             </Text>
             <Text className="font-axiformaBold text-base text-[#546881]">
-              4940 Vybe Coin
+              {user?.walletBalance} Vybe Coin
             </Text>
           </View>
         </View>
@@ -119,4 +204,4 @@ const transferDetails = () => {
   );
 };
 
-export default transferDetails;
+export default TransferDetails;
