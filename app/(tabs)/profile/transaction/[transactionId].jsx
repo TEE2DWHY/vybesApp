@@ -40,7 +40,7 @@ const TransferDetails = () => {
         } catch (error) {
           console.error("Error fetching transaction details", error);
         } finally {
-          setIsLoading(false); // Set loading state to false after request
+          setIsLoading(false);
         }
       };
       getTransaction();
@@ -57,7 +57,6 @@ const TransferDetails = () => {
     );
   }
 
-  // If transaction data is not available, return an error view or empty state
   if (!transactionData) {
     return (
       <SafeAreaView className="flex-1 bg-white mt-10">
@@ -71,20 +70,17 @@ const TransferDetails = () => {
   const {
     amount,
     status,
-    createdAt, // You should use createdAt instead of timestamp if it's the correct field
+    createdAt,
     receiver,
     sender,
     transactionId: txId,
   } = transactionData.payload;
 
-  // Format the createdAt timestamp correctly
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     if (isNaN(date)) {
-      return "Invalid Date"; // Return a fallback if date is invalid
+      return "Invalid Date";
     }
-
-    // Format the date in a readable format
     return date.toLocaleString(); // Or use other formatting options as needed
   };
 
@@ -97,7 +93,7 @@ const TransferDetails = () => {
               name="arrow-back-ios"
               size={24}
               style={{ color: "#546881" }}
-              onPress={() => router.back()}
+              onPress={() => router.push("/profile")}
             />
           </TouchableOpacity>
 
