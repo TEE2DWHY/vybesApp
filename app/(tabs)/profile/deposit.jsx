@@ -33,6 +33,18 @@ const Deposit = () => {
   const { user, refetchUser } = useAccount();
   const token = useToken();
 
+  const formatNumber = (value) => {
+    if (!value) return "0";
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2, // adjust the number of decimal places
+    });
+
+    return formatter.format(value);
+  };
+
   const handleChange = (text) => {
     const cleanedText = text.replace(/[^0-9.]/g, "");
     setValue(formatNumberWithCommas(cleanedText));
@@ -174,7 +186,7 @@ const Deposit = () => {
             </View>
 
             <Text className="mt-3 text-gray-700 font-medium text-base px-4 font-axiformaRegular">
-              Balance (₦) 500,000.00
+              Balance (₦) {formatNumber(user?.walletBalance / 0.005)}
             </Text>
             {error && (
               <Text className="text-center text-red-500 font-axiformaRegular mt-6 mb-2">
