@@ -13,6 +13,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
+import { useAccount } from "../../../hooks/useAccount";
 
 const coinValues = [
   { amount: "₦1,000.00", coin: "5 Vybe Coin" },
@@ -23,6 +24,7 @@ const coinValues = [
 ];
 
 const TxDashboard = () => {
+  const { user } = useAccount();
   return (
     <SafeAreaView className="h-full mt-10">
       <ScrollView className="px-4 mt-2" showsVerticalScrollIndicator={false}>
@@ -35,7 +37,7 @@ const TxDashboard = () => {
           />
           <Image
             source={{
-              uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              uri: user?.image,
             }}
             className="w-10 h-10 rounded-full"
             resizeMode="cover"
@@ -47,7 +49,7 @@ const TxDashboard = () => {
               total coin balance
             </Text>
             <Text className="capitalize font-axiformaRegular text-white-normal">
-              50 vybes coin
+              {user?.walletBalance} vybes coin
             </Text>
           </View>
           <View className="flex-row items-center justify-between gap-4 pt-6">
@@ -60,7 +62,6 @@ const TxDashboard = () => {
           </View>
         </View>
         <ScrollView
-          // className="flex-row items-center justify-between gap-2 my-10"
           contentContainerStyle={{
             display: "flex",
             flexDirection: "row",

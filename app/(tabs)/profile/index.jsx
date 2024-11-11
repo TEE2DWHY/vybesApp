@@ -26,8 +26,8 @@ import Transactions from "./components/Transactions";
 import Stories from "./components/Stories";
 import Likes from "./components/Likes";
 import { userInstance } from "../../../config/axios";
-import { getItem } from "../../../utils/AsyncStorage";
 import { useToken } from "../../../hooks/useToken";
+import { useAccount } from "../../../hooks/useAccount";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,6 +37,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const token = useToken();
   const router = useRouter();
+  const { user } = useAccount();
 
   const handlePrevious = () => {
     if (personalityTab > 4 || personalityTab > 1)
@@ -125,7 +126,7 @@ const Profile = () => {
                   </Text>
                 </View>
                 <Text className="font-axiformaBlack text-sm text-white-normal ml-4">
-                  50 Vybes Coin
+                  {user?.walletBalance} Vybes Coin
                 </Text>
               </TouchableOpacity>
             </View>

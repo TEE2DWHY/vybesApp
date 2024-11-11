@@ -225,7 +225,7 @@ const Transfer = () => {
               </Text>
             </View>
             <Text className="font-axiformaBlack text-sm text-white-normal ml-4">
-              50 Vybes Coin
+              {user?.walletBalance} Vybes Coin
             </Text>
           </TouchableOpacity>
         </View>

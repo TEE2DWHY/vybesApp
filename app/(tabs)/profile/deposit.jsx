@@ -7,6 +7,8 @@ import {
   TextInput,
   Image,
   ScrollView,
+  Modal,
+  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
@@ -15,35 +17,105 @@ import { router } from "expo-router";
 import paymentOptions from "../../../assets/images/paymentOptions.png";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
+import { Paystack } from "react-native-paystack-webview";
+import { useAccount } from "../../../hooks/useAccount";
+import { useToken } from "../../../hooks/useToken";
+import axios from "axios"; // Make sure you import axios
 
-const deposit = () => {
+const Deposit = () => {
+  const publicKey = process.env.EXPO_PUBLIC_PAYSTACK_API_PUBLIC_KEY;
   const [selectedMethod, setSelectedMethod] = useState("Bank Transfer");
   const paymentMethods = ["Bank Transfer", "Card", "Stripe", "Quickteller"];
   const [value, setValue] = useState("");
-  const [cardsData, setCardsData] = useState({
-    cardOne: "",
-    cardTwo: "",
-  });
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showPaystackModal, setShowPaystackModal] = useState(false);
+  const [error, setError] = useState("");
+  const { user, refetchUser } = useAccount();
+  const token = useToken();
 
   const handleChange = (text) => {
     const cleanedText = text.replace(/[^0-9.]/g, "");
     setValue(formatNumberWithCommas(cleanedText));
   };
 
+  const handleAddMoneyNow = () => {
+    if (value === "" || value === 0) {
+      return setError("Please Enter A Valid Amount");
+    }
+    // Show confirmation modal
+    if (Number(value) < 1000) {
+      return Alert.alert("Note", "Minimum Deposit Amount is 1000 Naira");
+    }
+    setShowConfirmationModal(true);
+  };
+
+  const handleProceed = () => {
+    setShowConfirmationModal(false);
+    setShowPaystackModal(true);
+  };
+
+  const handlePaystackSuccess = async (response) => {
+    try {
+      console.log("Paystack Payment Success Response:", response);
+
+      const { status, data } = response;
+      const transactionRef = data?.transactionRef;
+      const reference = transactionRef?.reference;
+      console.log(reference, status);
+
+      if (status === "success" && reference) {
+        // Assuming `value` comes from an input or state
+        const depositAmount = parseFloat(value.replace(/,/g, "")); // Ensure `value` is available
+        if (isNaN(depositAmount) || depositAmount <= 0) {
+          Alert.alert("Invalid deposit amount.");
+          return;
+        }
+
+        const depositData = {
+          depositAmount: depositAmount,
+          paymentReference: reference,
+        };
+
+        const backendResponse = await axios.post(
+          "http://localhost:8000/v1/transaction/deposit",
+          depositData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (backendResponse.status === 200) {
+          alert("Deposit Successful and Vybe Coins credited!");
+          console.log(backendResponse.data);
+          await refetchUser();
+        } else {
+          alert("Deposit failed, please try again.");
+        }
+      } else {
+        alert("Payment failed, please try again.");
+      }
+    } catch (error) {
+      console.error("Error during Paystack success:", error);
+      alert("Error occurred while processing payment.");
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white-normal mt-10">
-      <ScrollView className="mt-4 ">
+      <ScrollView className="mt-4">
         <View className="flex-row justify-between items-center px-4 mt-6">
           <AntDesign
             name="left"
             size={24}
             color="#B2BBC6"
-            onPress={() => router.push("/profile")}
+            onPress={() => router.back()}
           />
           <View className="w-10 h-10 rounded-full overflow-hidden">
             <Image
               source={{
-                uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                uri: user?.image,
               }}
               className="w-full h-full"
               resizeMode="cover"
@@ -51,8 +123,8 @@ const deposit = () => {
           </View>
         </View>
 
-        <View className="flex-row items-center  justify-center bg-[#361753] py-4 mt-5  w-full">
-          <Text className="text-base text-white-normal font-axiformaRegular mr-2  text-center">
+        <View className="flex-row items-center justify-center bg-[#361753] py-4 mt-5 w-full">
+          <Text className="text-base text-white-normal font-axiformaRegular mr-2 text-center">
             Deposit
           </Text>
           <AntDesign name="plussquareo" size={24} color="#ffff" />
@@ -68,7 +140,7 @@ const deposit = () => {
               }`}
             >
               <Text
-                className={`font-medium  font-axiformaRegular ${
+                className={`font-medium font-axiformaRegular ${
                   selectedMethod === method
                     ? "text-white-normal"
                     : "text-[#B2BBC6]"
@@ -93,6 +165,7 @@ const deposit = () => {
                   onChangeText={handleChange}
                   value={value}
                   className="flex-1 ml-2 text-base text-gray-900 font-axiformaRegular"
+                  onKeyPress={() => setError("")}
                 />
               </View>
               <Text className="mt-2 text-[#909DAD] text-right font-axiformaRegular">
@@ -103,9 +176,16 @@ const deposit = () => {
             <Text className="mt-3 text-gray-700 font-medium text-base px-4 font-axiformaRegular">
               Balance (₦) 500,000.00
             </Text>
-
-            <TouchableOpacity className="mt-6 bg-purple-500 py-3 rounded-3xl items-center mx-4">
-              <Text className="text-white-normal font-semibold text-lg font-axiformaRegular">
+            {error && (
+              <Text className="text-center text-red-500 font-axiformaRegular mt-6 mb-2">
+                {error}
+              </Text>
+            )}
+            <TouchableOpacity
+              className="mt-6 bg-purple-500 py-3 rounded-3xl items-center mx-4"
+              onPress={handleAddMoneyNow}
+            >
+              <Text className="text-white-normal font-semibold text-base font-axiformaRegular">
                 Add Money Now
               </Text>
             </TouchableOpacity>
@@ -127,12 +207,64 @@ const deposit = () => {
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.
                   </Text>
-                  <Text className="text-gray-700  font-axiformaRegular leading-5">
+                  <Text className="text-gray-700 font-axiformaRegular leading-5">
                     {step}
                   </Text>
                 </View>
               ))}
             </View>
+
+            {/* Confirmation Modal */}
+            <Modal
+              visible={showConfirmationModal}
+              transparent
+              animationType="slide"
+              onRequestClose={() => setShowConfirmationModal(false)}
+            >
+              <View className="flex-1 justify-center items-center bg-[#1b1b1b67] bg-opacity-50">
+                <View className="bg-white-normal p-4 rounded-lg w-[90%] border-2 border-gray-50 py-4 px-4">
+                  <Text className="text-gray-700 font-medium text-base mb-4 font-axiformaRegular">
+                    You are about to send {value} Naira to Vybes App.
+                  </Text>
+                  <TouchableOpacity
+                    className="bg-blue-normal py-4 rounded-lg mb-4 "
+                    onPress={handleProceed}
+                  >
+                    <Text className="font-axiformaRegular text-white-normal text-center">
+                      Proceed
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="bg-red-200 py-4 rounded-lg"
+                    onPress={() => setShowConfirmationModal(false)}
+                  >
+                    <Text className="text-white text-center font-axiformaRegular">
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+            {/* Paystack Payment Modal */}
+            {showPaystackModal && publicKey && (
+              <Paystack
+                showPayButton={false}
+                paystackKey={publicKey}
+                amount={parseFloat(value.replace(/,/g, ""))}
+                billingEmail={user?.email}
+                billingMobile={user?.phoneNumber}
+                billingName={user?.fullName}
+                activityIndicatorColor="#006BFF"
+                onSuccess={handlePaystackSuccess}
+                onCancel={() => {
+                  alert("Payment Cancelled");
+                  setShowPaystackModal(false);
+                }}
+                autoStart={true}
+                onClose={() => setShowPaystackModal(false)}
+              />
+            )}
           </>
         )}
 
@@ -250,9 +382,9 @@ const deposit = () => {
           </>
         )}
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#FFFFFF" />
+      <StatusBar style="dark" backgroundColor="#fffff" />
     </SafeAreaView>
   );
 };
 
-export default deposit;
+export default Deposit;

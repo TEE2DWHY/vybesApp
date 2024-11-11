@@ -25,18 +25,18 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
+        "INTERNET",
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT"
       ],
-      "package": "com.tee2dwhy.vybesapp"
+      "package": "com.tee2dwhy.vybesapp",
+      "jsEngine": "jsc"
     },
     "web": {
       "favicon": "./assets/images/vybe.png"
     },
     "plugins": [
-      [
-        "expo-router"
-      ],
+      ["expo-router"],
       [
         "expo-local-authentication",
         {
