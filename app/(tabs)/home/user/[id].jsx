@@ -21,10 +21,10 @@ import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import * as LocalAuthentication from "expo-local-authentication";
 import lockChats from "../../../../assets/images/lockchats.png";
-import * as Linking from "expo-linking";
 import useFetch from "../../../../hooks/useFetch";
 import { userInstance } from "../../../../config/axios";
 import { useToken } from "../../../../hooks/useToken";
+import { handleCall } from "../../../../utils/handleCall";
 
 const UserProfile = () => {
   const params = useLocalSearchParams();
@@ -135,20 +135,6 @@ const UserProfile = () => {
     } catch (error) {
       console.error("Biometric authentication error:", error);
     }
-  };
-
-  const handleCall = () => {
-    const phoneNumber = payload?.user?.phoneNumber;
-    const url = `tel:${phoneNumber}`;
-    Linking.canOpenURL(url)
-      .then((supported) => {
-        if (supported) {
-          Linking.openURL(url);
-        } else {
-          console.warn("Phone number is not available.");
-        }
-      })
-      .catch((err) => console.error("An error occurred", err));
   };
 
   return (
@@ -332,7 +318,7 @@ const UserProfile = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 className="bg-white-normal w-2/5 py-3 rounded-full ml-2 border border-[#F0E3FC] flex-row items-center justify-center gap-2"
-                onPress={handleCall}
+                onPress={handleCall("090229717250")}
               >
                 <Ionicons name="call-sharp" size={24} color="#a241ee" />
                 <Text className="text-purple-normal text-center font-axiformaRegular text-base">

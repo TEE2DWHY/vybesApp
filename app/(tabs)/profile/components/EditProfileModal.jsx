@@ -34,7 +34,7 @@ const EditProfileModal = ({
             <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
               <Text className="text-[#546881] font-axiformaRegular">Name:</Text>
               <TextInput
-                value={userData.fullName}
+                value={userData?.fullName}
                 onChangeText={(text) => handleInputChange("fullName", text)}
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
@@ -44,7 +44,7 @@ const EditProfileModal = ({
                 User Name:
               </Text>
               <TextInput
-                value={`@${userData.userName}`}
+                value={`@${userData?.userName}`}
                 onChangeText={(text) => handleInputChange("userName", text)}
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
@@ -54,7 +54,7 @@ const EditProfileModal = ({
                 Date of Birth:
               </Text>
               <TextInput
-                value={userData.dateOfBirth}
+                value={userData?.dateOfBirth}
                 onChangeText={(text) => handleInputChange("dateOfBirth", text)}
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
@@ -64,7 +64,7 @@ const EditProfileModal = ({
                 Account Type:
               </Text>
               <TextInput
-                value={userData.accountType}
+                value={userData?.accountType}
                 onChangeText={(text) => handleInputChange("accountType", text)}
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
@@ -85,7 +85,7 @@ const EditProfileModal = ({
                 Wallet Balance:
               </Text>
               <TextInput
-                value={userData.walletBalance}
+                value={userData?.walletBalance.toString()}
                 onChangeText={(text) =>
                   handleInputChange("walletBalance", text)
                 }

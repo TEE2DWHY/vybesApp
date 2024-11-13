@@ -11,12 +11,10 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
 import { clear, getItem, removeItem } from "../../../../utils/AsyncStorage";
 import { useEffect, useState } from "react";
-import { userInstance } from "../../../../config/axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import EditProfileModal from "./EditProfileModal";
 import ShareProfile from "../../../../modal/ShareProfile";
 import ShareQr from "../../../../modal/ShareQr";
-import useFetch from "../../../../hooks/useFetch";
 
 const Account = () => {
   const { user } = useAccount();
@@ -32,7 +30,7 @@ const Account = () => {
     password: "",
     walletBalance: user?.walletBalance || "",
     giftedCoins: "",
-    completedHooks: 15,
+    completedHooks: "",
   });
 
   const handleInputChange = (key, value) => {
@@ -44,6 +42,7 @@ const Account = () => {
 
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
+
   return (
     <>
       <View className="items-center mt-4">
@@ -183,11 +182,13 @@ const Account = () => {
         </View>
       </View>
 
-      <Text className="font-axiformaBlack mt-8 text-lg ">{user?.fullName}</Text>
+      <Text className="font-axiformaBlack mt-8 text-lg capitalize">
+        {user?.fullName}
+      </Text>
 
       <View className="mt-4">
         <Text className="font-axiformaBook text-sm text-[#546881] mb-3">
-          Bio Description
+          {user?.bio}
         </Text>
         <View className="border py-8 px-4 mt-2 rounded-lg flex-row justify-between">
           <View className="w-1/2 pr-2">
@@ -196,13 +197,17 @@ const Account = () => {
             </Text>
             <View className="flex-row justify-between">
               <View className="flex-1 items-center">
-                <Text className="text-[#7A91F9] text-xl">112</Text>
+                <Text className="text-[#7A91F9] text-xl">
+                  {user?.following?.vybers}
+                </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
                   Vybers
                 </Text>
               </View>
               <View className="flex-1 items-center">
-                <Text className="text-[#2AB49B] text-xl">20</Text>
+                <Text className="text-[#2AB49B] text-xl">
+                  {user?.following?.vybers}
+                </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
                   Baddies
                 </Text>
@@ -215,13 +220,17 @@ const Account = () => {
             </Text>
             <View className="flex-row justify-between">
               <View className="flex-1 items-center">
-                <Text className="text-[#7A91F9] text-xl">112</Text>
+                <Text className="text-[#7A91F9] text-xl">
+                  {user?.followers?.vybers}
+                </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
                   Vybers
                 </Text>
               </View>
               <View className="flex-1 items-center">
-                <Text className="text-[#2AB49B] text-xl">20</Text>
+                <Text className="text-[#2AB49B] text-xl">
+                  {user?.followers?.vybers}
+                </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
                   Baddies
                 </Text>

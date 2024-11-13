@@ -356,7 +356,7 @@ const Transfer = () => {
                 onPress={() => {
                   transferNotification();
                   setShowModal(false);
-                  router.push(`/profile/transaction/${transactionId}`);
+                  router.push(`/profile/transfer/${transactionId}`);
                 }}
               >
                 <Text className="font-axiformaBlack text-white-normal text-sm">

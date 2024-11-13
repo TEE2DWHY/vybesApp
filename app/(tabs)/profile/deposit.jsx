@@ -20,7 +20,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { Paystack } from "react-native-paystack-webview";
 import { useAccount } from "../../../hooks/useAccount";
 import { useToken } from "../../../hooks/useToken";
-import axios from "axios"; // Make sure you import axios
+import axios from "axios";
 
 const Deposit = () => {
   const publicKey = process.env.EXPO_PUBLIC_PAYSTACK_API_PUBLIC_KEY;
@@ -33,13 +33,18 @@ const Deposit = () => {
   const { user, refetchUser } = useAccount();
   const token = useToken();
 
+  const [cardsData, setCardsData] = useState({
+    cardOne: "",
+    cardTwo: "",
+  });
+
   const formatNumber = (value) => {
-    if (!value) return "0";
+    if (!value || value === 0) return "0";
 
     const formatter = new Intl.NumberFormat("en-US", {
       style: "decimal",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2, // adjust the number of decimal places
+      maximumFractionDigits: 2,
     });
 
     return formatter.format(value);
@@ -54,7 +59,6 @@ const Deposit = () => {
     if (value === "" || value === 0) {
       return setError("Please Enter A Valid Amount");
     }
-    // Show confirmation modal
     if (Number(value) < 1000) {
       return Alert.alert("Note", "Minimum Deposit Amount is 1000 Naira");
     }
@@ -68,16 +72,11 @@ const Deposit = () => {
 
   const handlePaystackSuccess = async (response) => {
     try {
-      console.log("Paystack Payment Success Response:", response);
-
       const { status, data } = response;
       const transactionRef = data?.transactionRef;
       const reference = transactionRef?.reference;
-      console.log(reference, status);
-
       if (status === "success" && reference) {
-        // Assuming `value` comes from an input or state
-        const depositAmount = parseFloat(value.replace(/,/g, "")); // Ensure `value` is available
+        const depositAmount = parseFloat(value.replace(/,/g, ""));
         if (isNaN(depositAmount) || depositAmount <= 0) {
           Alert.alert("Invalid deposit amount.");
           return;
@@ -99,9 +98,14 @@ const Deposit = () => {
         );
 
         if (backendResponse.status === 200) {
-          alert("Deposit Successful and Vybe Coins credited!");
+          alert("Deposit Successful and Vybe Coins credited! Redirecting...");
           console.log(backendResponse.data);
           await refetchUser();
+          setTimeout(() => {
+            router.push(
+              `/profile/deposit/${backendResponse.data.payload.transaction.transactionId}`
+            );
+          }, 3000);
         } else {
           alert("Deposit failed, please try again.");
         }
@@ -115,7 +119,7 @@ const Deposit = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white-normal mt-10">
+    <SafeAreaView className="flex-1 bg-white-normal mt-6">
       <ScrollView className="mt-4">
         <View className="flex-row justify-between items-center px-4 mt-6">
           <AntDesign
@@ -239,18 +243,18 @@ const Deposit = () => {
                     You are about to send {value} Naira to Vybes App.
                   </Text>
                   <TouchableOpacity
-                    className="bg-blue-normal py-4 rounded-lg mb-4 "
+                    className="bg-blue-normal py-2 rounded-lg mb-4 "
                     onPress={handleProceed}
                   >
-                    <Text className="font-axiformaRegular text-white-normal text-center">
+                    <Text className="text-white-normal font-semibold text-base font-axiformaRegular text-center">
                       Proceed
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    className="bg-red-200 py-4 rounded-lg"
                     onPress={() => setShowConfirmationModal(false)}
+                    className="bg-red-400 py-2 rounded-lg"
                   >
-                    <Text className="text-white text-center font-axiformaRegular">
+                    <Text className="text-white-normal font-semibold text-base font-axiformaRegular text-center">
                       Cancel
                     </Text>
                   </TouchableOpacity>
@@ -258,7 +262,7 @@ const Deposit = () => {
               </View>
             </Modal>
 
-            {/* Paystack Payment Modal */}
+            {/* Paystack Modal */}
             {showPaystackModal && publicKey && (
               <Paystack
                 showPayButton={false}

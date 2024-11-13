@@ -10,7 +10,11 @@ const ProfileLayout = () => {
       <Stack.Screen name="withdraw" options={{ headerShown: false }} />
       <Stack.Screen name="conversion" options={{ headerShown: false }} />
       <Stack.Screen
-        name="transaction/[transactionId]"
+        name="transfer/[transactionId]"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="deposit/[transactionId]"
         options={{ headerShown: false }}
       />
       <Stack.Screen name="ticketPayment" options={{ headerShown: false }} />
