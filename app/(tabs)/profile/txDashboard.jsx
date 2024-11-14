@@ -112,7 +112,10 @@ const TxDashboard = () => {
           </TouchableOpacity>
         </ScrollView>
         <View className="self-center flex-row space-x-14 bg-white-normal p-8 rounded-md border border-[#F3F9FF]">
-          <TouchableOpacity className="gap-4">
+          <TouchableOpacity
+            className="gap-4"
+            onPress={() => router.push("/profile/conversion")}
+          >
             <View
               style={{
                 backgroundColor: "#F5ECFD",

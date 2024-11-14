@@ -9,9 +9,11 @@ import {
   transferredCoinsData,
   receivedCoinsData,
 } from "../../../../data/data";
+import axios from "axios";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
+  const [transactionType, setTransactionType] = useState("");
 
   const renderTransactions = (data, type) => (
     <View className="mb-12">

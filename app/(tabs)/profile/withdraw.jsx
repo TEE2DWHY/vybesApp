@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -14,24 +14,37 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import Feather from "@expo/vector-icons/Feather";
+import axios from "axios";
 import { router } from "expo-router";
 import { useAccount } from "../../../hooks/useAccount";
-
-const banks = [
-  { id: "1", name: "Access Bank" },
-  { id: "2", name: "First Bank" },
-  { id: "3", name: "Guaranty Trust Bank" },
-  { id: "4", name: "Zenith Bank" },
-  { id: "5", name: "UBA" },
-  { id: "6", name: "Sterling Bank" },
-  // Add more banks as needed
-];
 
 const Withdraw = () => {
   const { user } = useAccount();
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [banks, setBanks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const response = await axios.get("https://nigerianbanks.xyz");
+        setBanks(response.data);
+      } catch (error) {
+        console.error("Error fetching banks data", error);
+        alert("Failed to load banks data");
+      }
+    };
+
+    fetchBanks();
+  }, []);
+
+  const filteredBanks = banks.filter((bank) =>
+    bank.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const formatNumber = (value) => {
     if (!value || value === 0) return "0";
@@ -45,9 +58,41 @@ const Withdraw = () => {
     return formatter.format(value);
   };
 
-  const handleSelectBank = (bankName) => {
-    setSelectedBank(bankName);
+  const handleSelectBank = (bankName, bankCode) => {
+    setSelectedBank({ name: bankName, code: bankCode });
     setModalVisible(false);
+  };
+
+  const handleWithdraw = async () => {
+    if (!withdrawAmount || !selectedBank || !accountNumber) {
+      alert("Please provide all details to proceed with the withdrawal.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/transaction/withdraw",
+        {
+          amount: withdrawAmount,
+          bankCode: selectedBank.code,
+          accountNumber,
+          email: user?.email,
+        }
+      );
+
+      if (response.data.message === "Withdrawal request successful") {
+        alert("Withdrawal request successful!");
+      } else {
+        alert("Withdrawal failed: " + response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while processing your withdrawal.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -79,22 +124,13 @@ const Withdraw = () => {
             <Feather name="arrow-up-right" size={24} color="#fff" />
           </View>
 
-          <View className="flex-row gap-4 mt-2 w-[90%] px-6">
-            <AntDesign name="infocirlceo" size={20} color="#7A91F9" />
-            <Text className="text-[#3D4C5E] font-axiformaRegular text-sm">
-              Vybes & Date charges a{" "}
-              <Text className="text-purple-normal">10%</Text> withdrawal fee on
-              any amount you take out.
-            </Text>
-          </View>
-
           <View className="mt-6 px-2">
             <View className="bg-white p-4">
               <View className="flex-row justify-between items-center mb-4 p-4 rounded-lg shadow border border-gray-200">
                 <View className="flex-row items-center">
                   <AntDesign name="home" size={24} color="#47586E" />
                   <Text className="ml-2 text-gray-800 text-sm font-medium font-axiformaRegular">
-                    {selectedBank || "Select Bank"}
+                    {selectedBank?.name || "Select Bank"}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -120,11 +156,10 @@ const Withdraw = () => {
                     placeholder="Enter account number here"
                     keyboardType="number-pad"
                     maxLength={10}
+                    value={accountNumber}
+                    onChangeText={setAccountNumber}
                   />
                 </View>
-                <TouchableOpacity>
-                  <AntDesign name="closecircleo" size={20} color="#B2BBC6" />
-                </TouchableOpacity>
               </View>
             </View>
 
@@ -158,9 +193,13 @@ const Withdraw = () => {
           </View>
 
           <View className="mt-10 px-6 mb-12">
-            <TouchableOpacity className="bg-purple-normal py-4 rounded-full">
+            <TouchableOpacity
+              className="bg-purple-normal py-4 rounded-full"
+              onPress={handleWithdraw}
+              disabled={loading}
+            >
               <Text className="text-center text-white-normal text-lg font-semibold font-axiformaRegular">
-                Withdraw
+                {loading ? "Processing..." : "Withdraw"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -175,23 +214,49 @@ const Withdraw = () => {
           onRequestClose={() => setModalVisible(false)}
         >
           <View className="flex-1 justify-center items-center bg-[#1b1b1ba0] bg-opacity-50">
-            <View className="w-4/5 bg-white-normal rounded-lg p-5 shadow-lg">
+            <View
+              className="bg-white-normal rounded-lg p-5 shadow-lg"
+              style={{ width: "90%", height: 350 }}
+            >
               <Text className="text-lg font-bold mb-2 text-center font-axiformaRegular">
                 Select a Bank
               </Text>
+
+              <View className="flex-row items-center mb-4 border border-gray-300 rounded-lg p-2">
+                <MaterialIcons
+                  name="search"
+                  size={20}
+                  color="#47586E"
+                  style={{ marginTop: 5 }}
+                />
+                <TextInput
+                  placeholder="Search for a bank"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  className="ml-2 text-sm font-axiformaRegular"
+                />
+              </View>
+
               <FlatList
-                data={banks}
+                data={filteredBanks}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     className="py-4 border-b border-gray-300"
-                    onPress={() => handleSelectBank(item.name)}
+                    onPress={() => handleSelectBank(item.name, item.code)}
                   >
-                    <Text className="text-base font-axiformaRegular">
-                      {item.name}
-                    </Text>
+                    <View className="flex-row items-center">
+                      <Image
+                        source={{ uri: item.logo }}
+                        style={{ width: 30, height: 30, marginRight: 10 }}
+                        resizeMode="contain"
+                      />
+                      <Text className="text-base font-axiformaRegular">
+                        {item.name}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.code}
               />
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
