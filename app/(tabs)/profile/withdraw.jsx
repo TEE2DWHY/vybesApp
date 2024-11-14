@@ -9,6 +9,7 @@ import {
   ScrollView,
   Modal,
   FlatList,
+  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -27,6 +28,7 @@ const Withdraw = () => {
   const [loading, setLoading] = useState(false);
   const [banks, setBanks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchBanks = async () => {
@@ -35,7 +37,7 @@ const Withdraw = () => {
         setBanks(response.data);
       } catch (error) {
         console.error("Error fetching banks data", error);
-        alert("Failed to load banks data");
+        Alert.alert("Error", "Failed to load banks data");
       }
     };
 
@@ -65,12 +67,15 @@ const Withdraw = () => {
 
   const handleWithdraw = async () => {
     if (!withdrawAmount || !selectedBank || !accountNumber) {
-      alert("Please provide all details to proceed with the withdrawal.");
-      return;
+      return Alert.alert(
+        "Note",
+        "Please provide all details to proceed with the withdrawal."
+      );
     }
-
+    if (user?.walletBalance * 0.005 < parseFloat(withdrawAmount)) {
+      return setError("Insufficient Balance.");
+    }
     setLoading(true);
-
     try {
       const response = await axios.post(
         "http://localhost:8000/v1/transaction/withdraw",
@@ -154,10 +159,13 @@ const Withdraw = () => {
                   <TextInput
                     className="ml-2 text-gray-800 text-sm font-medium font-axiformaRegular mt-[-5px]"
                     placeholder="Enter account number here"
-                    keyboardType="number-pad"
+                    keyboardType="numeric"
                     maxLength={10}
                     value={accountNumber}
-                    onChangeText={setAccountNumber}
+                    onChangeText={(text) => {
+                      const cleanedText = text.replace(/[^0-9]/g, "");
+                      setAccountNumber(cleanedText);
+                    }}
                   />
                 </View>
               </View>
@@ -191,7 +199,11 @@ const Withdraw = () => {
               />
             </View>
           </View>
-
+          {error && (
+            <Text className="text-center text-red-500 text-sm font-axiformaRegular mt-6">
+              {error}
+            </Text>
+          )}
           <View className="mt-10 px-6 mb-12">
             <TouchableOpacity
               className="bg-purple-normal py-4 rounded-full"
@@ -214,11 +226,8 @@ const Withdraw = () => {
           onRequestClose={() => setModalVisible(false)}
         >
           <View className="flex-1 justify-center items-center bg-[#1b1b1ba0] bg-opacity-50">
-            <View
-              className="bg-white-normal rounded-lg p-5 shadow-lg"
-              style={{ width: "90%", height: 350 }}
-            >
-              <Text className="text-lg font-bold mb-2 text-center font-axiformaRegular">
+            <View className="bg-white-normal rounded-lg p-5 shadow-lg w-[85%] h-[400px]">
+              <Text className="text-base font-bold mb-2 text-center font-axiformaRegular">
                 Select a Bank
               </Text>
 

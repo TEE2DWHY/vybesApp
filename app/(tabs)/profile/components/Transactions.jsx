@@ -1,23 +1,55 @@
-import React, { useState } from "react";
-import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native";
-import {
-  withdrawalData,
-  depositData,
-  convertedCoinsData,
-  transferredCoinsData,
-  receivedCoinsData,
-} from "../../../../data/data";
 import axios from "axios";
+import { useToken } from "../../../../hooks/useToken";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
-  const [transactionType, setTransactionType] = useState("");
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const token = useToken();
+
+  console.log(activeTab);
+
+  useEffect(() => {
+    const getTransactions = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/v1/transaction/type",
+          {
+            params: { transactionType: activeTab },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setTransactions(response.data.transactions || []);
+      } catch (error) {
+        setError("Failed to load transactions. Please try again.");
+        console.error(error.response?.data.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (token) {
+      getTransactions();
+    }
+  }, [activeTab]);
 
   const renderTransactions = (data, type) => (
     <View className="mb-12">
-      <View className=" bg-[#6da1d6] mt-4 py-3 font-axiformaRegular w-3/5 px-2 rounded-md">
+      <View className="bg-[#6da1d6] mt-4 py-3 font-axiformaRegular w-3/5 px-2 rounded-md">
         <Text className="capitalize text-[#fff] text-center font-axiformaBook">
           March 12 - March 19 2024
         </Text>
@@ -29,12 +61,10 @@ const Transactions = () => {
             className="flex-row justify-between mb-8 border-b pb-1 border-[#EEF6FF]"
           >
             <View className="gap-4">
-              <Text className={`font-axiformaBlack text-[#3D4C5E]`}>
-                {type}
-              </Text>
+              <Text className="font-axiformaBlack text-[#3D4C5E]">{type}</Text>
               {(type === "Transferred Coins" || type === "Received Coins") && (
                 <Text className="text-purple-normal font-axiformaRegular text-xs">
-                  {data === transferredCoinsData ? "to" : "from"}{" "}
+                  {type === "Transferred Coins" ? "to" : "from"}{" "}
                   {transaction.to}
                 </Text>
               )}
@@ -45,10 +75,9 @@ const Transactions = () => {
             <View>
               <Text
                 className={`${
-                  data === convertedCoinsData
+                  type === "Converted Coins"
                     ? "text-[#02B784] text-xs"
-                    : data === transferredCoinsData ||
-                      data === receivedCoinsData
+                    : type === "Transferred Coins" || type === "Received Coins"
                     ? "text-[#8BC0FE] text-base"
                     : "text-[#FFB053] text-base"
                 } font-axiformaBlack`}
@@ -63,104 +92,101 @@ const Transactions = () => {
   );
 
   return (
-    <>
-      <SafeAreaView className="mt-10">
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="flex-row justify-between">
-            <View>
-              <Text className="text-[#3D4C5E] text-xl font-axiformaBlack">
-                Transactions History
-              </Text>
-              <Text className="capitalize text-[#B2BBC6] mt-4 font-axiformaRegular">
-                filter using date ranges
-              </Text>
-            </View>
-            <View className="flex-row">
-              <Text className="capitalize text-[#B2BBC6] mt-2 font-axiformaRegular">
-                1 Week
-              </Text>
-              <TouchableOpacity>
-                <Feather
-                  name="sliders"
-                  size={20}
-                  style={{
-                    color: "#8BC0FE",
-                    marginLeft: 10,
-                    marginTop: 4,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
+    <SafeAreaView className="mt-10">
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="flex-row justify-between">
+          <View>
+            <Text className="text-[#3D4C5E] text-xl font-axiformaBlack">
+              Transactions History
+            </Text>
+            <Text className="capitalize text-[#B2BBC6] mt-4 font-axiformaRegular">
+              Filter using date ranges
+            </Text>
           </View>
-          <ScrollView
-            className="flex-row mt-10"
-            showsHorizontalScrollIndicator={false}
-            horizontal
-          >
-            <View className="flex-row items-center gap-6 border-b border-[#DBEBFF] pb-3">
-              <Text
-                className={`${
-                  activeTab === "Withdrawal"
-                    ? "text-[#3D4C5E]"
-                    : "text-[#B2BBC6]"
-                } font-axiformaRegular font-[14px]`}
-                onPress={() => setActiveTab("Withdrawal")}
-              >
-                Withdrawal
-              </Text>
-              <Text
-                className={`${
-                  activeTab === "Deposit" ? "text-[#3D4C5E]" : "text-[#B2BBC6]"
-                } font-axiformaRegular font-[14px]`}
-                onPress={() => setActiveTab("Deposit")}
-              >
-                Deposit
-              </Text>
-              <Text
-                className={`${
-                  activeTab === "Transferred Coins"
-                    ? "text-[#3D4C5E]"
-                    : "text-[#B2BBC6]"
-                } font-axiformaRegular font-[14px]`}
-                onPress={() => setActiveTab("Transferred Coins")}
-              >
-                Transferred Coins
-              </Text>
-              <Text
-                className={`${
-                  activeTab === "Received Coins"
-                    ? "text-[#3D4C5E]"
-                    : "text-[#B2BBC6]"
-                } font-axiformaRegular font-[14px]`}
-                onPress={() => setActiveTab("Received Coins")}
-              >
-                Received Coins
-              </Text>
-              <Text
-                className={`${
-                  activeTab === "Converted Coins"
-                    ? "text-[#3D4C5E]"
-                    : "text-[#B2BBC6]"
-                } font-axiformaRegular font-[14px]`}
-                onPress={() => setActiveTab("Converted Coins")}
-              >
-                Converted Coins
-              </Text>
-            </View>
-          </ScrollView>
-          {activeTab === "Withdrawal" &&
-            renderTransactions(withdrawalData, "Withdrawal")}
-          {activeTab === "Deposit" &&
-            renderTransactions(depositData, "Deposit")}
-          {activeTab === "Transferred Coins" &&
-            renderTransactions(transferredCoinsData, "Transferred Coins")}
-          {activeTab === "Received Coins" &&
-            renderTransactions(receivedCoinsData, "Received Coins")}
-          {activeTab === "Converted Coins" &&
-            renderTransactions(convertedCoinsData, "Converted Money To Coins")}
+          <View className="flex-row">
+            <Text className="capitalize text-[#B2BBC6] mt-2 font-axiformaRegular">
+              1 Week
+            </Text>
+            <TouchableOpacity>
+              <Feather
+                name="sliders"
+                size={20}
+                style={{
+                  color: "#8BC0FE",
+                  marginLeft: 10,
+                  marginTop: 4,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <ScrollView
+          className="flex-row mt-10"
+          showsHorizontalScrollIndicator={false}
+          horizontal
+        >
+          <View className="flex-row items-center gap-6 border-b border-[#DBEBFF] pb-3">
+            <Text
+              className={`${
+                activeTab === "Withdrawal" ? "text-[#3D4C5E]" : "text-[#B2BBC6]"
+              } font-axiformaRegular font-[14px]`}
+              onPress={() => setActiveTab("Withdrawal")}
+            >
+              Withdrawal
+            </Text>
+            <Text
+              className={`${
+                activeTab === "Deposit" ? "text-[#3D4C5E]" : "text-[#B2BBC6]"
+              } font-axiformaRegular font-[14px]`}
+              onPress={() => setActiveTab("Deposit")}
+            >
+              Deposit
+            </Text>
+            <Text
+              className={`${
+                activeTab === "Transferred Coins"
+                  ? "text-[#3D4C5E]"
+                  : "text-[#B2BBC6]"
+              } font-axiformaRegular font-[14px]`}
+              onPress={() => setActiveTab("Transferred Coins")}
+            >
+              Transferred Coins
+            </Text>
+            <Text
+              className={`${
+                activeTab === "Received Coins"
+                  ? "text-[#3D4C5E]"
+                  : "text-[#B2BBC6]"
+              } font-axiformaRegular font-[14px]`}
+              onPress={() => setActiveTab("Received Coins")}
+            >
+              Received Coins
+            </Text>
+            <Text
+              className={`${
+                activeTab === "Converted Coins"
+                  ? "text-[#3D4C5E]"
+                  : "text-[#B2BBC6]"
+              } font-axiformaRegular font-[14px]`}
+              onPress={() => setActiveTab("Converted Coins")}
+            >
+              Converted Coins
+            </Text>
+          </View>
         </ScrollView>
-      </SafeAreaView>
-    </>
+
+        {isLoading ? (
+          <View className="flex-1 justify-center items-center mt-10">
+            <ActivityIndicator size="large" color="#8BC0FE" />
+          </View>
+        ) : error ? (
+          <Text className="text-red-500 text-center mt-10">{error}</Text>
+        ) : (
+          renderTransactions(transactions, activeTab)
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
