@@ -354,23 +354,26 @@ const UserProfile = () => {
               My Interests and Personality
             </Text>
             <View className="flex-row flex-wrap mt-2">
-              <View className="bg-purple-100 py-2 px-4 m-1 rounded-full">
-                <Text className="font-axiformaRegular">Takes Alcohol</Text>
-              </View>
-              <View className="bg-red-100 py-2 px-4 m-1 rounded-full">
-                <Text className="font-axiformaRegular">Loves Football</Text>
-              </View>
-              <View className="bg-blue-100 py-2 px-4 m-1 rounded-full">
-                <Text className="font-axiformaRegular">Loves Pet</Text>
-              </View>
-              <View className="bg-green-100 py-2 px-4 m-1 rounded-full">
-                <Text className="font-axiformaRegular">
-                  Available for Short Time
-                </Text>
-              </View>
-              <View className="bg-yellow-100 py-2 px-4 m-1 rounded-full">
-                <Text className="font-axiformaRegular">Aries</Text>
-              </View>
+              {payload?.user?.hobbies.map((hobby, index) => {
+                const colors = [
+                  "bg-purple-100",
+                  "bg-red-100",
+                  "bg-blue-100",
+                  "bg-green-100",
+                  "bg-yellow-100",
+                ];
+                const bgColor = colors[index % colors.length];
+                return (
+                  <View
+                    className={`${bgColor} px-4 m-1 rounded-full py-4`}
+                    key={index}
+                  >
+                    <Text className="font-axiformaRegular capitalize">
+                      {hobby}
+                    </Text>
+                  </View>
+                );
+              })}
             </View>
           </View>
         </View>

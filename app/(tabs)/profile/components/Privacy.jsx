@@ -32,7 +32,6 @@ const PrivacySettings = () => {
   const [loading, setLoading] = useState(true);
   const token = useToken();
 
-  // Default settings to use if none are found
   const defaultSettings = {
     chatPrivacy: true,
     profilePrivacy: true,
