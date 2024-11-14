@@ -69,7 +69,6 @@ const Verify = () => {
           email: email,
           registrationToken: registrationToken,
         });
-        console.log(response.data);
         Alert.alert("Success!", "Account Verification is Successful", [
           {
             text: "Proceed to Login",

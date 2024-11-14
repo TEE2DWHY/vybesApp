@@ -18,8 +18,6 @@ const Transactions = () => {
   const [error, setError] = useState(null);
   const token = useToken();
 
-  console.log(activeTab);
-
   useEffect(() => {
     const getTransactions = async () => {
       setIsLoading(true);

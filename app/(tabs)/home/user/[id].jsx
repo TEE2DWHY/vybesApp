@@ -138,7 +138,7 @@ const UserProfile = () => {
   };
 
   return (
-    <SafeAreaView className="mt-10">
+    <SafeAreaView classNam-e="mt-10">
       <ScrollView className="px-4">
         <View className="mt-4">
           <AntDesign
