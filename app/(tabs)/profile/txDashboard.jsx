@@ -25,6 +25,17 @@ const coinValues = [
 
 const TxDashboard = () => {
   const { user } = useAccount();
+  const formatNumber = (value) => {
+    if (!value || value === 0) return "0";
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+
+    return formatter.format(value);
+  };
   return (
     <SafeAreaView className="h-full mt-10">
       <ScrollView className="px-4 mt-2" showsVerticalScrollIndicator={false}>
@@ -57,7 +68,7 @@ const TxDashboard = () => {
               total convertible money
             </Text>
             <Text className="capitalize font-axiformaRegular text-white-normal">
-              #500,000
+              ₦ {formatNumber(user?.walletBalance / 0.005)}
             </Text>
           </View>
         </View>

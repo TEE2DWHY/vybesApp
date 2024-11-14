@@ -318,7 +318,7 @@ const UserProfile = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 className="bg-white-normal w-2/5 py-3 rounded-full ml-2 border border-[#F0E3FC] flex-row items-center justify-center gap-2"
-                onPress={handleCall("090229717250")}
+                onPress={() => handleCall(payload?.user?.phoneNumber)}
               >
                 <Ionicons name="call-sharp" size={24} color="#a241ee" />
                 <Text className="text-purple-normal text-center font-axiformaRegular text-base">

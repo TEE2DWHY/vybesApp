@@ -15,6 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
+import { useAccount } from "../../../hooks/useAccount";
 
 const banks = [
   { id: "1", name: "Access Bank" },
@@ -27,9 +28,22 @@ const banks = [
 ];
 
 const Withdraw = () => {
+  const { user } = useAccount();
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+
+  const formatNumber = (value) => {
+    if (!value || value === 0) return "0";
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+
+    return formatter.format(value);
+  };
 
   const handleSelectBank = (bankName) => {
     setSelectedBank(bankName);
@@ -50,7 +64,7 @@ const Withdraw = () => {
             <View className="w-10 h-10 rounded-full overflow-hidden">
               <Image
                 source={{
-                  uri: "https://plus.unsplash.com/premium_photo-1673792686302-7555a74de717?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  uri: user?.image,
                 }}
                 className="w-full h-full"
                 resizeMode="cover"
@@ -126,7 +140,8 @@ const Withdraw = () => {
 
           <View className="mt-6 pr-4">
             <Text className="text-[#546881] font-medium font-axiformaRegular text-right text-sm">
-              Withdrawable Balance (₦) 500,000.00
+              Withdrawable Balance (₦){" "}
+              {formatNumber(user?.walletBalance / 0.005)}
             </Text>
           </View>
 
