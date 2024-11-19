@@ -47,6 +47,23 @@ const Add = () => {
     }
   };
 
+  const addUser = async (contactId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/contact/add-contact",
+        { contactId: contactId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (token) fetchUsers();
   }, [token]);
@@ -71,7 +88,7 @@ const Add = () => {
           <Text className="font-axiformaBlack text-sm text-[#314359] capitalize">
             @{item.userName}
           </Text>
-          <Text className="font-axiformaRegular text-xs text-[#909DAD]">
+          <Text className="font-axiformaRegular text-xs text-[#909DAD] mt-2">
             {item.bio}
           </Text>
         </View>
@@ -92,7 +109,12 @@ const Add = () => {
           {item.followStatus === "requested" ? (
             <AntDesign name="rocket1" size={24} color="#AFA4F8" />
           ) : (
-            <MaterialIcons name="person-add-alt-1" size={24} color="#AFA4F8" />
+            <MaterialIcons
+              name="person-add-alt-1"
+              size={24}
+              color="#AFA4F8"
+              onPress={() => addUser(item._id)}
+            />
             // <AntDesign
             //   name={item.followStatus === "follow" ? "adduser" : "addusergroup"}
             //   size={24}
