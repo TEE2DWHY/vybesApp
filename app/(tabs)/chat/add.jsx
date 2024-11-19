@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -9,172 +9,124 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import HeaderComponent from "./components/HeaderComponent";
+import axios from "axios";
+import { useToken } from "../../../hooks/useToken";
+import { Spinner } from "../../../components/Spinner";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Add = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [contacts, setContacts] = useState([]);
+  const token = useToken();
+
   const onRefresh = async () => {
     setRefreshing(true);
+    await fetchUsers();
     setRefreshing(false);
-    console.log("Profile details fetched successfully.");
   };
-  const data = [
-    {
-      id: "1",
-      username: "@Dhemmexroxy",
-      description: "i am a lover watching animation...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "requested",
-      imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-    },
-    {
-      id: "2",
-      username: "@JaneDoe",
-      description: "Love dancing and doing a lot...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "follow",
-      imageUrl: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: "3",
-      username: "@JohnSmith",
-      description: "Love taking sexy pictures and...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "following",
-      imageUrl: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      id: "4",
-      username: "@Dhemmexroxy",
-      description: "I Am A Lover Watching Animati...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "requested",
-      imageUrl: "https://randomuser.me/api/portraits/women/4.jpg",
-    },
-    {
-      id: "5",
-      username: "@EmilyBrown",
-      description: "I love to party and club...",
-      badge: "Vyber",
-      badgeColor: "#DDE5F5",
-      badgeTextColor: "#AFA4F8",
-      followStatus: "follow",
-      imageUrl: "https://randomuser.me/api/portraits/women/5.jpg",
-    },
-    {
-      id: "6",
-      username: "@ChrisRocks",
-      description: "I enjoy watching comedy movies...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "following",
-      imageUrl: "https://randomuser.me/api/portraits/men/6.jpg",
-    },
-    {
-      id: "7",
-      username: "@LindaGreen",
-      description: "I'm into fitness and wellness...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "follow",
-      imageUrl: "https://randomuser.me/api/portraits/women/7.jpg",
-    },
-    {
-      id: "8",
-      username: "@MarkTwain",
-      description: "Love to write and travel...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "requested",
-      imageUrl: "https://randomuser.me/api/portraits/men/8.jpg",
-    },
-    {
-      id: "9",
-      username: "@SophiaTurner",
-      description: "Photographer and coffee lover...",
-      badge: "Baddie",
-      badgeColor: "#CDEDEA",
-      badgeTextColor: "#50C2C9",
-      followStatus: "follow",
-      imageUrl: "https://randomuser.me/api/portraits/women/9.jpg",
-    },
-    {
-      id: "10",
-      username: "@JamesBond",
-      description: "Secret agent on a mission...",
-      badge: "Vyber",
-      badgeColor: "#DDE5F5",
-      badgeTextColor: "#AFA4F8",
-      followStatus: "following",
-      imageUrl: "https://randomuser.me/api/portraits/men/10.jpg",
-    },
-  ];
 
-  const renderItem = ({ item }) => (
-    <View className="flex-row items-center py-4 border-b border-gray-200">
-      <Image
-        source={{ uri: item.imageUrl }}
-        className="h-12 w-12 rounded-full mr-4"
-      />
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/v1/user/get-users",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setContacts(response.data.payload.users || []);
+    } catch (error) {
+      console.error(
+        "Error fetching contacts:",
+        error.response?.data || error.message
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      <View className="flex-1">
-        <Text className="font-axiformaBlack text-sm text-[#314359]">
-          {item.username}
-        </Text>
-        <Text className="font-axiformaRegular text-xs text-[#909DAD]">
-          {item.description}
-        </Text>
-      </View>
+  useEffect(() => {
+    if (token) fetchUsers();
+  }, [token]);
 
-      <View
-        className="px-2 py-1 rounded-lg mr-4"
-        style={{ backgroundColor: item.badgeColor }}
-      >
-        <Text
-          className="font-axiformaBold text-xs"
-          style={{ color: item.badgeTextColor }}
+  const renderItem = ({ item }) => {
+    const badgeStyles = {
+      vyber: { badgeColor: "#DDE5F5", badgeTextColor: "#AFA4F8" },
+      baddie: { badgeColor: "#CDEDEA", badgeTextColor: "#50C2C9" },
+    };
+
+    const { badgeColor, badgeTextColor } =
+      badgeStyles[item.accountType.toLowerCase()] || {};
+
+    return (
+      <View className="flex-row items-center py-4 border-b border-gray-200">
+        <Image
+          source={{ uri: item.image }}
+          className="h-12 w-12 rounded-full mr-4"
+        />
+
+        <View className="flex-1">
+          <Text className="font-axiformaBlack text-sm text-[#314359] capitalize">
+            @{item.userName}
+          </Text>
+          <Text className="font-axiformaRegular text-xs text-[#909DAD]">
+            {item.bio}
+          </Text>
+        </View>
+
+        <View
+          className="px-2 py-1 rounded-lg mr-4"
+          style={{ backgroundColor: badgeColor }}
         >
-          {item.badge}
-        </Text>
-      </View>
+          <Text
+            className="font-axiformaBold text-xs capitalize"
+            style={{ color: badgeTextColor }}
+          >
+            {item.accountType}
+          </Text>
+        </View>
 
-      <View className="mr-2">
-        {item.followStatus === "requested" ? (
-          <AntDesign name="rocket1" size={24} color="#AFA4F8" />
-        ) : (
-          <AntDesign
-            name={item.followStatus === "follow" ? "adduser" : "addusergroup"}
-            size={24}
-            color="#AFA4F8"
-          />
-        )}
+        <View className="mr-2">
+          {item.followStatus === "requested" ? (
+            <AntDesign name="rocket1" size={24} color="#AFA4F8" />
+          ) : (
+            <MaterialIcons name="person-add-alt-1" size={24} color="#AFA4F8" />
+            // <AntDesign
+            //   name={item.followStatus === "follow" ? "adduser" : "addusergroup"}
+            //   size={24}
+            //   color="#AFA4F8"
+            // />
+          )}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 bg-white mt-10">
+        <View className="flex-1 justify-center items-center">
+          <Spinner />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="px-4">
       <FlatList
-        data={data}
+        data={contacts}
         renderItem={renderItem}
-        ListHeaderComponent={() => (
-          <>
-            <HeaderComponent data={data} />
-          </>
+        ListHeaderComponent={() => <HeaderComponent data={contacts} />}
+        ListEmptyComponent={() => (
+          <Text className="text-center text-gray-500">
+            No suggestions available.
+          </Text>
         )}
-        ListEmptyComponent={() => <Text>No suggestions available.</Text>}
         contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

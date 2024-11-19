@@ -41,7 +41,7 @@ const HeaderComponent = ({ showChatModal, data }) => {
               <View className="border border-gray-200 rounded-md flex-row items-center justify-between py-2 px-4 w-[90%]">
                 <TextInput
                   placeholder="Search Account"
-                  className="font-axiformaBlack text-[#B2BBC6]"
+                  className="font-axiformaRegular text-[#B2BBC6]"
                   value={searchText}
                   onChangeText={(text) => setSearchText(text)}
                 />

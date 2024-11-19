@@ -15,10 +15,10 @@ import Empty from "./components/Empty";
 import HeaderComponent from "./components/HeaderComponent";
 import { recentConversations } from "../../../data/data";
 import { router } from "expo-router";
+import { useToken } from "../../../hooks/useToken";
 
 const Chat = () => {
   const [showChatModal, setShowChatModal] = useState(false);
-
   const renderItem = ({ item }) => (
     <View className="flex-row items-center justify-between my-4">
       <TouchableOpacity
