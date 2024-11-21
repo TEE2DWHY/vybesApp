@@ -7,6 +7,8 @@ import {
   Image,
   RefreshControl,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import HeaderComponent from "./components/HeaderComponent";
 import axios from "axios";
@@ -18,7 +20,12 @@ const Add = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [addingUser, setAddingUser] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [notFound, setNotFound] = useState(
+    "No pending or unsent requests available."
+  );
   const [contacts, setContacts] = useState([]);
+  const [originalContacts, setOriginalContacts] = useState([]);
   const token = useToken();
 
   const onRefresh = async () => {
@@ -38,18 +45,55 @@ const Add = () => {
           },
         }
       );
-      console.log(response.data);
 
       const filteredContacts = (response.data.payload || []).filter(
         (item) => item.status === "pending" || item.status === "not_sent"
       );
 
+      setOriginalContacts(filteredContacts);
       setContacts(filteredContacts);
     } catch (error) {
       console.error(
         "Error fetching contacts:",
         error.response?.data || error.message
       );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearchSubmit = async () => {
+    if (!searchText || searchText.trim() === "") {
+      setContacts(originalContacts);
+      setNotFound("No pending or unsent requests available.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/contact/search-contacts?username=${searchText}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const matchingContacts = response.data.payload || [];
+      setContacts(matchingContacts);
+
+      if (matchingContacts.length === 0) {
+        setNotFound("No User Matches Your Search");
+      } else {
+        setNotFound("");
+      }
+    } catch (error) {
+      console.error(
+        "Error searching contacts:",
+        error.response?.data || error.message
+      );
+      setNotFound("An error occurred while searching.");
     } finally {
       setIsLoading(false);
     }
@@ -67,11 +111,9 @@ const Add = () => {
           },
         }
       );
-      console.log(response.data);
       Alert.alert("Success", response.data?.message);
       await fetchUsers();
     } catch (error) {
-      console.log(error);
       Alert.alert("Error", error.response?.data?.message);
     } finally {
       setAddingUser(null);
@@ -83,13 +125,12 @@ const Add = () => {
   }, [token]);
 
   const renderItem = ({ item }) => {
-    const contact = item.contact || item.user || {};
-    const user = item.user || {};
+    const contact = item.contact || item.user || item || {};
+    const userName = contact.userName || "Unknown";
 
+    // Determine account type and corresponding badge styles
     const accountType = contact.accountType
       ? contact.accountType.toLowerCase()
-      : user.accountType
-      ? user.accountType.toLowerCase()
       : "default";
 
     const badgeStyles = {
@@ -98,7 +139,9 @@ const Add = () => {
       default: { badgeColor: "#E0E0E0", badgeTextColor: "#A0A0A0" },
     };
 
-    const { badgeColor, badgeTextColor } = badgeStyles[accountType] || {};
+    // Get badge color and text color based on account type
+    const { badgeColor, badgeTextColor } =
+      badgeStyles[accountType] || badgeStyles.default;
 
     const isPending = item.status === "pending";
     const isNotSent = item.status === "not_sent";
@@ -107,7 +150,7 @@ const Add = () => {
       <View className="flex-row items-center py-4 border-b border-gray-200">
         <Image
           source={{
-            uri: contact.image || user.image || "default_image_url",
+            uri: contact.image || "default_image_url",
           }}
           className="h-12 w-12 rounded-full mr-4"
         />
@@ -115,7 +158,7 @@ const Add = () => {
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
             <Text className="font-axiformaBlack text-sm text-[#314359] capitalize">
-              @{contact.userName || user.userName || "Unknown"}{" "}
+              @{userName}
             </Text>
             <View
               className="px-2 py-1 rounded-lg mr-4"
@@ -125,29 +168,28 @@ const Add = () => {
                 className="font-axiformaBold text-xs capitalize"
                 style={{ color: badgeTextColor }}
               >
-                {contact.accountType || user.accountType || "Default"}{" "}
-                {/* Display accountType from contact or user */}
+                {contact.accountType || "Default"}
               </Text>
             </View>
           </View>
 
           <Text className="font-axiformaRegular text-xs text-[#909DAD] mt-2 w-[90%]">
-            {contact.bio || user.bio || "No bio available"}{" "}
+            {contact.bio || "No bio available"}
           </Text>
         </View>
 
         <View className="mr-2">
           {isPending ? (
-            <Text className="text-[#AFA4F8] text-xs">Already Sent</Text>
+            <Text className="text-[#AFA4F8] text-xs">Request Sent</Text>
           ) : isNotSent ? (
-            addingUser === item.user?._id ? (
+            addingUser === contact._id ? (
               <Spinner />
             ) : (
               <MaterialIcons
                 name="person-add-alt-1"
                 size={24}
                 color="#AFA4F8"
-                onPress={() => addUser(item.user?._id)}
+                onPress={() => addUser(contact._id)} // Use contact._id directly
               />
             )
           ) : null}
@@ -167,23 +209,43 @@ const Add = () => {
   }
 
   return (
-    <SafeAreaView className="px-4">
-      <FlatList
-        data={contacts}
-        renderItem={renderItem}
-        ListHeaderComponent={() => <HeaderComponent data={contacts} />}
-        ListEmptyComponent={() => (
-          <Text className="text-center text-gray-500">
-            No pending or unsent requests available.
-          </Text>
-        )}
-        contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
-        keyExtractor={(item) => item._id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
-    </SafeAreaView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView className="px-4">
+        <FlatList
+          data={contacts}
+          renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListHeaderComponent={() => (
+            <HeaderComponent
+              data={contacts}
+              searchFn={() => handleSearchSubmit()}
+              searchText={searchText}
+              setSearchText={setSearchText}
+              refresh={() => {
+                setSearchText(""); // Clear search text intentionally if needed
+                onRefresh();
+              }}
+            />
+          )}
+          ListEmptyComponent={() => (
+            <View className="flex-1 justify-center items-center h-full">
+              <Text className="text-gray-500 font-axiformaRegular mt-[50%]">
+                {notFound}
+              </Text>
+            </View>
+          )}
+          contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
+          keyExtractor={(item) =>
+            `${item.contact?._id || item.user?._id || item._id}`
+          }
+        />
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

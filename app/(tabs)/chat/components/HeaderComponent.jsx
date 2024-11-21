@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Text, TextInput, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -9,10 +9,17 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Link } from "expo-router";
 import { useRouteInfo } from "expo-router/build/hooks";
 
-const HeaderComponent = ({ showChatModal, data }) => {
+const HeaderComponent = ({
+  showChatModal,
+  data,
+  searchFn,
+  searchText,
+  setSearchText,
+  cancelSearch,
+  refresh,
+}) => {
   const [pathname, setPathname] = useState("");
   const [onSearch, setOnSearch] = useState(false);
-  const [searchText, setSearchText] = useState("");
   const routeInfo = useRouteInfo();
 
   useEffect(() => {
@@ -20,6 +27,12 @@ const HeaderComponent = ({ showChatModal, data }) => {
       setPathname(routeInfo.pathname);
     }
   }, [routeInfo]);
+
+  // Cancel search function
+  const handleCancelSearch = useCallback(() => {
+    setOnSearch(false); // Keep the search text when canceling
+    refresh(); // If refresh needs to reset other things
+  }, [refresh]);
 
   return (
     <>
@@ -40,22 +53,24 @@ const HeaderComponent = ({ showChatModal, data }) => {
             <View className="w-5/6 flex-row items-center justify-between">
               <View className="border border-gray-200 rounded-md flex-row items-center justify-between py-2 px-4 w-[90%]">
                 <TextInput
-                  placeholder="Search Account"
+                  placeholder="Enter Username"
                   className="font-axiformaRegular text-[#B2BBC6]"
                   value={searchText}
-                  onChangeText={(text) => setSearchText(text)}
+                  onChangeText={setSearchText}
                 />
-                <EvilIcons name="search" size={30} color="#9941EE" />
+                <EvilIcons
+                  name="search"
+                  size={30}
+                  color="#9941EE"
+                  onPress={searchFn}
+                />
               </View>
               <View className="w-[10%] ml-8">
                 <MaterialIcons
                   name="cancel"
                   size={22}
                   color="#B2BBC6"
-                  onPress={() => {
-                    setOnSearch(false);
-                    setSearchText("");
-                  }}
+                  onPress={handleCancelSearch} // Use the cancel handler
                 />
               </View>
             </View>
@@ -70,7 +85,9 @@ const HeaderComponent = ({ showChatModal, data }) => {
                 name="search"
                 size={24}
                 color="#7A91F9"
-                onPress={() => setOnSearch(true)}
+                onPress={() => {
+                  setOnSearch(true); // Enable search bar
+                }}
               />
               <View className="relative">
                 <Entypo
@@ -84,8 +101,8 @@ const HeaderComponent = ({ showChatModal, data }) => {
           )}
         </View>
       </View>
-      {data.length > 0 && (
-        <Text className="mt-6 mb-2 font-axiformaRegular text-[#909DAD]  text-sm">
+      {data?.length > 0 && (
+        <Text className="mt-6 mb-2 font-axiformaRegular text-[#909DAD] text-sm">
           {pathname === "/chat"
             ? "Recent Conversations"
             : pathname === "/chat/add"

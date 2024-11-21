@@ -7,7 +7,6 @@ import {
   View,
   RefreshControl,
   TouchableOpacity,
-  Animated,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { StatusBar } from "expo-status-bar";
@@ -106,7 +105,7 @@ const Home = () => {
         <FlatList
           data={allUsers?.users}
           renderItem={renderItem}
-          keyExtractor={(item) => item._id} // Use unique identifier
+          keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingHorizontal: 20 }}
           columnWrapperStyle={{ justifyContent: "space-between" }}
           showsVerticalScrollIndicator={false}
