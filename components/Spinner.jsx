@@ -23,7 +23,7 @@ export const Spinner = () => {
 
   return (
     <Animated.View style={{ transform: [{ rotate: spin }] }}>
-      <View className="w-[40px] h-[40px] rounded-full border-[4px] border-transparent border-t-[#a241ee]" />
+      <View className="w-[25px] h-[25px] rounded-full border-[4px] border-transparent border-t-[#a241ee]" />
     </Animated.View>
   );
 };
