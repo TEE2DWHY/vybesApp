@@ -39,7 +39,12 @@ const Add = () => {
         }
       );
       console.log(response.data);
-      setContacts(response.data.payload || []);
+
+      const filteredContacts = (response.data.payload || []).filter(
+        (item) => item.status === "pending" || item.status === "not_sent"
+      );
+
+      setContacts(filteredContacts);
     } catch (error) {
       console.error(
         "Error fetching contacts:",
@@ -69,7 +74,7 @@ const Add = () => {
       console.log(error);
       Alert.alert("Error", error.response?.data?.message);
     } finally {
-      setAddingUser(null); // Reset addingUser after the operation
+      setAddingUser(null);
     }
   };
 
@@ -78,9 +83,8 @@ const Add = () => {
   }, [token]);
 
   const renderItem = ({ item }) => {
-    // Destructure user and contact info, ensuring proper access to the fields
-    const contact = item.contact || item.user || {}; // Use item.contact if available, otherwise fallback to item.user
-    const user = item.user || {}; // If contact doesn't exist, fallback to user
+    const contact = item.contact || item.user || {};
+    const user = item.user || {};
 
     const accountType = contact.accountType
       ? contact.accountType.toLowerCase()
@@ -91,22 +95,19 @@ const Add = () => {
     const badgeStyles = {
       vyber: { badgeColor: "#DDE5F5", badgeTextColor: "#AFA4F8" },
       baddie: { badgeColor: "#CDEDEA", badgeTextColor: "#50C2C9" },
-      default: { badgeColor: "#E0E0E0", badgeTextColor: "#A0A0A0" }, // Default style
+      default: { badgeColor: "#E0E0E0", badgeTextColor: "#A0A0A0" },
     };
 
     const { badgeColor, badgeTextColor } = badgeStyles[accountType] || {};
 
-    const isPending = item.status === "pending"; // Check if the contact's status is pending
-    const isNotSent = item.status === "not_sent"; // Check if the contact's status is not_sent
-    const isConfirmed = item.status === "confirmed"; // Check if the contact's status is confirmed
-    const isBlocked = item.status === "blocked"; // Check if the contact's status is blocked
+    const isPending = item.status === "pending";
+    const isNotSent = item.status === "not_sent";
 
     return (
       <View className="flex-row items-center py-4 border-b border-gray-200">
-        {/* Ensure that image URL exists */}
         <Image
           source={{
-            uri: contact.image || user.image || "default_image_url", // Fallback to user image if no contact image
+            uri: contact.image || user.image || "default_image_url",
           }}
           className="h-12 w-12 rounded-full mr-4"
         />
@@ -115,7 +116,6 @@ const Add = () => {
           <View className="flex-row items-center gap-2">
             <Text className="font-axiformaBlack text-sm text-[#314359] capitalize">
               @{contact.userName || user.userName || "Unknown"}{" "}
-              {/* Display userName from contact or user */}
             </Text>
             <View
               className="px-2 py-1 rounded-lg mr-4"
@@ -133,36 +133,24 @@ const Add = () => {
 
           <Text className="font-axiformaRegular text-xs text-[#909DAD] mt-2 w-[90%]">
             {contact.bio || user.bio || "No bio available"}{" "}
-            {/* Display bio from contact or user */}
           </Text>
         </View>
-
-        {/* Account type badge */}
 
         <View className="mr-2">
           {isPending ? (
             <Text className="text-[#AFA4F8] text-xs">Already Sent</Text>
           ) : isNotSent ? (
-            <MaterialIcons
-              name="person-add-alt-1"
-              size={24}
-              color="#AFA4F8"
-              onPress={() => addUser(item.user?._id)}
-            />
-          ) : isConfirmed ? (
-            <Text className="text-[#AFA4F8] text-xs">Confirmed</Text>
-          ) : isBlocked ? (
-            <Text className="text-[#FF4747] text-xs">Blocked</Text>
-          ) : addingUser === item._id ? (
-            <Spinner />
-          ) : (
-            <MaterialIcons
-              name="person-add-alt-1"
-              size={24}
-              color="#AFA4F8"
-              onPress={() => addUser(item.user?._id)}
-            />
-          )}
+            addingUser === item.user?._id ? (
+              <Spinner />
+            ) : (
+              <MaterialIcons
+                name="person-add-alt-1"
+                size={24}
+                color="#AFA4F8"
+                onPress={() => addUser(item.user?._id)}
+              />
+            )
+          ) : null}
         </View>
       </View>
     );
@@ -186,7 +174,7 @@ const Add = () => {
         ListHeaderComponent={() => <HeaderComponent data={contacts} />}
         ListEmptyComponent={() => (
           <Text className="text-center text-gray-500">
-            No suggestions available.
+            No pending or unsent requests available.
           </Text>
         )}
         contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
