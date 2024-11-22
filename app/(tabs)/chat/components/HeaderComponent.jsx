@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, View, Keyboard } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -15,11 +15,11 @@ const HeaderComponent = ({
   searchFn,
   searchText,
   setSearchText,
-  cancelSearch,
+  onSearch,
+  setOnSearch,
   refresh,
 }) => {
   const [pathname, setPathname] = useState("");
-  const [onSearch, setOnSearch] = useState(false);
   const routeInfo = useRouteInfo();
 
   useEffect(() => {
@@ -28,18 +28,23 @@ const HeaderComponent = ({
     }
   }, [routeInfo]);
 
-  // Cancel search function
   const handleCancelSearch = useCallback(() => {
-    setOnSearch(false); // Keep the search text when canceling
-    refresh(); // If refresh needs to reset other things
-  }, [refresh]);
+    setOnSearch(false);
+    setSearchText("");
+    refresh();
+  }, [refresh, setSearchText]);
 
   return (
     <>
       <View className="flex-row items-center justify-between border-b border-gray-200 pb-2">
         <View className="flex-row gap-6 items-center">
           <Link href="/chat">
-            <AntDesign name="left" size={24} color="#546881" />
+            <AntDesign
+              name="left"
+              size={24}
+              color="#546881"
+              accessibilityLabel="Back"
+            />
           </Link>
           {!onSearch && (
             <Text className="capitalize text-[#495795] font-axiformaBlack text-lg">
@@ -62,7 +67,9 @@ const HeaderComponent = ({
                   name="search"
                   size={30}
                   color="#9941EE"
-                  onPress={searchFn}
+                  onPress={() => {
+                    searchFn(); // Call the search function directly
+                  }}
                 />
               </View>
               <View className="w-[10%] ml-8">
@@ -70,7 +77,7 @@ const HeaderComponent = ({
                   name="cancel"
                   size={22}
                   color="#B2BBC6"
-                  onPress={handleCancelSearch} // Use the cancel handler
+                  onPress={handleCancelSearch}
                 />
               </View>
             </View>
@@ -86,7 +93,7 @@ const HeaderComponent = ({
                 size={24}
                 color="#7A91F9"
                 onPress={() => {
-                  setOnSearch(true); // Enable search bar
+                  setOnSearch(true);
                 }}
               />
               <View className="relative">

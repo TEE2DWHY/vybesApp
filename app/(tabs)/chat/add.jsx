@@ -21,6 +21,7 @@ const Add = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [addingUser, setAddingUser] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [onSearch, setOnSearch] = useState(false);
   const [notFound, setNotFound] = useState(
     "No pending or unsent requests available."
   );
@@ -40,9 +41,7 @@ const Add = () => {
       const response = await axios.get(
         "http://localhost:8000/v1/contact/contacts/suggested-accounts",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -52,6 +51,7 @@ const Add = () => {
 
       setOriginalContacts(filteredContacts);
       setContacts(filteredContacts);
+      console.log(response.data);
     } catch (error) {
       console.error(
         "Error fetching contacts:",
@@ -63,7 +63,7 @@ const Add = () => {
   };
 
   const handleSearchSubmit = async () => {
-    if (!searchText || searchText.trim() === "") {
+    if (!searchText.trim()) {
       setContacts(originalContacts);
       setNotFound("No pending or unsent requests available.");
       return;
@@ -74,9 +74,7 @@ const Add = () => {
       const response = await axios.get(
         `http://localhost:8000/v1/contact/search-contacts?username=${searchText}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -104,17 +102,19 @@ const Add = () => {
     try {
       const response = await axios.post(
         "http://localhost:8000/v1/contact/add-contact",
-        { contactId: contactId },
+        { contactId },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
+      console.log(response.data);
       Alert.alert("Success", response.data?.message);
       await fetchUsers();
     } catch (error) {
-      Alert.alert("Error", error.response?.data?.message);
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to add user."
+      );
     } finally {
       setAddingUser(null);
     }
@@ -127,11 +127,7 @@ const Add = () => {
   const renderItem = ({ item }) => {
     const contact = item.contact || item.user || item || {};
     const userName = contact.userName || "Unknown";
-
-    // Determine account type and corresponding badge styles
-    const accountType = contact.accountType
-      ? contact.accountType.toLowerCase()
-      : "default";
+    const accountType = contact.accountType?.toLowerCase() || "default";
 
     const badgeStyles = {
       vyber: { badgeColor: "#DDE5F5", badgeTextColor: "#AFA4F8" },
@@ -139,10 +135,8 @@ const Add = () => {
       default: { badgeColor: "#E0E0E0", badgeTextColor: "#A0A0A0" },
     };
 
-    // Get badge color and text color based on account type
     const { badgeColor, badgeTextColor } =
       badgeStyles[accountType] || badgeStyles.default;
-
     const isPending = item.status === "pending";
     const isNotSent = item.status === "not_sent";
 
@@ -150,30 +144,29 @@ const Add = () => {
       <View className="flex-row items-center py-4 border-b border-gray-200">
         <Image
           source={{
-            uri: contact.image || "default_image_url",
+            uri: contact.image || "https://via.placeholder.com/150",
           }}
           className="h-12 w-12 rounded-full mr-4"
         />
 
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
-            <Text className="font-axiformaBlack text-sm text-[#314359] capitalize">
+            <Text className="font-axiformaRegular text-sm text-[#314359] capitalize">
               @{userName}
             </Text>
             <View
-              className="px-2 py-1 rounded-lg mr-4"
+              className="px-2 py-1 rounded-lg"
               style={{ backgroundColor: badgeColor }}
             >
               <Text
-                className="font-axiformaBold text-xs capitalize"
+                className="font-bold text-xs capitalize"
                 style={{ color: badgeTextColor }}
               >
                 {contact.accountType || "Default"}
               </Text>
             </View>
           </View>
-
-          <Text className="font-axiformaRegular text-xs text-[#909DAD] mt-2 w-[90%]">
+          <Text className="text-xs text-gray-600 mt-2 w-[90%] font-axiformaRegular">
             {contact.bio || "No bio available"}
           </Text>
         </View>
@@ -189,7 +182,7 @@ const Add = () => {
                 name="person-add-alt-1"
                 size={24}
                 color="#AFA4F8"
-                onPress={() => addUser(contact._id)} // Use contact._id directly
+                onPress={() => addUser(contact._id)}
               />
             )
           ) : null}
@@ -200,7 +193,7 @@ const Add = () => {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white mt-10">
+      <SafeAreaView className="flex-1 bg-white">
         <View className="flex-1 justify-center items-center">
           <Spinner />
         </View>
@@ -223,25 +216,24 @@ const Add = () => {
           ListHeaderComponent={() => (
             <HeaderComponent
               data={contacts}
-              searchFn={() => handleSearchSubmit()}
+              onSearch={onSearch}
+              setOnSearch={setOnSearch}
+              searchFn={handleSearchSubmit}
               searchText={searchText}
               setSearchText={setSearchText}
-              refresh={() => {
-                setSearchText(""); // Clear search text intentionally if needed
-                onRefresh();
-              }}
+              refresh={onRefresh}
             />
           )}
           ListEmptyComponent={() => (
             <View className="flex-1 justify-center items-center h-full">
-              <Text className="text-gray-500 font-axiformaRegular mt-[50%]">
+              <Text className="text-gray-500 mt-10 font-axiformaRegular">
                 {notFound}
               </Text>
             </View>
           )}
           contentContainerStyle={{ paddingHorizontal: 15, marginTop: 15 }}
           keyExtractor={(item) =>
-            `${item.contact?._id || item.user?._id || item._id}`
+            item.contact?._id || item.user?._id || `key-${Math.random()}`
           }
         />
       </SafeAreaView>

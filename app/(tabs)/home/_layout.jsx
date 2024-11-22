@@ -6,6 +6,7 @@ const HomeLayout = () => {
     <>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="notification" options={{ headerShown: false }} />
         <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="transfer/[id]" options={{ headerShown: false }} />
       </Stack>

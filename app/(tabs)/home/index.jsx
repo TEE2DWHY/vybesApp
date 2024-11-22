@@ -18,6 +18,7 @@ import { userInstance } from "../../../config/axios";
 import { useToken } from "../../../hooks/useToken";
 import SearchModal from "../../../modal/SearchModal";
 import { Spinner } from "../../../components/Spinner";
+import { router } from "expo-router";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -88,7 +89,12 @@ const Home = () => {
             </View>
             <View className="relative">
               <View className="bg-purple-normal w-2 h-2 rounded-full absolute right-1 z-50"></View>
-              <Feather name="bell" size={28} style={{ color: "#99A0C5" }} />
+              <Feather
+                name="bell"
+                size={28}
+                style={{ color: "#99A0C5" }}
+                onPress={() => router.push("/home/notification")}
+              />
             </View>
           </View>
         </View>
