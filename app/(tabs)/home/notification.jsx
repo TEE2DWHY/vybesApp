@@ -48,23 +48,23 @@ const Notification = () => {
     }
   };
 
-  // Mark notifications as read
-  const markNotificationsAsRead = async (notificationIds) => {
+  const markNotificationsAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        "http://localhost:8000/v1/notification/read",
-        { notificationIds },
+        `http://localhost:8000/v1/notification/notifications/${notificationId}/read`, // Updated URL
+        {}, // No body needed, we're just updating the read status
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setNotifications((prevNotifications) =>
         prevNotifications.map((notification) =>
-          notificationIds.includes(notification._id)
+          notification._id === notificationId
             ? { ...notification, isRead: true }
             : notification
         )
       );
     } catch (err) {
-      console.log("Error marking notifications as read:", err.response?.data);
+      console.log(err);
+      console.log("Error marking notification as read:", err.response?.data);
     }
   };
 
@@ -130,7 +130,7 @@ const Notification = () => {
                 className="flex-row items-center justify-between bg-white-normal mb-4 p-4 rounded-lg shadow-sm"
                 onPress={() => {
                   if (!notification.isRead) {
-                    markNotificationsAsRead([notification._id]);
+                    markNotificationsAsRead(notification._id); // Pass single ID
                   }
                   if (notification.link) {
                     router.push(notification.link); // Navigate to link
