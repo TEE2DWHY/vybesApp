@@ -19,12 +19,14 @@ import { useToken } from "../../../hooks/useToken";
 import SearchModal from "../../../modal/SearchModal";
 import { Spinner } from "../../../components/Spinner";
 import { router } from "expo-router";
+import axios from "axios";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const token = useToken();
 
   const {
@@ -37,16 +39,39 @@ const Home = () => {
     token: token,
   });
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/v1/notification/notifications",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const notifications = response.data.payload || [];
+      const unreadNotifications = notifications.some(
+        (notification) => !notification.isRead
+      );
+      setHasNewNotifications(unreadNotifications);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       await getAllUsers();
     };
     fetchUsers();
-  }, [getAllUsers]);
+
+    if (token) {
+      fetchNotifications();
+    }
+  }, [token, getAllUsers]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await getAllUsers();
+    await fetchNotifications();
     setRefreshing(false);
   };
 
@@ -88,7 +113,10 @@ const Home = () => {
               />
             </View>
             <View className="relative">
-              <View className="bg-purple-normal w-2 h-2 rounded-full absolute right-1 z-50"></View>
+              {/* Show notification dot only if there's a new notification */}
+              {hasNewNotifications && (
+                <View className="bg-purple-normal w-2 h-2 rounded-full absolute right-1 z-50"></View>
+              )}
               <Feather
                 name="bell"
                 size={28}

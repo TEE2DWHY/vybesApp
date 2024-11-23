@@ -35,7 +35,7 @@ const UserDetails = ({
           </Text>
         </View>
         <View className="pt-0">
-          <Text className="font-axiformaBlack text-lg leading-[43.2px]">
+          <Text className="font-axiformaBlack text-lg leading-[43.2px] capitalize">
             {firstName}, {age}
           </Text>
           <Text className="text-sm font-axiformaRegular pb-2 pt-0 capitalize text-[#3D4C5E]">{`${state}, ${country}`}</Text>

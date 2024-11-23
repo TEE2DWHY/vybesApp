@@ -51,7 +51,6 @@ const Add = () => {
 
       setOriginalContacts(filteredContacts);
       setContacts(filteredContacts);
-      console.log(response.data);
     } catch (error) {
       console.error(
         "Error fetching contacts:",
@@ -107,7 +106,6 @@ const Add = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(response.data);
       Alert.alert("Success", response.data?.message);
       await fetchUsers();
     } catch (error) {

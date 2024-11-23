@@ -37,6 +37,7 @@ const Notification = () => {
           params: { page: 1, limit: 10 },
         }
       );
+      console.log(response.data);
       setNotifications(response.data.payload || []);
     } catch (err) {
       setError(
@@ -51,8 +52,8 @@ const Notification = () => {
   const markNotificationsAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        `http://localhost:8000/v1/notification/notifications/${notificationId}/read`, // Updated URL
-        {}, // No body needed, we're just updating the read status
+        `http://localhost:8000/v1/notification/notifications/${notificationId}/read`,
+        {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setNotifications((prevNotifications) =>
@@ -88,13 +89,13 @@ const Notification = () => {
           <MaterialCommunityIcons
             name="arrow-left-top-bold"
             size={24}
-            color="black"
+            color="#546881"
             onPress={() => router.back()}
           />
         </TouchableOpacity>
         <Text className="font-axiformaBlack text-xl">Notifications</Text>
         <TouchableOpacity>
-          <Feather name="settings" size={24} color="black" />
+          <Feather name="settings" size={24} color="#546881" />
         </TouchableOpacity>
       </View>
 
@@ -130,10 +131,10 @@ const Notification = () => {
                 className="flex-row items-center justify-between bg-white-normal mb-4 p-4 rounded-lg shadow-sm"
                 onPress={() => {
                   if (!notification.isRead) {
-                    markNotificationsAsRead(notification._id); // Pass single ID
+                    markNotificationsAsRead(notification._id);
                   }
                   if (notification.link) {
-                    router.push(notification.link); // Navigate to link
+                    router.push(notification.link);
                   }
                 }}
               >

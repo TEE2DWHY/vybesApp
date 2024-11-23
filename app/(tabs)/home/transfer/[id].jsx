@@ -126,7 +126,6 @@ const Transfer = () => {
           },
         }
       );
-      console.log(response.data.payload);
       setTransactionId(response?.data?.payload.tx.transactionId);
       setShowModal(true);
       showNotification();
