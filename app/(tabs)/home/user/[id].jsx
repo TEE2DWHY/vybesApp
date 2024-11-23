@@ -253,7 +253,7 @@ const UserProfile = () => {
               <Feather name="settings" size={24} color="#909DAD" />
             </View>
           </View>
-          <View className="flex-row flex-wrap justify-between mt-2 border border-[#E9E9EB] rounded-lg p-3">
+          <View className="flex-row flex-wrap justify-between mt-2 border border-[#E9E9EB] rounded-lg p-3 bg-white-normal">
             {storiesData.map((story, index) => (
               <TouchableOpacity
                 key={story.id}
@@ -350,7 +350,7 @@ const UserProfile = () => {
           </View>
 
           <View className="mt-4 bg-white-normal border-2 border-white-normal p-4 rounded-md mb-8">
-            <Text className="text-lg font-axiformaBlack pb-4 border-b border-[#DBEBFF]">
+            <Text className="text-base font-axiformaRegular pb-4 border-b border-[#DBEBFF]">
               My Interests and Personality
             </Text>
             <View className="flex-row flex-wrap mt-2">

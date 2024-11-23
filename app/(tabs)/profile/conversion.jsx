@@ -31,7 +31,7 @@ const Conversion = () => {
 
   const convertCoin = async () => {
     if (!amount || isNaN(amount) || amount <= 0) {
-      alert("Please enter a valid amount.");
+      Alert.alert("Error", "Please enter a valid amount.");
       return;
     }
     setLoading(true);

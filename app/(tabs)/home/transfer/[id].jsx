@@ -24,6 +24,7 @@ import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
 import useFetch from "../../../../hooks/useFetch";
 import { userInstance } from "../../../../config/axios";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -267,9 +268,14 @@ const Transfer = () => {
             </TouchableOpacity>
           </View>
           <Text className="mt-3 text-gray-700 font-medium text-base px-4 font-axiformaRegular text-right">
-            Available Balance:{" "}
+            Available Balance :{" "}
             <Text className="font-axiformaBlackItalic">
-              {user?.walletBalance} Vybes Coin
+              {user?.walletBalance} Vybes Coin{" "}
+              <MaterialCommunityIcons
+                name="star-three-points"
+                size={18}
+                color={"#FF8674"}
+              />
             </Text>
           </Text>
           <View className="flex-row items-center px-2 py-3 bg-white rounded-lg border border-[#E9E9EB] mt-6">
