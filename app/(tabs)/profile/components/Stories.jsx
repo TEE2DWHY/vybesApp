@@ -12,6 +12,7 @@ import { storiesData } from "../../../../data/data";
 import { useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import { useAccount } from "../../../../hooks/useAccount";
+import { router } from "expo-router";
 const Stories = () => {
   const [selectedStory, setSelectedStory] = useState(null);
 
@@ -49,7 +50,7 @@ const Stories = () => {
         {storiesData.map((story, index) => (
           <TouchableOpacity
             key={story.id}
-            // onPress={() => handleStoryPress(story)}
+            onPress={() => router.push(`/profile/story/${index}`)}
             className="w-[49%] mb-4"
           >
             <Image

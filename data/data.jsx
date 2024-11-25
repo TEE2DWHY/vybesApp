@@ -350,46 +350,58 @@ const recentConversations = [
 
 const storiesData = [
   {
-    id: 1,
+    id: 0,
     imageUrl:
       "https://images.unsplash.com/photo-1540324155974-7523202daa3f?q=80&w=2815&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "30 Minutes Ago",
     locked: false,
+    likes: 450,
+    views: 600,
   },
   {
-    id: 2,
+    id: 1,
     imageUrl:
       "https://images.unsplash.com/photo-1631947430066-48c30d57b943?q=80&w=2816&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "1 Hours Ago",
     locked: false,
+    likes: 300,
+    views: 450,
   },
   {
-    id: 3,
+    id: 2,
     imageUrl:
       "https://images.unsplash.com/photo-1599457382197-820d65b8bbdc?q=80&w=3088&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "2 Hours Ago",
     locked: true,
+    likes: 200,
+    views: 320,
   },
   {
-    id: 4,
+    id: 3,
     imageUrl:
       "https://images.unsplash.com/photo-1561158317-757a4631770e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "3 Hours Ago",
     locked: true,
+    likes: 150,
+    views: 200,
   },
   {
-    id: 5,
+    id: 4,
     imageUrl:
       "https://images.unsplash.com/photo-1643185539104-3622eb1f0ff6?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "4 Hours Ago",
     locked: true,
+    likes: 120,
+    views: 180,
   },
   {
-    id: 6,
+    id: 5,
     imageUrl:
       "https://images.unsplash.com/photo-1485872299829-c673f5194813?q=80&w=2054&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     postedAt: "5 Hours Ago",
     locked: true,
+    likes: 80,
+    views: 100,
   },
 ];
 
