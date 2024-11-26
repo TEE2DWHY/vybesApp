@@ -20,6 +20,7 @@ const Story = () => {
   const { id } = params;
   const router = useRouter();
   const [showViews, setShowViews] = useState(false);
+  const [showLikes, setShowLikes] = useState(false);
 
   story.viewers = [
     {
@@ -61,12 +62,15 @@ const Story = () => {
         {story ? (
           <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-md">
             <View className="absolute top-4 flex-row items-center justify-between z-20 w-full px-4 bg-transparent">
-              <View className="flex-row items-center space-x-2">
+              <TouchableOpacity
+                className="flex-row items-center space-x-2"
+                onPress={() => setShowLikes(true)}
+              >
                 <AntDesign name="heart" size={18} color="#FF9574" />
                 <Text className="text-white-normal font-axiformaRegular text-[14px]">
                   {story?.likes} Likes
                 </Text>
-              </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 className="flex-row items-center space-x-2 border border-white-normal z-20 bg-transparent rounded-md p-2 shadow-sm"
                 onPress={() => setShowViews(true)}
@@ -138,7 +142,7 @@ const Story = () => {
             {/* Views Section */}
             <View className="flex-row items-center justify-between mt-6 border-b border-white-normal pb-2">
               <Text className="font-axiformaRegular text-white-normal">
-                View Account
+                Account Views
               </Text>
               <TouchableOpacity className="bg-[#DBEBFF] flex-row items-center rounded-lg px-4 py-4">
                 <Feather name="eye" size={22} color="#8BC0FE" />
@@ -170,6 +174,67 @@ const Story = () => {
             <TouchableOpacity
               className="bg-white-normal rounded-lg py-4 mt-4 mb-4"
               onPress={() => setShowViews(false)}
+            >
+              <Text className="font-axiformaRegular text-purple-darker text-center">
+                Cancel
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+
+      {showLikes && (
+        <>
+          {/* Dark Overlay */}
+          <TouchableOpacity
+            className="absolute top-0 left-0 w-full h-full bg-[#1b1b1b60] opacity-50"
+            onPress={() => setShowLikes(false)}
+          />
+
+          {/* Modal Content */}
+          <View className="bg-purple-darker w-full rounded-tl-[40px] rounded-tr-[40px] absolute bottom-0 h-[60%] px-4 z-10">
+            {/* Profile Image */}
+            <Image
+              source={{ uri: story?.imageUrl }}
+              className="w-[100px] h-[100px] rounded-lg self-center mt-10"
+              resizeMode="cover"
+            />
+
+            {/* Views Section */}
+            <View className="flex-row items-center justify-between mt-6 border-b border-white-normal pb-2">
+              <Text className="font-axiformaRegular text-white-normal">
+                Account Likes
+              </Text>
+              <TouchableOpacity className="bg-[#FFDED4] flex-row items-center rounded-lg px-4 py-4">
+                <Feather name="heart" size={18} color="red" />
+                <Text className="font-axiformaRegular ml-4 text-[#314359]">
+                  {story?.likes} Likes
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView className="mt-4">
+              {story?.viewers?.map((viewer, index) => (
+                <View
+                  key={index}
+                  className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
+                >
+                  <View className="flex-row items-center">
+                    <Image
+                      source={{ uri: viewer.profilePicture }}
+                      className="w-[40px] h-[40px] rounded-full"
+                    />
+                    <Text className="font-axiformaRegular text-white-normal ml-4">
+                      @{viewer.username}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              className="bg-white-normal rounded-lg py-4 mt-4 mb-4"
+              onPress={() => setShowLikes(false)}
             >
               <Text className="font-axiformaRegular text-purple-darker text-center">
                 Cancel
