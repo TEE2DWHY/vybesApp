@@ -16,6 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import { useToken } from "../../../hooks/useToken";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
 
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
@@ -69,17 +70,17 @@ const App = () => {
 
   const handleMediaUpload = async () => {
     try {
-      // Pick an image or video
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All, // Allow images and videos
-        allowsEditing: false, // Disable editing
-        quality: 1, // Maximum quality
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: false,
+        quality: 1,
       });
 
       if (!result.canceled) {
         const source = { uri: result.assets[0].uri };
         console.log("Selected media: ", source);
-        // You can upload the media to your server or do other actions here
+        const encodedUri = encodeURIComponent(source.uri);
+        router.push(`/vybes/addStory?uri=${encodedUri}`);
       } else {
         console.log("User canceled image picker");
       }
