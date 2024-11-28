@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
@@ -14,6 +15,7 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import { useToken } from "../../../hooks/useToken";
+import * as ImagePicker from "expo-image-picker";
 
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
@@ -45,6 +47,47 @@ const App = () => {
     };
     fetchUsers();
   }, [activeSection]);
+
+  // Request permissions for media library and camera
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const mediaPermission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const cameraPermission =
+        await ImagePicker.requestCameraPermissionsAsync();
+
+      if (!mediaPermission.granted || !cameraPermission.granted) {
+        Alert.alert(
+          "Permission Required",
+          "Please grant permission to access media library and camera to use the app."
+        );
+      }
+    };
+
+    requestPermissions();
+  }, []);
+
+  const handleMediaUpload = async () => {
+    try {
+      // Pick an image or video
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All, // Allow images and videos
+        allowsEditing: false, // Disable editing
+        quality: 1, // Maximum quality
+      });
+
+      if (!result.canceled) {
+        const source = { uri: result.assets[0].uri };
+        console.log("Selected media: ", source);
+        // You can upload the media to your server or do other actions here
+      } else {
+        console.log("User canceled image picker");
+      }
+    } catch (error) {
+      console.log("Error picking media: ", error);
+      Alert.alert("Error", "Something went wrong while picking the media.");
+    }
+  };
 
   const baddiesData = [
     {
@@ -164,21 +207,26 @@ const App = () => {
           showsHorizontalScrollIndicator={false}
         >
           <View>
-            <Text className="text-white-normal font-axiformaBlack text-lg mb-2">
-              {sectionTitle}
+            <Text className="text-white-normal font-axiformaRegular text-lg mb-4">
+              {activeSection === "Baddies" ? "Baddie Story" : "Vybers Story"}
             </Text>
             <View className="flex-row items-center gap-4">
               <View className="items-center">
-                <View className="border-2 border-white-normal border-dashed w-14 h-14 rounded-full mb-2 justify-center items-center">
-                  <Ionicons name="add-circle" size={30} color="#fff" />
-                </View>
+                <TouchableOpacity
+                  className="border-2 border-white-normal border-dashed w-14 h-14 rounded-full mb-2 justify-center items-center relative"
+                  onPress={handleMediaUpload} // Call the media upload function
+                >
+                  <View className="absolute bottom-[-4px] right-[-6px] z-10">
+                    <Ionicons name="add-circle" size={22} color="#fff" />
+                  </View>
+                </TouchableOpacity>
                 <Text className="text-white-normal text-center font-axiformaRegular text-xs mt-2">
                   Add Story
                 </Text>
               </View>
               {data.map((story) => (
                 <View key={story.id} className="items-center">
-                  <TouchableOpacity className="rounded-full overflow-hidden w-16 h-16 border-2 border-white-normal">
+                  <TouchableOpacity className="rounded-full overflow-hidden w-20 h-16 border-2 border-white-normal">
                     <Image
                       source={{ uri: story.imageUrl }}
                       className="w-full h-full"
