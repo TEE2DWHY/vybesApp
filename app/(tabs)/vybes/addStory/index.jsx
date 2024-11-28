@@ -5,10 +5,33 @@ import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const AddStory = () => {
   const { uri } = useLocalSearchParams();
   const decodedUri = decodeURIComponent(uri);
+
+  const icons = [
+    {
+      icon: <Ionicons name="videocam" size={24} color="#546881" />,
+      text: "video",
+    },
+    {
+      icon: <Ionicons name="musical-notes-sharp" size={24} color="#546881" />,
+      text: "music",
+    },
+    {
+      icon: (
+        <MaterialCommunityIcons name="text-shadow" size={24} color="#546881" />
+      ),
+      text: "text",
+    },
+    {
+      icon: <FontAwesome5 name="images" size={24} color="#546881" />,
+      text: "photo",
+    },
+  ];
 
   return (
     <SafeAreaView className="h-full">
@@ -20,6 +43,18 @@ const AddStory = () => {
             color="#fff"
             onPress={() => router.back()}
           />
+        </View>
+        <View className="absolute top-[30%] right-4 z-10">
+          {icons.map((icon, index) => (
+            <View className="mb-6" key={index}>
+              <View className="bg-white-normal p-1 items-center justify-center rounded-md">
+                {icon.icon}
+              </View>
+              <Text className="font-axiformaRegular text-[10px] mt-2 ml-1 text-white-normal capitalize">
+                {icon.text}
+              </Text>
+            </View>
+          ))}
         </View>
         <Image
           source={{
