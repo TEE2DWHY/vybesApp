@@ -198,7 +198,9 @@ const Deposit = () => {
               </Text>
             )}
             <TouchableOpacity
-              className="mt-6 bg-purple-500 py-3 rounded-3xl items-center mx-4"
+              className={`mt-6 bg-purple-500 py-3 rounded-3xl items-center mx-4 ${
+                !value && "opacity-30"
+              }`}
               onPress={handleAddMoneyNow}
             >
               <Text className="text-white-normal font-semibold text-base font-axiformaRegular">
@@ -359,10 +361,14 @@ const Deposit = () => {
             </View>
 
             <Text className="mt-3 text-gray-700 font-medium text-base px-4 font-axiformaRegular">
-              Balance (₦) 500,000.00
+              Balance (₦) {formatNumber(user?.walletBalance / 0.005)}
             </Text>
 
-            <TouchableOpacity className="mt-10 bg-purple-500 py-3 rounded-3xl items-center mx-4">
+            <TouchableOpacity
+              className={`mt-10 bg-purple-500 py-3 rounded-3xl items-center mx-4 ${
+                !value && "opacity-30"
+              }`}
+            >
               <Text className="text-white-normal font-semibold text-lg font-axiformaRegular">
                 Add Money Now
               </Text>

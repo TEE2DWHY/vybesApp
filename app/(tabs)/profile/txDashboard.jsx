@@ -54,7 +54,7 @@ const TxDashboard = () => {
             resizeMode="cover"
           />
         </View>
-        <View className="bg-purple-darker  rounded-lg p-8 self-center mt-8">
+        <View className="bg-purple-darker rounded-lg p-8 self-center mt-8 w-full">
           <View className="border-b border-b-white-normal flex-row items-center justify-between pb-6">
             <Text className="capitalize font-axiformaRegular text-white-normal">
               total coin balance
