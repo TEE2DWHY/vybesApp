@@ -20,6 +20,7 @@ const AddStory = () => {
   const decodedUri = decodeURIComponent(uri);
   const [whoCanView, setWhOCanView] = useState(false);
   const [viewer, setViewer] = useState("");
+  const [isStorySent, setIsStorySent] = useState(false);
 
   const icons = [
     {
@@ -42,9 +43,28 @@ const AddStory = () => {
     },
   ];
 
+  const handleSend = async () => {
+    setIsStorySent(true);
+    setTimeout(() => {
+      router.back();
+    }, 1500);
+  };
+
   return (
     <SafeAreaView className="h-full">
       <View className="relative">
+        {isStorySent && (
+          <View className="z-40 absolute w-full h-full bg-[#1b1b1b60]  items-center justify-center">
+            <View className="bg-white-normal rounded-lg justify-center items-center flex-row gap-2 p-2">
+              <View className="w-6 h-6 rounded-full items-center justify-center bg-purple-normal border-none">
+                <MaterialIcons name="done" size={20} color="#fff" />
+              </View>
+              <Text className="text-[#47586E] font-axiformaBlack capitalize">
+                story sent successfully
+              </Text>
+            </View>
+          </View>
+        )}
         <View className="mt-6 absolute z-10 ml-4">
           <AntDesign
             name="left"
@@ -92,6 +112,7 @@ const AddStory = () => {
               name="send-outline"
               size={24}
               color="#9941EE"
+              onPress={handleSend}
             />
           </View>
         </View>
