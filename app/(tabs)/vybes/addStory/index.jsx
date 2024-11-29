@@ -1,6 +1,13 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
-import { Image, SafeAreaView, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Image,
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -11,6 +18,8 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 const AddStory = () => {
   const { uri } = useLocalSearchParams();
   const decodedUri = decodeURIComponent(uri);
+  const [whoCanView, setWhOCanView] = useState(false);
+  const [viewer, setViewer] = useState("");
 
   const icons = [
     {
@@ -63,8 +72,13 @@ const AddStory = () => {
           className="w-full h-full"
           resizeMode="cover"
         />
-        <View className="absolute bottom-10 justify-center items-center w-full">
-          <MaterialIcons name="keyboard-arrow-up" size={34} color="#fff" />
+        <View className="absolute bottom-6 justify-center items-center w-full">
+          <MaterialIcons
+            name="keyboard-arrow-up"
+            size={34}
+            color="#fff"
+            onPress={() => setWhOCanView(true)}
+          />
           <Text className="capitalize font-axiformaRegular text-white-normal z-10 bg-transparent my-2">
             who can see my stories
           </Text>
@@ -81,7 +95,49 @@ const AddStory = () => {
             />
           </View>
         </View>
+        {whoCanView && (
+          <>
+            <TouchableOpacity
+              onPress={() => setWhOCanView(false)}
+              className="absolute w-full h-full bg-[#1b1b1b60] opacity-20"
+            />
+            <View className="absolute bottom-0 w-full h-fit bg-[#FCFDFD] p-4 rounded-tr-[40px] rounded-tl-[40px] z-20 border-b border-[#DEEDFF] shadow-md">
+              <Text className="font-axiformaBlack mt-4">
+                Who Can See My Stories
+              </Text>
+
+              {[
+                { label: "Only Vybers", value: "vyber" },
+                { label: "Only Baddie", value: "baddie" },
+                { label: "Only Subscribers", value: "subscribers" },
+                { label: "All Vybers and Baddies", value: "vybersAndBaddie" },
+              ].map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  onPress={() => setViewer(option.value)}
+                  className="flex-row items-center justify-between mt-6 border-b border-b-[#DEEDFF] pb-2"
+                >
+                  <Text className="font-axiformaRegular text-[#546881]">
+                    {option.label}
+                  </Text>
+                  <View
+                    className={`w-6 h-6 rounded-full items-center justify-center ${
+                      viewer === option.value
+                        ? "bg-purple-normal border-none"
+                        : "border-2 border-[#B2BBC6]"
+                    }`}
+                  >
+                    {viewer === option.value && (
+                      <MaterialIcons name="done" size={16} color="#fff" />
+                    )}
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
+        )}
       </View>
+
       <StatusBar style="dark" backgroundColor="#fffff" />
     </SafeAreaView>
   );
