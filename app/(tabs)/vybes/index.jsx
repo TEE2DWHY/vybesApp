@@ -78,7 +78,7 @@ const App = () => {
 
       if (!result.canceled) {
         const source = { uri: result.assets[0].uri };
-        console.log("Selected media: ", source);
+        // console.log("Selected media: ", source);
         const encodedUri = encodeURIComponent(source.uri);
         router.push(`/vybes/addStory?uri=${encodedUri}`);
       } else {

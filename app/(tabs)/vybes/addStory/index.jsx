@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -18,9 +19,11 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 const AddStory = () => {
   const { uri } = useLocalSearchParams();
   const decodedUri = decodeURIComponent(uri);
+  const [caption, setCaption] = useState("");
   const [whoCanView, setWhOCanView] = useState(false);
   const [viewer, setViewer] = useState("");
   const [isStorySent, setIsStorySent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const icons = [
     {
@@ -44,10 +47,17 @@ const AddStory = () => {
   ];
 
   const handleSend = async () => {
+    if (caption === "") {
+      return Alert.alert("Error", "Please provide story caption");
+    }
     setIsStorySent(true);
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
     setTimeout(() => {
       router.back();
-    }, 1500);
+    }, 3500);
   };
 
   return (
@@ -56,11 +66,13 @@ const AddStory = () => {
         {isStorySent && (
           <View className="z-40 absolute w-full h-full bg-[#1b1b1b60]  items-center justify-center">
             <View className="bg-white-normal rounded-lg justify-center items-center flex-row gap-2 p-2">
-              <View className="w-6 h-6 rounded-full items-center justify-center bg-purple-normal border-none">
-                <MaterialIcons name="done" size={20} color="#fff" />
-              </View>
+              {!isLoading && (
+                <View className="w-6 h-6 rounded-full items-center justify-center bg-purple-normal border-none">
+                  <MaterialIcons name="done" size={20} color="#fff" />
+                </View>
+              )}
               <Text className="text-[#47586E] font-axiformaBlack capitalize">
-                story sent successfully
+                {isLoading ? "sending..." : "story sent successfully"}
               </Text>
             </View>
           </View>
@@ -107,6 +119,8 @@ const AddStory = () => {
               placeholder="A Caption Makes Your Post Get Well Noticed"
               className="font-axiformaRegular text-sm"
               placeholderTextColor="#909DAD"
+              value={caption}
+              onChangeText={setCaption}
             />
             <MaterialCommunityIcons
               name="send-outline"
