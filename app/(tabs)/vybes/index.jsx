@@ -21,8 +21,8 @@ import { router } from "expo-router";
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
   const token = useToken();
-  // const [baddiesData, setBaddiesData] = useState([]);
-  // const [vybersData, setVybersData] = useState([]);
+  const [baddiesData, setBaddiesData] = useState([]);
+  const [vybersData, setVybersData] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -35,7 +35,6 @@ const App = () => {
             },
           }
         );
-        console.log(response.data);
         if (activeSection === "Baddies") {
           setBaddiesData(response.data.payload);
         }
@@ -43,10 +42,13 @@ const App = () => {
           setVybersData(response.data.payload);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        console.log(error.response.data.message);
       }
     };
-    fetchUsers();
+    if (token) {
+      fetchUsers();
+    }
   }, [activeSection]);
 
   // Request permissions for media library and camera
@@ -90,61 +92,61 @@ const App = () => {
     }
   };
 
-  const baddiesData = [
-    {
-      id: 1,
-      name: "Olayemi",
-      imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-    },
-    {
-      id: 2,
-      name: "Roxy",
-      imageUrl: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 3,
-      name: "Sayo",
-      imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: 4,
-      name: "Tayo",
-      imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
-    },
-    {
-      id: 5,
-      name: "Bola",
-      imageUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-    },
-  ];
+  // const baddiesData = [
+  //   {
+  //     id: 1,
+  //     name: "Olayemi",
+  //     imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Roxy",
+  //     imageUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Sayo",
+  //     imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Tayo",
+  //     imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Bola",
+  //     imageUrl: "https://randomuser.me/api/portraits/women/10.jpg",
+  //   },
+  // ];
 
-  const vybersData = [
-    {
-      id: 1,
-      name: "Michael",
-      imageUrl: "https://randomuser.me/api/portraits/men/12.jpg",
-    },
-    {
-      id: 2,
-      name: "Sarah",
-      imageUrl: "https://randomuser.me/api/portraits/women/15.jpg",
-    },
-    {
-      id: 3,
-      name: "James",
-      imageUrl: "https://randomuser.me/api/portraits/men/20.jpg",
-    },
-    {
-      id: 4,
-      name: "Anna",
-      imageUrl: "https://randomuser.me/api/portraits/women/25.jpg",
-    },
-    {
-      id: 5,
-      name: "John",
-      imageUrl: "https://randomuser.me/api/portraits/men/22.jpg",
-    },
-  ];
+  // const vybersData = [
+  //   {
+  //     id: 1,
+  //     name: "Michael",
+  //     imageUrl: "https://randomuser.me/api/portraits/men/12.jpg",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Sarah",
+  //     imageUrl: "https://randomuser.me/api/portraits/women/15.jpg",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "James",
+  //     imageUrl: "https://randomuser.me/api/portraits/men/20.jpg",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Anna",
+  //     imageUrl: "https://randomuser.me/api/portraits/women/25.jpg",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "John",
+  //     imageUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+  //   },
+  // ];
 
   const data = activeSection === "Baddies" ? baddiesData : vybersData;
   const sectionTitle =
@@ -215,7 +217,7 @@ const App = () => {
               <View className="items-center">
                 <TouchableOpacity
                   className="border-2 border-white-normal border-dashed w-14 h-14 rounded-full mb-2 justify-center items-center relative"
-                  onPress={handleMediaUpload} // Call the media upload function
+                  onPress={handleMediaUpload}
                 >
                   <View className="absolute bottom-[-4px] right-[-6px] z-10">
                     <Ionicons name="add-circle" size={22} color="#fff" />
@@ -225,16 +227,16 @@ const App = () => {
                   Add Story
                 </Text>
               </View>
-              {data.map((story) => (
-                <View key={story.id} className="items-center">
+              {data.map((user) => (
+                <View key={user._id} className="items-center">
                   <TouchableOpacity className="rounded-full overflow-hidden w-20 h-16 border-2 border-white-normal">
                     <Image
-                      source={{ uri: story.imageUrl }}
+                      source={{ uri: user.image }}
                       className="w-full h-full"
                     />
                   </TouchableOpacity>
                   <Text className="text-white-normal text-center mt-2 font-axiformaRegular text-xs">
-                    {story.name}
+                    {user.userName}
                   </Text>
                 </View>
               ))}
