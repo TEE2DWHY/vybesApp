@@ -24,32 +24,30 @@ const App = () => {
   const [baddiesData, setBaddiesData] = useState([]);
   const [vybersData, setVybersData] = useState([]);
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/user/get-users-by-account-type/${activeSection}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      activeSection === "Baddies"
+        ? setBaddiesData(response.data.payload)
+        : setVybersData(response.data.payload);
+    } catch (error) {
+      console.error(error);
+      console.log(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/v1/user/get-users-by-account-type/${activeSection}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (activeSection === "Baddies") {
-          setBaddiesData(response.data.payload);
-        }
-        if (activeSection === "Vybers") {
-          setVybersData(response.data.payload);
-        }
-      } catch (error) {
-        console.error(error);
-        console.log(error.response.data.message);
-      }
-    };
     if (token) {
       fetchUsers();
     }
-  }, [activeSection]);
+  }, [token, activeSection]);
 
   // Request permissions for media library and camera
   useEffect(() => {
@@ -235,7 +233,7 @@ const App = () => {
                       className="w-full h-full"
                     />
                   </TouchableOpacity>
-                  <Text className="text-white-normal text-center mt-2 font-axiformaRegular text-xs">
+                  <Text className="text-white-normal text-center mt-2 font-axiformaRegular text-xs capitalize">
                     {user.userName}
                   </Text>
                 </View>

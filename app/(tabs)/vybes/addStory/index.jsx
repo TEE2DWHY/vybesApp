@@ -99,7 +99,7 @@ const AddStory = () => {
         </View>
         <Image
           source={{
-            uri: "https://s3-alpha-sig.figma.com/img/0adf/1e8b/f4a6968c88d687eab196052a14b6b656?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=FmK3Mw5J0ycvX0zTSehDeMP9ghNGHfvryHTukErat0eCoSg1zQD~24TBeBC41Z9xz3J-NZi-33r6JdLXhO75NqVZhbtgjykkt4kskQhPSxcvgOjCcfQ7Qg73NwG5q4wQaLKN8lqPy2F-kaMEgysutx5SugybDokCfNbEKHvHn~yojVp7OE1n-NBHtV-xHzrCVEPqfQLxOCpBb-m5A4~uPqQhrWPq3X0WRnsjud4kQO6IH-VCz78~FEE7RTnLgHZay3Qc4sciEyW~Hi4iRQbZ6RD4OTThnmmS8Ph8e6RGLVs7bUtG5Tf-WEDXj6Uvw6-BIHfslmtbdDQHvAHeO1~XZQ__",
+            uri: decodedUri,
           }}
           className="w-full h-full"
           resizeMode="cover"
