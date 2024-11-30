@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   SafeAreaView,
@@ -15,6 +15,9 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import * as FileSystem from "expo-file-system";
+import axios from "axios";
+import { useToken } from "../../../../hooks/useToken";
 
 const AddStory = () => {
   const { uri } = useLocalSearchParams();
@@ -24,6 +27,82 @@ const AddStory = () => {
   const [viewer, setViewer] = useState("");
   const [isStorySent, setIsStorySent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [mediaType, setMediaType] = useState("");
+  const token = useToken();
+
+  // Determine the media type (image/video)
+  const getMediaType = (uri) => {
+    const extension = uri.split(".").pop();
+    if (["jpg", "jpeg", "png", "gif"].includes(extension.toLowerCase())) {
+      setMediaType("image");
+    } else if (["mp4", "mov", "avi"].includes(extension.toLowerCase())) {
+      setMediaType("video");
+    } else {
+      setMediaType("unknown");
+    }
+  };
+
+  useEffect(() => {
+    getMediaType(decodedUri);
+  }, [decodedUri]);
+
+  const handleSend = async () => {
+    if (caption === "") {
+      return Alert.alert("Error", "Please provide story caption");
+    }
+    if (mediaType === "unknown") {
+      return Alert.alert("Error", "Unsupported media type");
+    }
+
+    setIsStorySent(true);
+    setIsLoading(true);
+
+    try {
+      const fileUri = decodedUri;
+
+      // Prepare the form data for the backend upload
+      const formData = new FormData();
+      formData.append("media", {
+        uri: fileUri,
+        type: mediaType === "image" ? "image/jpeg" : "video/mp4",
+        name: `story-media.${mediaType === "image" ? "jpg" : "mp4"}`,
+      });
+      formData.append("caption", caption);
+      formData.append("mediaType", mediaType);
+      formData.append("viewer", viewer);
+
+      // Upload the data to the backend (using axios)
+      const response = await axios.post(
+        "http://localhost:8000/v1/story/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // Assuming `useToken` hook works correctly
+          },
+        }
+      );
+
+      console.log("Story uploaded successfully:", response.data);
+      setIsLoading(false);
+      setIsStorySent(true);
+
+      // Go back to the previous screen after a delay
+      setTimeout(() => {
+        setIsLoading(false);
+        router.back(); // Use the router to navigate back
+      }, 3500);
+    } catch (error) {
+      console.error(
+        "Error uploading story:",
+        error.response?.data?.message || error.message
+      );
+      setIsLoading(false);
+      Alert.alert("Error", "Failed to upload story");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const icons = [
     {
@@ -46,20 +125,6 @@ const AddStory = () => {
     },
   ];
 
-  const handleSend = async () => {
-    if (caption === "") {
-      return Alert.alert("Error", "Please provide story caption");
-    }
-    setIsStorySent(true);
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    setTimeout(() => {
-      router.back();
-    }, 3500);
-  };
-
   return (
     <SafeAreaView className="h-full">
       <View className="relative">
@@ -67,7 +132,7 @@ const AddStory = () => {
           <View className="z-40 absolute w-full h-full bg-[#1b1b1b60]  items-center justify-center">
             <View className="bg-white-normal rounded-lg justify-center items-center flex-row gap-2 p-2">
               {!isLoading && (
-                <View className="w-6 h-6 rounded-full items-center justify-center bg-purple-normal border-none">
+                <View className="w-6 h-6 rounded-full items-center justify-center bg-purple-normal border-none z-50">
                   <MaterialIcons name="done" size={20} color="#fff" />
                 </View>
               )}
