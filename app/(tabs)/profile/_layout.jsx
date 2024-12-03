@@ -18,7 +18,7 @@ const ProfileLayout = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="ticketPayment" options={{ headerShown: false }} />
-      <Stack.Screen name="story/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="story/[storyId]" options={{ headerShown: false }} />
     </Stack>
   );
 };

@@ -12,37 +12,47 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
-import { storiesData } from "../../../../data/data";
+import { useToken } from "../../../../hooks/useToken";
+import axios from "axios";
+import { formatDistanceToNow } from "date-fns";
 
 const Story = () => {
-  const [story, setStory] = useState({});
-  const params = useLocalSearchParams();
-  const { id } = params;
   const router = useRouter();
+  const token = useToken();
+  const [story, setStory] = useState(null);
+  const params = useLocalSearchParams();
+  const { storyId } = params;
   const [showViews, setShowViews] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
 
-  story.viewers = [
-    {
-      profilePicture:
-        "https://images.unsplash.com/photo-1631947430066-48c30d57b943?q=80&w=2816&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      username: "Adetola_sayok",
-    },
-    {
-      profilePicture:
-        "https://images.unsplash.com/photo-1561158317-757a4631770e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      username: "JohnDoe123",
-    },
-    // More viewers...
-  ];
-
   useEffect(() => {
-    if (id !== undefined && storiesData[id]) {
-      setStory(storiesData[id]);
-    } else {
-      setStoryImage({});
+    const getStory = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/v1/story`, {
+          params: {
+            storyId: storyId,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setStory(response.data.payload);
+      } catch (error) {
+        console.error("Error fetching story:", error);
+      }
+    };
+
+    if (token) {
+      getStory();
     }
-  }, [id]);
+  }, [storyId, token]);
+
+  const formatPostedTime = (createdAt) => {
+    const parsedDate = new Date(createdAt);
+    return isNaN(parsedDate)
+      ? "Invalid date"
+      : formatDistanceToNow(parsedDate, { addSuffix: true });
+  };
 
   return (
     <SafeAreaView className="h-full bg-[#F8F9FB]">
@@ -59,6 +69,7 @@ const Story = () => {
           </Text>
           <Feather name="settings" size={24} color="#546881" />
         </View>
+
         {story ? (
           <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-md">
             <View className="absolute top-4 flex-row items-center justify-between z-20 w-full px-4 bg-transparent">
@@ -68,7 +79,7 @@ const Story = () => {
               >
                 <AntDesign name="heart" size={18} color="#FF9574" />
                 <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                  {story?.likes} Likes
+                  {story.likes?.length > 0 ? story.likes.length : 0} Likes
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -77,41 +88,20 @@ const Story = () => {
               >
                 <Feather name="eye" size={18} color="#546881" />
                 <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                  {story?.views} Views
+                  {story.views?.length > 0 ? story.views.length : 0} Views
                 </Text>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity
-              className="absolute top-[50%] left-2 z-10 bg-white-normal rounded-full p-2 shadow-md border-purple-normal border-4"
-              onPress={() => {
-                story?.id === 0
-                  ? setStory(storiesData[storiesData.length - 1])
-                  : setStory(storiesData[story?.id - 1]);
-              }}
-            >
-              <AntDesign name="left" size={18} color="#7B4CE5" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="absolute right-2 top-[50%] z-10 bg-white-normal rounded-full p-2 shadow-md border-purple-normal border-4"
-              onPress={() => {
-                story?.id === storiesData.length - 1
-                  ? setStory(storiesData[0])
-                  : setStory(storiesData[story?.id + 1]);
-              }}
-            >
-              <AntDesign name="right" size={18} color="#7B4CE5" />
-            </TouchableOpacity>
-
             <Image
-              source={{ uri: story?.imageUrl }}
+              source={{ uri: story.media }}
               className="w-full h-full rounded-lg"
               resizeMode="cover"
             />
 
             <View className="absolute bottom-4 left-4 bg-[#7a4ce59a] rounded-md px-4 py-4">
               <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                {`Posted ${story?.postedAt}`}
+                Posted {formatPostedTime(story.createdAt)}
               </Text>
             </View>
           </View>
@@ -134,7 +124,7 @@ const Story = () => {
           <View className="bg-purple-darker w-full rounded-tl-[40px] rounded-tr-[40px] absolute bottom-0 h-[60%] px-4 z-10">
             {/* Profile Image */}
             <Image
-              source={{ uri: story?.imageUrl }}
+              source={{ uri: story?.media }}
               className="w-[100px] h-[100px] rounded-lg self-center mt-10"
               resizeMode="cover"
             />
@@ -147,7 +137,7 @@ const Story = () => {
               <TouchableOpacity className="bg-[#DBEBFF] flex-row items-center rounded-lg px-4 py-4">
                 <Feather name="eye" size={22} color="#8BC0FE" />
                 <Text className="font-axiformaRegular ml-4 text-[#314359]">
-                  {story?.views} Views
+                  {story?.views.length > 0 ? story.views.length : 0} Views
                 </Text>
               </TouchableOpacity>
             </View>
@@ -200,7 +190,7 @@ const Story = () => {
               resizeMode="cover"
             />
 
-            {/* Views Section */}
+            {/* Likes Section */}
             <View className="flex-row items-center justify-between mt-6 border-b border-white-normal pb-2">
               <Text className="font-axiformaRegular text-white-normal">
                 Account Likes
@@ -208,7 +198,7 @@ const Story = () => {
               <TouchableOpacity className="bg-[#FFDED4] flex-row items-center rounded-lg px-4 py-4">
                 <Feather name="heart" size={18} color="red" />
                 <Text className="font-axiformaRegular ml-4 text-[#314359]">
-                  {story?.likes} Likes
+                  {story?.likes.length > 0 ? story.likes.length : 0} Likes
                 </Text>
               </TouchableOpacity>
             </View>
@@ -224,7 +214,7 @@ const Story = () => {
                       source={{ uri: viewer.profilePicture }}
                       className="w-[40px] h-[40px] rounded-full"
                     />
-                    <Text className="font-axiformaRegular text-white-normal ml-4">
+                    <Text className="font-axiformaRegular text-white-normal ml- 4">
                       @{viewer.username}
                     </Text>
                   </View>

@@ -15,7 +15,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
 
