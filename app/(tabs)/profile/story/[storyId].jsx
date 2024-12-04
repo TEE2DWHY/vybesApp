@@ -5,7 +5,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Modal,
+  ActivityIndicator, // Import ActivityIndicator
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -15,11 +15,13 @@ import Feather from "@expo/vector-icons/Feather";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
+import { Spinner } from "../../../../components/Spinner";
 
 const Story = () => {
   const router = useRouter();
   const token = useToken();
   const [story, setStory] = useState(null);
+  const [loading, setLoading] = useState(true);
   const params = useLocalSearchParams();
   const { storyId } = params;
   const [showViews, setShowViews] = useState(false);
@@ -27,6 +29,7 @@ const Story = () => {
 
   useEffect(() => {
     const getStory = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`http://localhost:8000/v1/story`, {
           params: {
@@ -39,6 +42,8 @@ const Story = () => {
         setStory(response.data.payload);
       } catch (error) {
         console.error("Error fetching story:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -70,7 +75,15 @@ const Story = () => {
           <Feather name="settings" size={24} color="#546881" />
         </View>
 
-        {story ? (
+        {/* Show Loading Spinner */}
+        {loading ? (
+          <View className="flex-1 justify-center items-center h-[50vh]">
+            <Spinner />
+            <Text className="text-[#3D4C5E] mt-4 font-axiformaRegular">
+              Loading story...
+            </Text>
+          </View>
+        ) : story ? (
           <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-md">
             <View className="absolute top-4 flex-row items-center justify-between z-20 w-full px-4 bg-transparent">
               <TouchableOpacity

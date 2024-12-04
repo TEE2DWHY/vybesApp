@@ -17,17 +17,19 @@ import axios from "axios";
 import { useToken } from "../../../hooks/useToken";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
   const token = useToken();
   const [baddiesData, setBaddiesData] = useState([]);
   const [vybersData, setVybersData] = useState([]);
+  const [selectedUserStory, setSelectedUserStory] = useState(null);
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/user/get-users-by-account-type/${activeSection}`,
+        `http://localhost:8000/v1/story/get-active-stories/${activeSection}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,6 +39,8 @@ const App = () => {
       activeSection === "Baddies"
         ? setBaddiesData(response.data.payload)
         : setVybersData(response.data.payload);
+
+      console.log(response.data.payload);
     } catch (error) {
       console.error(error);
       console.log(error.response.data.message);
@@ -156,7 +160,10 @@ const App = () => {
         <View className="flex-row items-center justify-center mt-4 mb-2">
           <TouchableOpacity
             className="w-[40%]"
-            onPress={() => setActiveSection("Vybers")}
+            onPress={() => {
+              setActiveSection("Vybers");
+              setSelectedUserStory(null);
+            }}
           >
             {activeSection === "Vybers" ? (
               <LinearGradient
@@ -179,7 +186,10 @@ const App = () => {
           </TouchableOpacity>
           <TouchableOpacity
             className="w-[40%] ml-4"
-            onPress={() => setActiveSection("Baddies")}
+            onPress={() => {
+              setActiveSection("Baddies");
+              setSelectedUserStory(null);
+            }}
           >
             {activeSection === "Baddies" ? (
               <LinearGradient
@@ -226,15 +236,18 @@ const App = () => {
                 </Text>
               </View>
               {data.map((user) => (
-                <View key={user._id} className="items-center">
-                  <TouchableOpacity className="rounded-full overflow-hidden w-20 h-16 border-2 border-white-normal">
+                <View key={user.storyId} className="items-center">
+                  <TouchableOpacity
+                    onPress={() => setSelectedUserStory(user)}
+                    className="rounded-full overflow-hidden w-20 h-16 border-2 border-white-normal"
+                  >
                     <Image
-                      source={{ uri: user.image }}
+                      source={{ uri: user?.user?.image }}
                       className="w-full h-full"
                     />
                   </TouchableOpacity>
                   <Text className="text-white-normal text-center mt-2 font-axiformaRegular text-xs capitalize">
-                    {user.userName}
+                    {user?.user?.userName}
                   </Text>
                 </View>
               ))}
@@ -242,16 +255,29 @@ const App = () => {
           </View>
         </ScrollView>
         <View>
-          <Image
-            source={{
-              uri:
-                activeSection === "Baddies"
-                  ? "https://images.unsplash.com/photo-1627130596911-985450bd4d63?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  : "https://images.unsplash.com/photo-1627130595904-ebeeb6540a93?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            }}
-            className="w-full h-[500px]"
-            resizeMode="cover"
-          />
+          {selectedUserStory ? (
+            <Image
+              source={{
+                uri: selectedUserStory?.media,
+              }}
+              className="w-full h-[500px]"
+              resizeMode="cover"
+            />
+          ) : (
+            <View className="items-center justify-center h-[50vh]">
+              <View>
+                <MaterialCommunityIcons
+                  name="cursor-default-click"
+                  size={30}
+                  color="#7e22ce"
+                />
+              </View>
+
+              <Text className="font-axiformaRegular capitalize mt-4">
+                Please select a user to view their story
+              </Text>
+            </View>
+          )}
 
           <View className="absolute top-0 left-0 right-0 px-4 pt-4 flex-row justify-between">
             {[...Array(5)].map((_, index) => (
@@ -261,65 +287,68 @@ const App = () => {
               />
             ))}
           </View>
-          <View className="flex-row items-center justify-between absolute top-[60%] w-full px-2">
-            <View className="bg-[#3d4c5ee9] py-8 px-4 rounded-[24px] border border-gray-500 w-[90%] mx-auto shadow-2xl">
-              <View className="flex-row gap-8 items-center mb-2">
-                <Image
-                  source={{
-                    uri:
-                      activeSection === "Baddies"
-                        ? "https://images.unsplash.com/photo-1627130596911-985450bd4d63?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D "
-                        : "https://images.unsplash.com/photo-1627130595904-ebeeb6540a93?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                  }}
-                  className="w-12 h-12 object-cover rounded-full border-2 border-red-300"
-                  resizeMode="cover"
-                />
-                <View className="flex-1">
-                  <View className="flex-row gap-2">
-                    <Text className="capitalize text-white-normal font-axiformaBlack text-xl">
-                      {activeSection === "Baddies" ? "Bolanle" : "Yvonne"}, 25
-                    </Text>
-                    <MaterialIcons name="verified" size={24} color="#6DD3E1" />
-                  </View>
+          {selectedUserStory && (
+            <View className="flex-row items-center justify-between absolute top-[60%] w-full px-2">
+              <View className="bg-[#3d4c5ee9] py-8 px-4 rounded-[24px] border border-gray-500 w-[90%] mx-auto shadow-2xl">
+                <View className="flex-row gap-8 items-center mb-2">
+                  <Image
+                    source={{
+                      uri: selectedUserStory?.user?.image,
+                    }}
+                    className="w-12 h-12 object-cover rounded-full border-2 border-red-300"
+                    resizeMode="cover"
+                  />
+                  <View className="flex-1">
+                    <View className="flex-row gap-2">
+                      <Text className="capitalize text-white-normal font-axiformaBlack text-xl">
+                        {selectedUserStory?.user?.userName}, 25
+                      </Text>
+                      <MaterialIcons
+                        name="verified"
+                        size={24}
+                        color="#6DD3E1"
+                      />
+                    </View>
 
-                  <Text className="capitalize font-axiformaRegular text-white-normal text-xs">
-                    {activeSection === "Baddies"
-                      ? "Loves having fun and meeting new friends"
-                      : " Movie Addict and  great chef."}
-                  </Text>
+                    <Text className="capitalize font-axiformaRegular text-white-normal text-xs">
+                      {activeSection === "Baddies"
+                        ? "Loves having fun and meeting new friends"
+                        : " Movie Addict and  great chef."}
+                    </Text>
+                  </View>
+                </View>
+                <View className="flex-row flex-wrap gap-2">
+                  <View className="border-2 border-[#86D8D3] rounded-full px-2 py-1 flex items-center justify-center">
+                    <Text className="text-[#65A29E] capitalize font-axiformaRegular text-xs">
+                      {activeSection === "Baddies" ? "Baddie" : "Vyber"}
+                    </Text>
+                  </View>
+                  <View className="border border-[#8BC0FE] rounded-full px-2 py-1 flex-row items-center justify-center">
+                    <Text className="text-[#6F9ACB] capitalize font-axiformaRegular text-xs ml-2">
+                      2 Miles Away
+                    </Text>
+                    <EvilIcons name="location" size={20} color="#6F9ACB" />
+                  </View>
+                  <View className="border-2 border-[#86D8D3] rounded-full px-2 py-1 flex items-center justify-center">
+                    <Text className="text-[#65A29E] capitalize font-axiformaRegular text-xs">
+                      Available
+                    </Text>
+                  </View>
                 </View>
               </View>
-              <View className="flex-row flex-wrap gap-2">
-                <View className="border-2 border-[#86D8D3] rounded-full px-2 py-1 flex items-center justify-center">
-                  <Text className="text-[#65A29E] capitalize font-axiformaRegular text-xs">
-                    {activeSection === "Baddies" ? "Baddie" : "Vyber"}
-                  </Text>
-                </View>
-                <View className="border border-[#8BC0FE] rounded-full px-2 py-1 flex-row items-center justify-center">
-                  <Text className="text-[#6F9ACB] capitalize font-axiformaRegular text-xs ml-2">
-                    2 Miles Away
-                  </Text>
-                  <EvilIcons name="location" size={20} color="#6F9ACB" />
-                </View>
-                <View className="border-2 border-[#86D8D3] rounded-full px-2 py-1 flex items-center justify-center">
-                  <Text className="text-[#65A29E] capitalize font-axiformaRegular text-xs">
-                    Available
-                  </Text>
-                </View>
+              <View className="flex-col gap-6 ml-1">
+                <TouchableOpacity>
+                  <Ionicons name="chatbubbles-sharp" size={34} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Feather name="user-plus" size={34} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <MaterialIcons name="favorite" size={34} color="#fff" />
+                </TouchableOpacity>
               </View>
             </View>
-            <View className="flex-col gap-6 ml-1">
-              <TouchableOpacity>
-                <Ionicons name="chatbubbles-sharp" size={34} color="#fff" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Feather name="user-plus" size={34} color="#fff" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <MaterialIcons name="favorite" size={34} color="#fff" />
-              </TouchableOpacity>
-            </View>
-          </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
