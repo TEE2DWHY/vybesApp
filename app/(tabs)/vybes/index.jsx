@@ -311,16 +311,14 @@ const App = () => {
                     </View>
 
                     <Text className="capitalize font-axiformaRegular text-white-normal text-xs">
-                      {activeSection === "Baddies"
-                        ? "Loves having fun and meeting new friends"
-                        : " Movie Addict and  great chef."}
+                      {selectedUserStory?.user?.bio}
                     </Text>
                   </View>
                 </View>
                 <View className="flex-row flex-wrap gap-2">
                   <View className="border-2 border-[#86D8D3] rounded-full px-2 py-1 flex items-center justify-center">
                     <Text className="text-[#65A29E] capitalize font-axiformaRegular text-xs">
-                      {activeSection === "Baddies" ? "Baddie" : "Vyber"}
+                      {selectedUserStory?.user?.accountType}
                     </Text>
                   </View>
                   <View className="border border-[#8BC0FE] rounded-full px-2 py-1 flex-row items-center justify-center">
