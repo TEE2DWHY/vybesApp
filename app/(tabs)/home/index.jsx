@@ -28,6 +28,7 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const token = useToken();
+  const currentYear = new Date().getFullYear();
 
   const {
     payload: allUsers,
@@ -80,7 +81,7 @@ const Home = () => {
       img={item.image}
       accountType={item.accountType}
       firstName={item?.fullName.split(" ")[0]}
-      age={2024 - Number(item.dateOfBirth?.split("-")[0])}
+      age={currentYear - Number(item.dateOfBirth?.split("-")[0])}
       state={item.location}
       country={"Nigeria"}
       userId={item._id}
@@ -113,7 +114,6 @@ const Home = () => {
               />
             </View>
             <View className="relative">
-              {/* Show notification dot only if there's a new notification */}
               {hasNewNotifications && (
                 <View className="bg-purple-normal w-2 h-2 rounded-full absolute right-1 z-50"></View>
               )}

@@ -25,6 +25,20 @@ const App = () => {
   const [baddiesData, setBaddiesData] = useState([]);
   const [vybersData, setVybersData] = useState([]);
   const [selectedUserStory, setSelectedUserStory] = useState(null);
+  const currentYear = new Date().getFullYear();
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handlePrevStory = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const handleNextStory = () => {
+    if (currentIndex < selectedUserStory?.stories.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -53,7 +67,6 @@ const App = () => {
     }
   }, [token, activeSection]);
 
-  // Request permissions for media library and camera
   useEffect(() => {
     const requestPermissions = async () => {
       const mediaPermission =
@@ -95,61 +108,6 @@ const App = () => {
   };
 
   // const baddiesData = [
-  //   {
-  //     id: 1,
-  //     name: "Olayemi",
-  //     imageUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Roxy",
-  //     imageUrl: "https://randomuser.me/api/portraits/women/2.jpg",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Sayo",
-  //     imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Tayo",
-  //     imageUrl: "https://randomuser.me/api/portraits/men/2.jpg",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Bola",
-  //     imageUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-  //   },
-  // ];
-
-  // const vybersData = [
-  //   {
-  //     id: 1,
-  //     name: "Michael",
-  //     imageUrl: "https://randomuser.me/api/portraits/men/12.jpg",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Sarah",
-  //     imageUrl: "https://randomuser.me/api/portraits/women/15.jpg",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "James",
-  //     imageUrl: "https://randomuser.me/api/portraits/men/20.jpg",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Anna",
-  //     imageUrl: "https://randomuser.me/api/portraits/women/25.jpg",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "John",
-  //     imageUrl: "https://randomuser.me/api/portraits/men/22.jpg",
-  //   },
-  // ];
-
   const data = activeSection === "Baddies" ? baddiesData : vybersData;
   const sectionTitle =
     activeSection === "Baddies" ? "Baddie Story" : "Vybers Story";
@@ -254,15 +212,71 @@ const App = () => {
             </View>
           </View>
         </ScrollView>
-        <View>
+        <View className="w-full h-[500px]">
+          {selectedUserStory?.stories.length > 1 && (
+            <View className="absolute z-10 top-[30%] left-0 right-0 flex-row items-center justify-between w-full px-4">
+              <TouchableOpacity
+                className="bg-purple-dark rounded-full w-8 h-8 justify-center items-center"
+                onPress={handlePrevStory}
+                disabled={currentIndex === 0}
+              >
+                <MaterialIcons
+                  name="arrow-back-ios"
+                  size={18}
+                  color={currentIndex === 0 ? "#ccc" : "#fff"}
+                  style={{
+                    marginLeft: 8,
+                    opacity: currentIndex === 0 ? 0.5 : 1,
+                  }}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="bg-purple-dark rounded-full w-8 h-8 justify-center items-center"
+                onPress={handleNextStory}
+                disabled={
+                  currentIndex === selectedUserStory?.stories.length - 1
+                }
+              >
+                <MaterialIcons
+                  name="arrow-forward-ios"
+                  size={18}
+                  color={
+                    currentIndex === selectedUserStory?.stories.length - 1
+                      ? "#ccc"
+                      : "#fff"
+                  }
+                  style={{
+                    opacity:
+                      currentIndex === selectedUserStory?.stories.length - 1
+                        ? 0.5
+                        : 1,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+
           {selectedUserStory ? (
-            <Image
-              source={{
-                uri: selectedUserStory?.media,
-              }}
-              className="w-full h-[500px]"
-              resizeMode="cover"
-            />
+            selectedUserStory?.stories.length === 1 ? (
+              selectedUserStory?.stories.map((story) => (
+                <Image
+                  source={{
+                    uri: story?.media,
+                  }}
+                  className="h-full w-full"
+                  resizeMode="cover"
+                />
+              ))
+            ) : (
+              <Image
+                source={{
+                  uri: selectedUserStory?.stories[currentIndex]?.media,
+                }}
+                className="h-full w-full"
+                resizeMode="cover"
+              />
+            )
           ) : (
             <View className="items-center justify-center h-[50vh]">
               <View>
@@ -279,14 +293,6 @@ const App = () => {
             </View>
           )}
 
-          <View className="absolute top-0 left-0 right-0 px-4 pt-4 flex-row justify-between">
-            {[...Array(5)].map((_, index) => (
-              <View
-                key={index}
-                className="w-[15%] h-[1px] bg-white-normal rounded-full"
-              />
-            ))}
-          </View>
           {selectedUserStory && (
             <View className="flex-row items-center justify-between absolute top-[60%] w-full px-2">
               <View className="bg-[#3d4c5ee9] py-8 px-4 rounded-[24px] border border-gray-500 w-[90%] mx-auto shadow-2xl">
@@ -301,7 +307,11 @@ const App = () => {
                   <View className="flex-1">
                     <View className="flex-row gap-2">
                       <Text className="capitalize text-white-normal font-axiformaBlack text-xl">
-                        {selectedUserStory?.user?.userName}, 25
+                        {selectedUserStory?.user?.userName},{" "}
+                        {currentYear -
+                          Number(
+                            selectedUserStory?.user?.dateOfBirth?.split("-")[0]
+                          )}
                       </Text>
                       <MaterialIcons
                         name="verified"
