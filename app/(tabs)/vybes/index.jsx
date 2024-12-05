@@ -20,16 +20,19 @@ import { router } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import empty from "../../../assets/images/empty-box.png";
-
+import { StatusBar } from "expo-status-bar";
+import { useAccount } from "../../../hooks/useAccount";
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
   const token = useToken();
+  const { user } = useAccount();
   const [baddiesData, setBaddiesData] = useState([]);
   const [vybersData, setVybersData] = useState([]);
   const [selectedUserStory, setSelectedUserStory] = useState(null);
   const currentYear = new Date().getFullYear();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [myContacts, setMyContact] = useState([]);
+  const [allStories, setAllStories] = useState([]);
 
   const handlePrevStory = () => {
     if (currentIndex > 0) {
@@ -43,7 +46,7 @@ const App = () => {
     }
   };
 
-  console.log(selectedUserStory?.user?._id);
+  console.log(JSON.stringify(selectedUserStory));
 
   const getCurrentContacts = async () => {
     try {
@@ -56,11 +59,31 @@ const App = () => {
         }
       );
       setMyContact(response.data?.payload);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const getAllStories = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:8000/v1/story/all", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     console.log(response.data);
+  //     setAllStories(response.data.payload);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (token) {
+  //     getAllStories();
+  //   }
+  // }, [selectedUserStory]);
 
   useEffect(() => {
     if (token) {
@@ -110,6 +133,79 @@ const App = () => {
         console.log(error);
         Alert.alert("Error", error?.response.data?.message);
       }
+    }
+  };
+
+  const likeStory = async () => {
+    const currentStory = selectedUserStory?.stories[currentIndex];
+
+    if (currentStory.likes.includes(user?._id)) {
+      await unlikeStory();
+    } else {
+      // Otherwise, call the like API
+      try {
+        const response = await axios.patch(
+          "http://localhost:8000/v1/story/like",
+          {
+            storyId: currentStory.storyId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Update the local state to reflect the new likes
+        const updatedStories = [...selectedUserStory.stories];
+        const updatedStory = updatedStories[currentIndex];
+
+        // Add the user ID to the likes
+        updatedStory.likes.push(user?._id);
+
+        setSelectedUserStory({
+          ...selectedUserStory,
+          stories: updatedStories,
+        });
+
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Error", error?.response.data?.message);
+      }
+    }
+  };
+
+  const unlikeStory = async () => {
+    try {
+      const response = await axios.patch(
+        "http://localhost:8000/v1/story/unlike",
+        {
+          storyId: selectedUserStory?.stories[currentIndex]?.storyId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the local state to reflect the new likes
+      const updatedStories = [...selectedUserStory.stories];
+      const currentStory = updatedStories[currentIndex];
+
+      // Remove the user ID from the likes
+      currentStory.likes = currentStory.likes.filter((id) => id !== user?._id);
+
+      setSelectedUserStory({
+        ...selectedUserStory,
+        stories: updatedStories,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", error?.response.data?.message);
     }
   };
 
@@ -425,14 +521,25 @@ const App = () => {
                     <Feather name="user-plus" size={30} color="#fff" />
                   </TouchableOpacity>
                 )}
-                <TouchableOpacity>
-                  <MaterialIcons name="favorite" size={30} color="#fff" />
+                <TouchableOpacity onPress={() => likeStory()}>
+                  <MaterialIcons
+                    name="favorite"
+                    size={30}
+                    color={
+                      !selectedUserStory?.stories[currentIndex]?.likes.includes(
+                        user?._id
+                      )
+                        ? "#fff"
+                        : "#ff0000"
+                    }
+                  />
                 </TouchableOpacity>
               </View>
             </View>
           )}
         </View>
       </ScrollView>
+      <StatusBar backgroundColor="#fffff" style="dark" />
     </SafeAreaView>
   );
 };
