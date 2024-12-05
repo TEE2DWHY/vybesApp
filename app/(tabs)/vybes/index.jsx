@@ -18,6 +18,8 @@ import { useToken } from "../../../hooks/useToken";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import empty from "../../../assets/images/empty-box.png";
 
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
@@ -27,6 +29,7 @@ const App = () => {
   const [selectedUserStory, setSelectedUserStory] = useState(null);
   const currentYear = new Date().getFullYear();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [myContacts, setMyContact] = useState([]);
 
   const handlePrevStory = () => {
     if (currentIndex > 0) {
@@ -39,6 +42,31 @@ const App = () => {
       setCurrentIndex(currentIndex + 1);
     }
   };
+
+  console.log(selectedUserStory?.user?._id);
+
+  const getCurrentContacts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/v1/contact/get-contacts",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMyContact(response.data?.payload);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      getCurrentContacts();
+    }
+  }, [selectedUserStory]);
 
   const fetchUsers = async () => {
     try {
@@ -58,6 +86,30 @@ const App = () => {
     } catch (error) {
       console.error(error);
       console.log(error.response.data.message);
+    }
+  };
+
+  const sendFriendRequest = async () => {
+    if (token) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/v1/contact/add-contact",
+          {
+            contactId: selectedUserStory?.user?._id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        Alert.alert("Success", response.data?.message);
+        getCurrentContacts();
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Error", error?.response.data?.message);
+      }
     }
   };
 
@@ -170,48 +222,63 @@ const App = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView
-          className="bg-purple-normal px-6 py-4 mt-6"
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        >
-          <View>
-            <Text className="text-white-normal font-axiformaRegular text-lg mb-4">
-              {activeSection === "Baddies" ? "Baddie Story" : "Vybers Story"}
+        {data.length === 0 ? (
+          <View className="items-center justify-center absolute top-[50%] w-full">
+            <Image
+              source={empty}
+              className="w-20 h-20 my-4"
+              resizeMode="contain"
+            />
+            <Text className="font-axiformaRegular text-[#909DAD]">
+              No user story found at the moment.
             </Text>
-            <View className="flex-row items-center gap-4">
-              <View className="items-center">
-                <TouchableOpacity
-                  className="border-2 border-white-normal border-dashed w-14 h-14 rounded-full mb-2 justify-center items-center relative"
-                  onPress={handleMediaUpload}
-                >
-                  <View className="absolute bottom-[-4px] right-[-6px] z-10">
-                    <Ionicons name="add-circle" size={22} color="#fff" />
-                  </View>
-                </TouchableOpacity>
-                <Text className="text-white-normal text-center font-axiformaRegular text-xs mt-2">
-                  Add Story
-                </Text>
-              </View>
-              {data.map((user) => (
-                <View key={user.storyId} className="items-center">
+          </View>
+        ) : (
+          <ScrollView
+            className="bg-purple-normal px-6 py-4 mt-6"
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            <View>
+              <Text className="text-white-normal font-axiformaRegular text-lg mb-4">
+                {activeSection === "Baddies" ? "Baddie Story" : "Vybers Story"}
+              </Text>
+
+              <View className="flex-row items-center gap-4">
+                <View className="items-center">
                   <TouchableOpacity
-                    onPress={() => setSelectedUserStory(user)}
-                    className="rounded-full overflow-hidden w-20 h-16 border-2 border-white-normal"
+                    className="border-2 border-white-normal border-dashed w-14 h-14 rounded-full mb-2 justify-center items-center relative"
+                    onPress={handleMediaUpload}
                   >
-                    <Image
-                      source={{ uri: user?.user?.image }}
-                      className="w-full h-full"
-                    />
+                    <View className="absolute bottom-[-4px] right-[-6px] z-10">
+                      <Ionicons name="add-circle" size={22} color="#fff" />
+                    </View>
                   </TouchableOpacity>
-                  <Text className="text-white-normal text-center mt-2 font-axiformaRegular text-xs capitalize">
-                    {user?.user?.userName}
+                  <Text className="text-white-normal text-center font-axiformaRegular text-xs mt-2">
+                    Add Story
                   </Text>
                 </View>
-              ))}
+                {data.map((user, index) => (
+                  <View key={index} className="items-center">
+                    <TouchableOpacity
+                      onPress={() => setSelectedUserStory(user)}
+                      className="rounded-full overflow-hidden w-20 h-16 border-2 border-white-normal"
+                    >
+                      <Image
+                        source={{ uri: user?.user?.image }}
+                        className="w-full h-full"
+                      />
+                    </TouchableOpacity>
+                    <Text className="text-white-normal text-center mt-2 font-axiformaRegular text-xs capitalize">
+                      {user?.user?.userName}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )}
+
         <View className="w-full h-[500px]">
           {selectedUserStory?.stories.length > 1 && (
             <View className="absolute z-10 top-[30%] left-0 right-0 flex-row items-center justify-between w-full px-4">
@@ -259,13 +326,14 @@ const App = () => {
 
           {selectedUserStory ? (
             selectedUserStory?.stories.length === 1 ? (
-              selectedUserStory?.stories.map((story) => (
+              selectedUserStory?.stories.map((story, index) => (
                 <Image
                   source={{
                     uri: story?.media,
                   }}
                   className="h-full w-full"
                   resizeMode="cover"
+                  key={index}
                 />
               ))
             ) : (
@@ -278,19 +346,21 @@ const App = () => {
               />
             )
           ) : (
-            <View className="items-center justify-center h-[50vh]">
-              <View>
-                <MaterialCommunityIcons
-                  name="cursor-default-click"
-                  size={30}
-                  color="#7e22ce"
-                />
-              </View>
+            data.length >= 1 && (
+              <View className="items-center justify-center h-[50vh]">
+                <View>
+                  <MaterialCommunityIcons
+                    name="cursor-default-click"
+                    size={30}
+                    color="#7e22ce"
+                  />
+                </View>
 
-              <Text className="font-axiformaRegular capitalize mt-4">
-                Please select a user to view their story
-              </Text>
-            </View>
+                <Text className="font-axiformaRegular capitalize mt-4">
+                  Please select a user to view their story.
+                </Text>
+              </View>
+            )
           )}
 
           {selectedUserStory && (
@@ -346,13 +416,17 @@ const App = () => {
               </View>
               <View className="flex-col gap-6 ml-1">
                 <TouchableOpacity>
-                  <Ionicons name="chatbubbles-sharp" size={34} color="#fff" />
+                  <FontAwesome5 name="bookmark" size={30} color="#fff" />
                 </TouchableOpacity>
+                {!myContacts.map(
+                  (contacts) => contacts.user === selectedUserStory?.user?._id
+                ) && (
+                  <TouchableOpacity onPress={() => sendFriendRequest()}>
+                    <Feather name="user-plus" size={30} color="#fff" />
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity>
-                  <Feather name="user-plus" size={34} color="#fff" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <MaterialIcons name="favorite" size={34} color="#fff" />
+                  <MaterialIcons name="favorite" size={30} color="#fff" />
                 </TouchableOpacity>
               </View>
             </View>
