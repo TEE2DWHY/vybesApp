@@ -23,7 +23,6 @@ const Stories = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Fetch stories function
   const getAllStories = async () => {
     try {
       if (!token) return;
@@ -36,19 +35,18 @@ const Stories = () => {
       console.error("Error fetching stories:", error);
       setMessage("Error fetching stories. Please try again.");
     } finally {
-      setLoading(false); // Stop loading after fetch completes
-      setRefreshing(false); // Stop refreshing after data is fetched
+      setLoading(false);
+      setRefreshing(false);
     }
   };
 
-  // Initial data fetch and refresh
   useEffect(() => {
     getAllStories();
   }, [token]);
 
   const onRefresh = () => {
-    setRefreshing(true); // Start the refresh
-    getAllStories(); // Fetch the latest data
+    setRefreshing(true);
+    getAllStories();
   };
 
   const formatPostedTime = (createdAt) => {
@@ -66,7 +64,6 @@ const Stories = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* User Info */}
       <View className="items-center justify-center mt-10">
         <Text className="capitalize font-axiformaBlack text-xl mb-4 bg-white-normal p-1 text-[#1D242D]">
           {user?.fullName}
@@ -79,7 +76,6 @@ const Stories = () => {
         />
       </View>
 
-      {/* Section Title */}
       <View className="mt-8 flex-row justify-between items-center">
         <Text className="font-axiformaBlack text-[#3D4C5E] text-lg">
           My Stories
@@ -87,14 +83,12 @@ const Stories = () => {
         <Feather name="settings" size={24} color="#909DAD" />
       </View>
 
-      {/* Stories */}
       <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3 mb-12">
         {loading ? (
           <View className="flex-1 justify-center items-center">
             <Spinner />
           </View>
         ) : message !== "No stories available" ? (
-          // If stories data exists, display them
           storiesData.map((story) => (
             <TouchableOpacity
               key={story._id}
@@ -114,7 +108,6 @@ const Stories = () => {
             </TouchableOpacity>
           ))
         ) : (
-          // If there are no stories after loading, show this message
           <Text className="text-gray-500 text-center w-full mt-4 font-axiformaRegular">
             No stories available.
           </Text>

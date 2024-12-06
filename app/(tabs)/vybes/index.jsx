@@ -57,7 +57,7 @@ const App = () => {
         }
       );
       setMyContact(response.data?.payload);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +83,7 @@ const App = () => {
         ? setBaddiesData(response.data.payload)
         : setVybersData(response.data.payload);
 
-      console.log(response.data.payload);
+      // console.log(response.data.payload);
     } catch (error) {
       console.error(error);
       console.log(error.response.data.message);
@@ -104,7 +104,8 @@ const App = () => {
             },
           }
         );
-        console.log(response.data);
+        // console.log(response.data);
+        setMyContact(response.data.payload.allContacts);
         Alert.alert("Success", response.data?.message);
         getCurrentContacts();
       } catch (error) {
@@ -145,7 +146,7 @@ const App = () => {
           stories: updatedStories,
         });
 
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.log(error);
         Alert.alert("Error", error?.response.data?.message);
@@ -179,7 +180,7 @@ const App = () => {
         stories: updatedStories,
       });
 
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
       Alert.alert("Error", error?.response.data?.message);
@@ -429,7 +430,7 @@ const App = () => {
                   />
                 </View>
 
-                <Text className="font-axiformaRegular capitalize mt-4">
+                <Text className="font-axiformaRegular capitalize mt-4 text-[#3D4C5E]">
                   Please select a user to view their story.
                 </Text>
               </View>
@@ -512,7 +513,7 @@ const App = () => {
                   />
                   {selectedUserStory?.stories[currentIndex]?.likes.length >=
                     1 && (
-                    <Text className="text-white-normal text-center font-axiformaBlack mt-2">
+                    <Text className="text-white-normal text-center font-axiformaBlack mt-1">
                       {selectedUserStory?.stories[currentIndex].likes.length}
                     </Text>
                   )}
