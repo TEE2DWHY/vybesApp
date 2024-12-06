@@ -22,6 +22,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import empty from "../../../assets/images/empty-box.png";
 import { StatusBar } from "expo-status-bar";
 import { useAccount } from "../../../hooks/useAccount";
+
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
   const token = useToken();
@@ -32,7 +33,6 @@ const App = () => {
   const currentYear = new Date().getFullYear();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [myContacts, setMyContact] = useState([]);
-  const [allStories, setAllStories] = useState([]);
 
   const handlePrevStory = () => {
     if (currentIndex > 0) {
@@ -46,8 +46,6 @@ const App = () => {
     }
   };
 
-  console.log(JSON.stringify(selectedUserStory));
-
   const getCurrentContacts = async () => {
     try {
       const response = await axios.get(
@@ -59,31 +57,11 @@ const App = () => {
         }
       );
       setMyContact(response.data?.payload);
-      // console.log(response.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-
-  // const getAllStories = async () => {
-  //   try {
-  //     const response = await axios.get("http://localhost:8000/v1/story/all", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     console.log(response.data);
-  //     setAllStories(response.data.payload);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (token) {
-  //     getAllStories();
-  //   }
-  // }, [selectedUserStory]);
 
   useEffect(() => {
     if (token) {
@@ -142,7 +120,6 @@ const App = () => {
     if (currentStory.likes.includes(user?._id)) {
       await unlikeStory();
     } else {
-      // Otherwise, call the like API
       try {
         const response = await axios.patch(
           "http://localhost:8000/v1/story/like",
@@ -514,8 +491,8 @@ const App = () => {
                 <TouchableOpacity>
                   <FontAwesome5 name="bookmark" size={30} color="#fff" />
                 </TouchableOpacity>
-                {!myContacts.map(
-                  (contacts) => contacts.user === selectedUserStory?.user?._id
+                {!myContacts.some(
+                  (contact) => contact?.contact === selectedUserStory?.user?._id
                 ) && (
                   <TouchableOpacity onPress={() => sendFriendRequest()}>
                     <Feather name="user-plus" size={30} color="#fff" />
@@ -533,6 +510,12 @@ const App = () => {
                         : "#ff0000"
                     }
                   />
+                  {selectedUserStory?.stories[currentIndex]?.likes.length >=
+                    1 && (
+                    <Text className="text-white-normal text-center font-axiformaBlack mt-2">
+                      {selectedUserStory?.stories[currentIndex].likes.length}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
