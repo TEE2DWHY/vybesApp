@@ -88,7 +88,7 @@ const Stories = () => {
           <View className="flex-1 justify-center items-center">
             <Spinner />
           </View>
-        ) : message !== "No stories available" ? (
+        ) : message !== "You have not create any story yet." ? (
           storiesData.map((story) => (
             <TouchableOpacity
               key={story._id}
@@ -108,8 +108,8 @@ const Stories = () => {
             </TouchableOpacity>
           ))
         ) : (
-          <Text className="text-gray-500 text-center w-full mt-4 font-axiformaRegular">
-            No stories available.
+          <Text className="text-[#3D4C5E] text-center w-full  font-axiformaRegular capitalize mt-2">
+            You have not uploaded any story yet.
           </Text>
         )}
       </View>

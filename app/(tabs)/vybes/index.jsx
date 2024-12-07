@@ -156,7 +156,7 @@ const App = () => {
 
   const unlikeStory = async () => {
     try {
-      const response = await axios.patch(
+      await axios.patch(
         "http://localhost:8000/v1/story/unlike",
         {
           storyId: selectedUserStory?.stories[currentIndex]?.storyId,

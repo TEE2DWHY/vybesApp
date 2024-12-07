@@ -14,17 +14,25 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { router } from "expo-router";
-import DatingTips from "./components/DatingTips";
+import { router, useLocalSearchParams } from "expo-router";
+import DatingTips from "../components/DatingTips";
 import * as ImagePicker from "expo-image-picker";
+import { io } from "socket.io-client";
+import { useToken } from "../../../../hooks/useToken";
+import axios from "axios";
 
 const Conversation = () => {
+  const params = useLocalSearchParams();
+  const { userId } = params;
+  const token = useToken();
   const [showModal, setShowModal] = useState(false);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [message, setMessage] = useState("");
   const [showTips, setShowTips] = useState(false);
   const [isCalling, setIsCalling] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [contact, setContact] = useState({});
   // const [localStream, setLocalStream] = useState(null);
   // const [remoteStream, setRemoteStream] = useState(null);
 
@@ -70,6 +78,36 @@ const Conversation = () => {
   // const endCall = () => {
   //   setIsCalling(false);
   // };
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setContact(response.data.payload.user);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (token) {
+      getUser();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:8001");
+    setSocket(newSocket);
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
 
   const handleImageSelect = async () => {
     try {
@@ -229,12 +267,12 @@ const Conversation = () => {
             <View className="flex-row items-center ml-2">
               <Image
                 source={{
-                  uri: "https://randomuser.me/api/portraits/women/3.jpg",
+                  uri: contact.image,
                 }}
                 className="w-10 h-10 rounded-full"
               />
               <Text className="ml-2 text-[#6890BF] font-axiformaBlack capitalize">
-                @dhemmexroxy
+                @{contact?.userName}
               </Text>
             </View>
           </View>
