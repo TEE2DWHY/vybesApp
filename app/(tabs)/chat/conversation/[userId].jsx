@@ -36,7 +36,8 @@ const Conversation = () => {
   const [isCalling, setIsCalling] = useState(false);
   const [socket, setSocket] = useState(null);
   const [contact, setContact] = useState({});
-  const [chatId, setChatId] = useState("");
+  const [chat, setChat] = useState();
+  const [chatId, setChatId] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   // const [localStream, setLocalStream] = useState(null);
   // const [remoteStream, setRemoteStream] = useState(null);
@@ -111,8 +112,7 @@ const Conversation = () => {
       const response = await axios.post(
         "http://localhost:8000/v1/chat",
         {
-          firstId: contact?._id,
-          secondId: user?._id,
+          recipientId: userId,
         },
         {
           headers: {
@@ -126,6 +126,33 @@ const Conversation = () => {
       console.log(error);
     }
   };
+
+  const getChat = async () => {
+    if (!chatId) {
+      console.log("Chat ID is null, skipping message fetch.");
+      return; // Skip fetching messages if chatId is null
+    }
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/chat/find/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setChat(response.data.payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      getChat();
+    }
+  }, [token, chatId]);
 
   useEffect(() => {
     if (token) {
@@ -155,7 +182,12 @@ const Conversation = () => {
     };
   }, [socket, contact]);
 
-  console.log(onlineUsers);
+  useEffect(() => {
+    if (socket === null) return;
+    const recipientId = chat?.members?.find((id) => id !== user?._id);
+    socket.emit("sendMessage", { ...message, recipientId });
+  });
+
   const handleImageSelect = async () => {
     try {
       const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -186,6 +218,11 @@ const Conversation = () => {
   };
 
   const getMessages = async () => {
+    if (!chatId) {
+      console.log("Chat ID is null, skipping message fetch.");
+      return; // Skip fetching messages if chatId is null
+    }
+
     try {
       const response = await axios.get(
         `http://localhost:8000/v1/messages/${chatId}`,
@@ -196,7 +233,7 @@ const Conversation = () => {
         }
       );
       console.log(response.data.payload);
-      setMessage(response.data.payload);
+      setMessages(response.data.payload); // Assuming the response contains the messages
     } catch (error) {
       console.log(error.message);
     }
@@ -206,7 +243,7 @@ const Conversation = () => {
     if (token) {
       getMessages();
     }
-  }, [token]);
+  }, [token, chatId]);
 
   const navigation = useNavigation();
   const attachmentModalRef = useRef(null);
