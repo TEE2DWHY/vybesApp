@@ -20,8 +20,10 @@ import * as ImagePicker from "expo-image-picker";
 import { io } from "socket.io-client";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
+import { useAccount } from "../../../../hooks/useAccount";
 
 const Conversation = () => {
+  const user = useAccount();
   const params = useLocalSearchParams();
   const { userId } = params;
   const token = useToken();
@@ -29,10 +31,13 @@ const Conversation = () => {
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
   const [showTips, setShowTips] = useState(false);
   const [isCalling, setIsCalling] = useState(false);
   const [socket, setSocket] = useState(null);
   const [contact, setContact] = useState({});
+  const [chatId, setChatId] = useState("");
+  const [onlineUsers, setOnlineUsers] = useState([]);
   // const [localStream, setLocalStream] = useState(null);
   // const [remoteStream, setRemoteStream] = useState(null);
 
@@ -93,11 +98,38 @@ const Conversation = () => {
         console.log(response.data);
         setContact(response.data.payload.user);
       } catch (error) {
-        console.log(error);
+        console.log(error.response.data.message);
       }
     };
     if (token) {
       getUser();
+    }
+  }, [token]);
+
+  const createChat = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/chat",
+        {
+          firstId: contact?._id,
+          secondId: user?._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // console.log(response.data.payload);
+      setChatId(response.data.payload._id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      createChat();
     }
   }, [token]);
 
@@ -109,6 +141,21 @@ const Conversation = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (socket && contact?._id) {
+      socket.emit("addNewUser ", contact._id);
+      socket.on("getOnlineUsers", (res) => {
+        setOnlineUsers(res);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off("getOnlineUsers");
+      }
+    };
+  }, [socket, contact]);
+
+  console.log(onlineUsers);
   const handleImageSelect = async () => {
     try {
       const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -138,43 +185,28 @@ const Conversation = () => {
     }
   };
 
-  const [messages, setMessages] = useState([
-    {
-      id: 0,
-      sender: "me",
-      text: "Hello, How are you?...",
-      time: "11:55 AM",
-      status: "seen",
-    },
-    {
-      id: 1,
-      sender: "other",
-      text: "Yeah I am good, what about you?",
-      time: "12:01 PM",
-      status: "seen",
-    },
-    {
-      id: 2,
-      sender: "me",
-      text: "I just viewed your profile...",
-      time: "12:02 PM",
-      status: "seen",
-    },
-    {
-      id: 3,
-      sender: "other",
-      text: "Oh! Are you within Obantoko?",
-      time: "12:04 PM",
-      status: "seen",
-    },
-    {
-      id: 4,
-      sender: "me",
-      text: "No, i'm presently at odeda...",
-      time: "12:05 PM",
-      status: "delivered",
-    },
-  ]);
+  const getMessages = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/messages/${chatId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data.payload);
+      setMessage(response.data.payload);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      getMessages();
+    }
+  }, [token]);
 
   const navigation = useNavigation();
   const attachmentModalRef = useRef(null);
@@ -255,7 +287,7 @@ const Conversation = () => {
 
   return (
     <>
-      <SafeAreaView className="bg-white-normal h-full mt-12">
+      <SafeAreaView className="bg-white-normal h-full mt-12 my-4">
         <View className="flex-row items-center justify-between p-4">
           <View className="flex-row gap-3 items-center">
             <AntDesign
@@ -293,6 +325,7 @@ const Conversation = () => {
             showTips={() => setShowTips(true)}
             closeTips={() => setShowTips(false)}
             tips={showTips}
+            userName={contact?.userName}
           />
         </ScrollView>
 
@@ -398,7 +431,7 @@ const Conversation = () => {
           </View>
         </Modal>
 
-        <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal p-4 rounded-md self-center mb-2 mx-4">
+        <View className="flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal p-4 rounded-md self-center mb-2 mx-4">
           <View className="flex-row items-center gap-4 flex-1">
             <Entypo
               name="attachment"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -13,17 +13,19 @@ import ChatModal from "../../../modal/ChatModal";
 import { StatusBar } from "expo-status-bar";
 import Empty from "./components/Empty";
 import HeaderComponent from "./components/HeaderComponent";
-// import { recentConversations } from "../../../data/data";
 import { router } from "expo-router";
 import { useToken } from "../../../hooks/useToken";
 import axios from "axios";
 import { Spinner } from "../../../components/Spinner";
+import { io } from "socket.io-client";
 
 const Chat = () => {
   const token = useToken();
   const [contacts, setContacts] = useState([]);
   const [showChatModal, setShowChatModal] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [onlineUsers, setOnlineUsers] = useState([]); // State to track online users
+  const socket = useRef(null); // Use ref to hold socket instance
 
   useEffect(() => {
     const getMyContacts = async () => {
@@ -36,7 +38,6 @@ const Chat = () => {
             },
           }
         );
-        console.log(response.data);
         setContacts(response.data.payload);
       } catch (error) {
         console.log(error);
@@ -49,14 +50,38 @@ const Chat = () => {
     }
   }, [token]);
 
+  useEffect(() => {
+    // Establish socket connection
+    socket.current = io("http://localhost:8001");
+
+    // Emit user ID for each contact to register as online
+    if (contacts.length > 0) {
+      contacts.forEach((contact) => {
+        socket.current.emit("addNewUser ", contact.contact._id);
+      });
+    }
+
+    // Listen for online users
+    socket.current.on("getOnlineUsers", (users) => {
+      const onlineUserIds = users.map((user) => user.userId); // Extract user IDs
+      setOnlineUsers(onlineUserIds);
+      console.log("Online Users:", onlineUserIds); // Log online users
+    });
+
+    return () => {
+      socket.current.disconnect(); // Clean up on unmount
+    };
+  }, [contacts]);
+
   const renderItem = ({ item }) => {
     const lastMessage = item.lastMessage;
+    const isOnline = onlineUsers.includes(item.contact._id);
 
     return (
-      <View className="flex-row items-center justify-between my -4">
+      <View className="flex-row items-center justify-between my-4">
         <TouchableOpacity
           className="flex-row items-center gap-4"
-          onPress={() => router.push(`/chat/conversation/${item.contact?._id}`)}
+          onPress={() => router.push(`/chat/conversation/${item.contact._id}`)}
         >
           <Image
             source={{ uri: item.contact.image }}
@@ -64,7 +89,7 @@ const Chat = () => {
           />
           <View>
             <View className="flex-row items-center gap-2">
-              <Text className="text-[#495795] font-axiformaBlack text-base">
+              <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
                 {item.contact.userName}
               </Text>
               <View
@@ -84,8 +109,11 @@ const Chat = () => {
                   {item.contact.accountType}
                 </Text>
               </View>
+              {isOnline && (
+                <View className="bg-green-500 w-2 h-2 rounded-full" />
+              )}
             </View>
-            <View className="flex-row items-center gap-2">
+            <View className="flex-row items-center gap- 2">
               {lastMessage ? (
                 <>
                   {lastMessage.status === "read" ? (
@@ -125,6 +153,7 @@ const Chat = () => {
       </View>
     );
   };
+
   return (
     <>
       <SafeAreaView className="h-full mt-10">

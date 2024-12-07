@@ -11,7 +11,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import ConversationModal from "./ConversationModal";
 import Options from "./Options";
 
-const DatingTips = ({ showTips, tips, closeTips }) => {
+const DatingTips = ({ showTips, tips, closeTips, userName }) => {
   const [conversationOptions, setConversationOptions] = useState(false);
   const [step, setStep] = useState(0);
 
@@ -31,7 +31,7 @@ const DatingTips = ({ showTips, tips, closeTips }) => {
     <ScrollView className="bg-gray-50 flex-3 relative">
       <View className="bg-white-normal rounded-lg p-4 w-[90%] self-center mt-10 text-justify text-sm">
         <Text className="font-axiformaRegular leading-6 capitalize text-[#47586E]">
-          @dhemmexroxy accepted your request, she has a baddie profile, if you
+          @{userName} accepted your request, she has a baddie profile, if you
           would like to know more off and likely answered questions from her
           profile, click below.
         </Text>
@@ -172,7 +172,7 @@ const DatingTips = ({ showTips, tips, closeTips }) => {
             step === 0 ? (
               <Text className="font-axiformaRegular leading-5 mt-5 text-[#546881] text-justify">
                 <Text className="text-[#9941EE] font-extrabold">
-                  @Dhemmexroxy
+                  @{userName}
                 </Text>{" "}
                 wants you to know more about her here, this does not stop you
                 from chatting about it with her , you can but these are help
