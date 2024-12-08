@@ -11,7 +11,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import ConversationModal from "./ConversationModal";
 import Options from "./Options";
 
-const DatingTips = ({ showTips, tips, closeTips, userName }) => {
+const DatingTips = ({ showTips, tips, closeTips, userName, accountType }) => {
   const [conversationOptions, setConversationOptions] = useState(false);
   const [step, setStep] = useState(0);
 
@@ -31,8 +31,8 @@ const DatingTips = ({ showTips, tips, closeTips, userName }) => {
     <ScrollView className="bg-gray-50 flex-3 relative">
       <View className="bg-white-normal rounded-lg p-4 w-[90%] self-center mt-10 text-justify text-sm">
         <Text className="font-axiformaRegular leading-6 capitalize text-[#47586E]">
-          @{userName} accepted your request, she has a baddie profile, if you
-          would like to know more off and likely answered questions from her
+          @{userName} accepted your request, she has a {accountType} profile, if
+          you would like to know more off and likely answered questions from her
           profile, click below.
         </Text>
         <TouchableOpacity

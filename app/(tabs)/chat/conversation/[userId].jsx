@@ -114,7 +114,7 @@ const Conversation = () => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
+          `https://vybesapi.onrender.com/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/chat",
+        "https://vybesapi.onrender.com/v1/chat",
         {
           recipientId: userId,
         },
@@ -159,7 +159,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/chat/find/${userId}`,
+        `https://vybesapi.onrender.com/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -186,8 +186,13 @@ const Conversation = () => {
   }, [token]);
 
   useEffect(() => {
-    const newSocket = io("https://acb6-102-90-100-209.ngrok-free.app");
+    const newSocket = io(
+      "https://e84a-2c0f-f5c0-498-1cc1-15cc-4798-104-a6f4.ngrok-free.app"
+    );
     setSocket(newSocket);
+    newSocket.on("connect", () => {
+      console.log("Socket connected:", newSocket.id);
+    });
     return () => {
       newSocket.disconnect();
     };
@@ -195,16 +200,12 @@ const Conversation = () => {
 
   useEffect(() => {
     if (socket && contact?._id) {
-      socket.emit("addNewUser ", contact._id);
+      socket.emit("addNewUser", contact._id);
       socket.on("getOnlineUsers", (res) => {
         setOnlineUsers(res);
+        console.log("Received online users:", res);
       });
     }
-    return () => {
-      if (socket) {
-        socket.off("getOnlineUsers");
-      }
-    };
   }, [socket, contact]);
 
   useEffect(() => {
@@ -213,12 +214,11 @@ const Conversation = () => {
     socket.emit("sendMessage", { ...message, recipientId });
   }, [message]);
 
-  // Client-side (React)
   // Function to mark messages as read
   const markMessagesAsRead = async (messageId) => {
     try {
       await axios.patch(
-        `http://localhost:8000/v1/messages/${messageId}/status`,
+        `https://vybesapi.onrender.com/v1/messages/${messageId}/status`,
         {},
         {
           headers: {
@@ -240,7 +240,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/messages/send-message",
+        "https://vybesapi.onrender.com/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
@@ -260,14 +260,12 @@ const Conversation = () => {
 
       // Emit the message through socket
       socket.emit("sendMessage", newMessage);
+      console.log("Emitted message:", newMessage);
 
       // Update local messages state immediately
       setMessages((prev) => [...prev, newMessage]);
       setMessage(""); // Clear the input field
       messagesScrollViewRef.current?.scrollToEnd({ animated: true });
-
-      // Mark the message as sent
-      markMessagesAsRead(newMessage._id); // Call the function to update status
     } catch (error) {
       console.log(error);
     }
@@ -278,26 +276,21 @@ const Conversation = () => {
     if (socket === null) return;
 
     socket.on("getMessage", (res) => {
+      console.log("Received message:", res); // Log the received message
       if (chatId !== res.chatId) return; // Only update if the message is for this chat
       setMessages((prev) => [...prev, res]);
-
-      // Mark the message as read when received
-      if (res.recipientId === user._id) {
-        markMessagesAsRead(res._id); // Call the function to update status
-      }
     });
 
     return () => {
       socket.off("getMessage");
     };
-  }, [socket, message]);
+  }, [socket, chatId]);
 
   useEffect(() => {
     if (socket === null) return;
 
-    // Listen for incoming messages
     socket.on("getMessage", (res) => {
-      // console.log("Received message:", res); // Log the received message
+      console.log("Received message:", res); // Log the received message
       if (chatId !== res.chatId) return; // Only update if the message is for this chat
       setMessages((prev) => [...prev, res]);
     });
@@ -305,7 +298,7 @@ const Conversation = () => {
     return () => {
       socket.off("getMessage");
     };
-  }, [socket, message]);
+  }, [socket, chatId]); // Only depend on socket and chatId
 
   const handleImageSelect = async () => {
     try {
@@ -344,7 +337,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/messages/${chatId}`,
+        `https://vybesapi.onrender.com/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -383,30 +376,6 @@ const Conversation = () => {
       }
     }, [navigation])
   );
-
-  const handleSend = () => {
-    if (message.trim()) {
-      if (selectedMessage) {
-        const updatedMessages = messages.map((msg) =>
-          msg.id === selectedMessage.id
-            ? { ...msg, text: message, time: getCurrentTime() }
-            : msg
-        );
-        setMessages(updatedMessages);
-        setSelectedMessage(null);
-      } else {
-        const newMessage = {
-          id: messages.length + 1,
-          sender: "me",
-          text: message,
-          time: getCurrentTime(),
-          status: "sent",
-        };
-        setMessages([...messages, newMessage]);
-      }
-      setMessage("");
-    }
-  };
 
   const handleLongPress = (msg) => {
     setSelectedMessage(msg);
@@ -487,6 +456,7 @@ const Conversation = () => {
                 closeTips={() => setShowTips(false)}
                 tips={showTips}
                 userName={contact?.userName}
+                accountType={contact?.accountType}
               />
             </ScrollView>
 

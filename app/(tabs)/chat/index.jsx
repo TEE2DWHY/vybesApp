@@ -34,7 +34,7 @@ const Chat = () => {
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/contact/contacts/confirmed",
+          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -56,7 +56,9 @@ const Chat = () => {
 
   useEffect(() => {
     // Establish socket connection
-    socket.current = io("https://acb6-102-90-100-209.ngrok-free.app");
+    socket.current = io(
+      "https://e84a-2c0f-f5c0-498-1cc1-15cc-4798-104-a6f4.ngrok-free.app"
+    );
 
     socket.current.on("connect", () => {
       console.log("Socket connected:", socket.current.id);
@@ -119,6 +121,7 @@ const Chat = () => {
       return format(date, "EEE, HH:mm");
     }
   };
+  console.log(onlineUsers);
 
   // Render item in the contact list
   const renderItem = ({ item }) => {

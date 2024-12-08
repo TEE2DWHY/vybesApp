@@ -32,7 +32,7 @@ const Ticket = () => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/event/all-events"
+          "https://vybesapi.onrender.com/v1/event/all-events"
         );
         setEvents(response.data.payload);
 
