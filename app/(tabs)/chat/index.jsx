@@ -18,20 +18,22 @@ import { useToken } from "../../../hooks/useToken";
 import axios from "axios";
 import { Spinner } from "../../../components/Spinner";
 import { io } from "socket.io-client";
+import { useAccount } from "../../../hooks/useAccount";
 
 const Chat = () => {
   const token = useToken();
+  const { user } = useAccount();
   const [contacts, setContacts] = useState([]);
   const [showChatModal, setShowChatModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [onlineUsers, setOnlineUsers] = useState([]); // State to track online users
-  const socket = useRef(null); // Use ref to hold socket instance
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const socket = useRef(null);
 
   useEffect(() => {
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/contact/contacts/confirmed",
+          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -52,61 +54,97 @@ const Chat = () => {
 
   useEffect(() => {
     // Establish socket connection
-    socket.current = io("http://localhost:8001");
+    socket.current = io("https://d744-37-120-216-234.ngrok-free.app");
+
+    socket.current.on("connect", () => {
+      console.log("Socket connected:", socket.current.id); // Log the socket connection
+    });
+
+    socket.current.on("disconnect", () => {
+      console.log("Socket disconnected.");
+    });
 
     // Emit user ID for each contact to register as online
     if (contacts.length > 0) {
       contacts.forEach((contact) => {
-        socket.current.emit("addNewUser ", contact.contact._id);
+        // Check if the current contact is the logged-in user
+        const currentUserIsContact = contact.contact._id === user?._id;
+        console.log("currentUserIsContact", currentUserIsContact); // Log to check if it's the current user
+
+        // Log the contact and user to see which user is being emitted
+        const contactId = currentUserIsContact
+          ? contact.user._id
+          : contact.contact._id;
+        const contactName = currentUserIsContact
+          ? contact.user.userName
+          : contact.contact.userName;
+
+        console.log(
+          "Emitting addNewUser for contact:",
+          contactId,
+          "Contact Name:",
+          contactName
+        );
+
+        // Emit the appropriate user ID (contact or user)
+        socket.current.emit("addNewUser", contactId);
       });
     }
 
     // Listen for online users
     socket.current.on("getOnlineUsers", (users) => {
-      const onlineUserIds = users.map((user) => user.userId); // Extract user IDs
+      console.log("Received online users:", users); // Log the users from the server
+      const onlineUserIds = users.map((user) => user.userId); // Extract userIds
+      console.log("Online user IDs:", onlineUserIds); // Log the user IDs from the server
       setOnlineUsers(onlineUserIds);
-      console.log("Online Users:", onlineUserIds); // Log online users
     });
 
     return () => {
       socket.current.disconnect(); // Clean up on unmount
+      console.log("Socket disconnected.");
     };
-  }, [contacts]);
+  }, [contacts, user]); // Add user to dependency array to track user changes
+
+  // Only re-run when contacts change
 
   const renderItem = ({ item }) => {
+    const currentUserIsContact = item.contact._id === user?._id;
+    console.log(currentUserIsContact);
+    const contact = currentUserIsContact ? item.user : item.contact;
     const lastMessage = item.lastMessage;
-    const isOnline = onlineUsers.includes(item.contact._id);
+    const isOnline = onlineUsers.includes(item.contact?._id);
+    console.log(isOnline);
 
     return (
       <View className="flex-row items-center justify-between my-4">
         <TouchableOpacity
           className="flex-row items-center gap-4"
-          onPress={() => router.push(`/chat/conversation/${item.contact._id}`)}
+          onPress={() => router.push(`/chat/conversation/${contact._id}`)}
         >
           <Image
-            source={{ uri: item.contact.image }}
+            source={{ uri: contact.image }}
             className="w-12 h-12 rounded-full"
           />
           <View>
             <View className="flex-row items-center gap-2">
               <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
-                {item.contact.userName}
+                {contact.userName}
               </Text>
               <View
                 className={`${
-                  item.contact.accountType === "Vyber"
+                  contact.accountType === "vyber"
                     ? "bg-[#7A91F9]"
                     : "bg-[#AAD9C3]"
                 } px-2 py-1 rounded-md`}
               >
                 <Text
                   className={`text-white font-axiformaRegular text-xs capitalize ${
-                    item.contact.accountType === "Vyber"
+                    contact.accountType === "vyber"
                       ? "text-[#224d7f]"
                       : "text-[#6BADA9]"
                   }`}
                 >
-                  {item.contact.accountType}
+                  {contact.accountType}
                 </Text>
               </View>
               {isOnline && (
@@ -135,7 +173,7 @@ const Chat = () => {
                 </>
               ) : (
                 <Text className="text-[#909DAD] font-axiformaRegular text-sm">
-                  Start a conversation with {item.contact.userName}
+                  Start a conversation with {contact.userName}
                 </Text>
               )}
             </View>
@@ -157,7 +195,7 @@ const Chat = () => {
   return (
     <>
       <SafeAreaView className="h-full mt-10">
-        {loading ? ( // Show spinner while loading
+        {loading ? (
           <View className="flex-1 justify-center items-center">
             <Spinner />
           </View>

@@ -89,7 +89,7 @@ const Conversation = () => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
+          `https://vybesapi.onrender.com/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -110,7 +110,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/chat",
+        "https://vybesapi.onrender.com/v1/chat",
         {
           recipientId: userId,
         },
@@ -134,7 +134,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/chat/find/${userId}`,
+        `https://vybesapi.onrender.com/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -161,7 +161,7 @@ const Conversation = () => {
   }, [token]);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:8001");
+    const newSocket = io("https://d744-37-120-216-234.ngrok-free.app");
     setSocket(newSocket);
     return () => {
       newSocket.disconnect();
@@ -186,7 +186,47 @@ const Conversation = () => {
     if (socket === null) return;
     const recipientId = chat?.members?.find((id) => id !== user?._id);
     socket.emit("sendMessage", { ...message, recipientId });
-  });
+  }, [message]);
+
+  const sendMessage = useCallback(() => {
+    if (!chatId) {
+      console.log("Chat ID is null, cannot send message.");
+      return; // Skip fetching messages if chatId is null
+    }
+    async () => {
+      try {
+        const response = await axios.post(
+          "https://vybesapi.onrender.com/v1/chat/send-message",
+          {
+            chatId: chatId,
+            receiverId: userId,
+            text: message,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setMessages((prev) => [...prev, response.data?.payload?.text]);
+        setMessage(" ");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  }, [chatId]);
+
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getMessage", (res) => {
+      if (chatId !== res.chatId) return;
+      setMessages((prev) => [...prev, res]);
+    });
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, chatId]);
 
   const handleImageSelect = async () => {
     try {
@@ -225,7 +265,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/messages/${chatId}`,
+        `https://vybesapi.onrender.com/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -592,7 +632,7 @@ const Conversation = () => {
                 />
               </>
             ) : (
-              <TouchableOpacity onPress={handleSend}>
+              <TouchableOpacity onPress={sendMessage}>
                 <Ionicons name="send" size={24} color="#9941EE" />
               </TouchableOpacity>
             )}
