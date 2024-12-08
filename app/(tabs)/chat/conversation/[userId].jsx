@@ -49,66 +49,18 @@ const Conversation = () => {
     const messageDate = new Date(messageTime);
     const now = new Date();
 
-    // Calculate the difference in days
     const diffTime = Math.abs(now - messageDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays > 1) {
-      // If more than a day, return date in DD/MM/YYYY format
-      return messageDate.toLocaleDateString("en-GB"); // Change to your preferred locale
+      return messageDate.toLocaleDateString("en-GB");
     } else {
-      // Otherwise, return time in HH:MM format
       return messageDate.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       });
     }
   };
-  // const [localStream, setLocalStream] = useState(null);
-  // const [remoteStream, setRemoteStream] = useState(null);
-
-  // const localVideoRef = useRef(null);
-  // const remoteVideoRef = useRef(null);
-
-  // useEffect(() => {
-  //   const requestPermissions = async () => {
-  //     try {
-  //       const granted = await PermissionsAndroid.requestMultiple([
-  //         PermissionsAndroid.PERMISSIONS.CAMERA,
-  //         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-  //       ]);
-  //       if (
-  //         granted["android.permission.CAMERA"] === "granted" &&
-  //         granted["android.permission.RECORD_AUDIO"] === "granted"
-  //       ) {
-  //         console.log("Permissions granted");
-  //       } else {
-  //         console.log("Permissions denied");
-  //       }
-  //     } catch (err) {
-  //       console.warn(err);
-  //     }
-  //   };
-  //   requestPermissions();
-
-  //   return () => {
-  //     if (localStream) {
-  //       localStream.getTracks().forEach((track) => track.stop());
-  //     }
-  //     if (remoteStream) {
-  //       remoteStream.getTracks().forEach((track) => track.stop());
-  //     }
-  //   };
-  // }, []);
-
-  // const startCall = async () => {
-  //   // ... Implementation for getting your local media stream (camera and microphone)
-  //   // ... Implement signaling logic to connect to the other user
-  // };
-
-  // const endCall = () => {
-  //   setIsCalling(false);
-  // };
 
   useEffect(() => {
     const getUser = async () => {
@@ -155,7 +107,7 @@ const Conversation = () => {
   const getChat = async () => {
     if (!chatId) {
       console.log("Chat ID is null, skipping message fetch.");
-      return; // Skip fetching messages if chatId is null
+      return;
     }
     try {
       const response = await axios.get(
@@ -461,10 +413,13 @@ const Conversation = () => {
             </ScrollView>
 
             {!showTips && (
-              <ScrollView className="flex-2 px-4" ref={messagesScrollViewRef}>
+              <ScrollView
+                className="flex-2 px-4 h-[60vh]"
+                ref={messagesScrollViewRef}
+              >
                 {messages.map((msg) => (
                   <TouchableOpacity
-                    key={msg._id} // Use msg._id for unique key
+                    key={msg._id}
                     onLongPress={() => handleLongPress(msg)}
                   >
                     <View
@@ -480,7 +435,7 @@ const Conversation = () => {
                             ? msg.senderId === user._id
                               ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
                               : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
-                            : "bg-transparent" // Handle case for image messages
+                            : "bg-transparent"
                         }`}
                       >
                         {msg.image ? (
@@ -508,8 +463,7 @@ const Conversation = () => {
                                 : "text-gray-500"
                             } text-xs mr-2 font-axiformaRegular mt-2`}
                           >
-                            {formatMessageTime(msg.createdAt)}{" "}
-                            {/* Use the utility function here */}
+                            {formatMessageTime(msg.createdAt)}
                           </Text>
                         </View>
                       </View>
@@ -525,7 +479,7 @@ const Conversation = () => {
                               : "checkmark-outline"
                           }
                           size={18}
-                          color="#9941EE" // Change color based on status
+                          color="#9941EE"
                         />
                       </View>
                     )}
