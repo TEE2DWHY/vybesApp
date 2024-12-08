@@ -116,7 +116,7 @@ const Transfer = () => {
     setIsTransferLoading(true);
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/user/transfer-coin",
+        "http://localhost:8000/v1/user/transfer-coin",
         {
           amountToSend: transferAmount,
           receiverUserName: accountHandle,

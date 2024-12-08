@@ -24,7 +24,7 @@ const Transactions = () => {
       setError(null);
       try {
         const response = await axios.get(
-          "https://vybesapi.onrender.com/v1/transaction/type",
+          "http://localhost:8000/v1/transaction/type",
           {
             params: { transactionType: activeTab },
             headers: {
