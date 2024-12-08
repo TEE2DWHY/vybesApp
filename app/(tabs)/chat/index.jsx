@@ -19,6 +19,7 @@ import axios from "axios";
 import { Spinner } from "../../../components/Spinner";
 import { io } from "socket.io-client";
 import { useAccount } from "../../../hooks/useAccount";
+import { format, parseISO, isToday } from "date-fns";
 
 const Chat = () => {
   const token = useToken();
@@ -40,6 +41,7 @@ const Chat = () => {
             },
           }
         );
+        // console.log(response.data);
         setContacts(response.data.payload);
       } catch (error) {
         console.log(error);
@@ -54,10 +56,10 @@ const Chat = () => {
 
   useEffect(() => {
     // Establish socket connection
-    socket.current = io("https://d744-37-120-216-234.ngrok-free.app");
+    socket.current = io("https://acb6-102-90-100-209.ngrok-free.app");
 
     socket.current.on("connect", () => {
-      console.log("Socket connected:", socket.current.id); // Log the socket connection
+      console.log("Socket connected:", socket.current.id);
     });
 
     socket.current.on("disconnect", () => {
@@ -105,15 +107,29 @@ const Chat = () => {
     };
   }, [contacts, user]); // Add user to dependency array to track user changes
 
-  // Only re-run when contacts change
+  // Helper function to format time
+  const formatTime = (timeString) => {
+    const date = parseISO(timeString); // Parse the ISO string into a Date object
 
+    if (isToday(date)) {
+      // Format for today: 'hour:minute' (e.g. "15:02")
+      return format(date, "HH:mm");
+    } else {
+      // Format for older dates: 'DayOfWeek, hour:minute' (e.g. "Wed, 15:02")
+      return format(date, "EEE, HH:mm");
+    }
+  };
+
+  // Render item in the contact list
   const renderItem = ({ item }) => {
     const currentUserIsContact = item.contact._id === user?._id;
-    console.log(currentUserIsContact);
     const contact = currentUserIsContact ? item.user : item.contact;
     const lastMessage = item.lastMessage;
     const isOnline = onlineUsers.includes(item.contact?._id);
     console.log(isOnline);
+
+    // Format the time using the formatTime helper
+    const formattedTime = formatTime(item.time);
 
     return (
       <View className="flex-row items-center justify-between my-4">
@@ -151,7 +167,7 @@ const Chat = () => {
                 <View className="bg-green-500 w-2 h-2 rounded-full" />
               )}
             </View>
-            <View className="flex-row items-center gap- 2">
+            <View className="flex-row items-center gap-2">
               {lastMessage ? (
                 <>
                   {lastMessage.status === "read" ? (
@@ -168,7 +184,7 @@ const Chat = () => {
                     />
                   ) : null}
                   <Text className="text-[#909DAD] font-axiformaRegular text-sm">
-                    {lastMessage.text}
+                    {lastMessage}
                   </Text>
                 </>
               ) : (
@@ -185,7 +201,7 @@ const Chat = () => {
               Platform.OS !== "ios" ? "mt-[-20px] ml-[-26px]" : ""
             }`}
           >
-            {item.time}
+            {formattedTime}
           </Text>
         </View>
       </View>
