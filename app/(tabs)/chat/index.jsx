@@ -41,7 +41,6 @@ const Chat = () => {
             },
           }
         );
-        // console.log(response.data);
         setContacts(response.data.payload);
       } catch (error) {
         console.log(error);
@@ -49,89 +48,48 @@ const Chat = () => {
         setLoading(false);
       }
     };
+
     if (token) {
       getMyContacts();
     }
   }, [token]);
 
   useEffect(() => {
-    // Establish socket connection
-    socket.current = io(
-      "https://e84a-2c0f-f5c0-498-1cc1-15cc-4798-104-a6f4.ngrok-free.app"
-    );
+    socket.current = io("https://550a-102-88-71-68.ngrok-free.app");
 
     socket.current.on("connect", () => {
       console.log("Socket connected:", socket.current.id);
     });
 
-    socket.current.on("disconnect", () => {
-      console.log("Socket disconnected.");
-    });
+    socket.current.emit("addNewUser", user?._id);
 
-    // Emit user ID for each contact to register as online
-    if (contacts.length > 0) {
-      contacts.forEach((contact) => {
-        // Check if the current contact is the logged-in user
-        const currentUserIsContact = contact.contact._id === user?._id;
-        console.log("currentUserIsContact", currentUserIsContact); // Log to check if it's the current user
-
-        // Log the contact and user to see which user is being emitted
-        const contactId = currentUserIsContact
-          ? contact.user._id
-          : contact.contact._id;
-        const contactName = currentUserIsContact
-          ? contact.user.userName
-          : contact.contact.userName;
-
-        console.log(
-          "Emitting addNewUser for contact:",
-          contactId,
-          "Contact Name:",
-          contactName
-        );
-
-        // Emit the appropriate user ID (contact or user)
-        socket.current.emit("addNewUser", contactId);
-      });
-    }
-
-    // Listen for online users
     socket.current.on("getOnlineUsers", (users) => {
-      console.log("Received online users:", users); // Log the users from the server
-      const onlineUserIds = users.map((user) => user.userId); // Extract userIds
-      console.log("Online user IDs:", onlineUserIds); // Log the user IDs from the server
-      setOnlineUsers(onlineUserIds);
+      // Set online users by their userIds
+      setOnlineUsers(users);
     });
 
     return () => {
-      socket.current.disconnect(); // Clean up on unmount
+      socket.current.disconnect();
       console.log("Socket disconnected.");
     };
-  }, [contacts, user]); // Add user to dependency array to track user changes
+  }, [user]);
 
-  // Helper function to format time
   const formatTime = (timeString) => {
-    const date = parseISO(timeString); // Parse the ISO string into a Date object
+    const date = parseISO(timeString);
 
     if (isToday(date)) {
-      // Format for today: 'hour:minute' (e.g. "15:02")
       return format(date, "HH:mm");
     } else {
-      // Format for older dates: 'DayOfWeek, hour:minute' (e.g. "Wed, 15:02")
       return format(date, "EEE, HH:mm");
     }
   };
-  console.log(onlineUsers);
 
-  // Render item in the contact list
   const renderItem = ({ item }) => {
     const currentUserIsContact = item.contact._id === user?._id;
     const contact = currentUserIsContact ? item.user : item.contact;
     const lastMessage = item.lastMessage;
     const isOnline = onlineUsers.includes(item.contact?._id);
-    console.log(isOnline);
 
-    // Format the time using the formatTime helper
     const formattedTime = formatTime(item.time);
 
     return (
@@ -144,33 +102,38 @@ const Chat = () => {
             source={{ uri: contact.image }}
             className="w-12 h-12 rounded-full"
           />
-          <View>
-            <View className="flex-row items-center gap-2">
-              <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
-                {contact.userName}
-              </Text>
-              <View
-                className={`${
-                  contact.accountType === "vyber"
-                    ? "bg-[#7A91F9]"
-                    : "bg-[#AAD9C3]"
-                } px-2 py-1 rounded-md`}
-              >
-                <Text
-                  className={`text-white font-axiformaRegular text-xs capitalize ${
-                    contact.accountType === "vyber"
-                      ? "text-[#224d7f]"
-                      : "text-[#6BADA9]"
-                  }`}
-                >
-                  {contact.accountType}
+          <View className="flex-1">
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center gap-2">
+                <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
+                  {contact.userName}
                 </Text>
+                <View
+                  className={`${
+                    contact.accountType === "vyber"
+                      ? "bg-[#7A91F9]"
+                      : "bg-[#AAD9C3]"
+                  } px-2 py-1 rounded-md`}
+                >
+                  <Text
+                    className={`text-white font-axiformaRegular text-xs capitalize ${
+                      contact.accountType === "vyber"
+                        ? "text-[#224d7f]"
+                        : "text-[#6BADA9]"
+                    }`}
+                  >
+                    {contact.accountType}
+                  </Text>
+                </View>
+                {isOnline && (
+                  <View className="bg-green-500 w-2 h-2 rounded-full" />
+                )}
               </View>
-              {isOnline && (
-                <View className="bg-green-500 w-2 h-2 rounded-full" />
-              )}
+              <Text className={`text-[#546881] font-axiformaRegular text-sm`}>
+                {formattedTime}
+              </Text>
             </View>
-            <View className="flex-row items-center gap-2">
+            <View className="flex-row items-center gap-2 w-[90%]">
               {lastMessage ? (
                 <>
                   {lastMessage.status === "read" ? (
@@ -186,7 +149,7 @@ const Chat = () => {
                       color="#F6C244"
                     />
                   ) : null}
-                  <Text className="text-[#909DAD] font-axiformaRegular text-sm">
+                  <Text className="text-[#909DAD] font-axiformaRegular text-sm flex-1">
                     {lastMessage}
                   </Text>
                 </>
@@ -198,15 +161,6 @@ const Chat = () => {
             </View>
           </View>
         </TouchableOpacity>
-        <View>
-          <Text
-            className={`text-[#546881] font-axiformaRegular text-sm items-end ${
-              Platform.OS !== "ios" ? "mt-[-20px] ml-[-26px]" : ""
-            }`}
-          >
-            {formattedTime}
-          </Text>
-        </View>
       </View>
     );
   };

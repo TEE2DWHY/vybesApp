@@ -25,6 +25,7 @@ import { io } from "socket.io-client";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
+import { formatMessageTime } from "../../../../utils/formatMessageTime";
 
 const Conversation = () => {
   const { user } = useAccount();
@@ -43,24 +44,63 @@ const Conversation = () => {
   const [chat, setChat] = useState();
   const [chatId, setChatId] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isMessageEmitted, setIsMessageEmitted] = useState();
   const messagesScrollViewRef = useRef();
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
 
-  const formatMessageTime = (messageTime) => {
-    const messageDate = new Date(messageTime);
-    const now = new Date();
+  useEffect(() => {
+    messagesScrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
-    const diffTime = Math.abs(now - messageDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays > 1) {
-      return messageDate.toLocaleDateString("en-GB");
-    } else {
-      return messageDate.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
+  useEffect(() => {
+    if (socket && contact?._id) {
+      socket.emit("addNewUser ", contact._id);
+      socket.on("getOnlineUsers", (res) => {
+        setOnlineUsers(res.map((user) => user.userId));
+        console.log("Received online users:", res);
       });
     }
+  }, [socket, contact]);
+
+  const handleTyping = (text) => {
+    setMessage(text);
+    if (text) {
+      socket.emit("typing", { recipientId: userId });
+      setIsTyping(true);
+
+      // Clear previous timeout if user is still typing
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      // Set a timeout to clear typing indicator after 1 second of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        setIsTyping(false);
+        socket.emit("stopTyping", { recipientId: userId });
+      }, 1000);
+    } else {
+      setIsTyping(false);
+      socket.emit("stopTyping", { recipientId: userId });
+    }
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("typing", () => {
+        setIsTyping(true);
+      });
+
+      socket.on("stopTyping", () => {
+        setIsTyping(false);
+      });
+
+      return () => {
+        socket.off("typing");
+        socket.off("stopTyping");
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -118,7 +158,7 @@ const Conversation = () => {
           },
         }
       );
-      // console.log(response.data);
+      console.log(response.data);
       setChat(response.data.payload);
     } catch (error) {
       console.log(error);
@@ -138,9 +178,7 @@ const Conversation = () => {
   }, [token]);
 
   useEffect(() => {
-    const newSocket = io(
-      "https://e84a-2c0f-f5c0-498-1cc1-15cc-4798-104-a6f4.ngrok-free.app"
-    );
+    const newSocket = io("https://550a-102-88-71-68.ngrok-free.app");
     setSocket(newSocket);
     newSocket.on("connect", () => {
       console.log("Socket connected:", newSocket.id);
@@ -164,31 +202,20 @@ const Conversation = () => {
     if (socket === null) return;
     const recipientId = chat?.members?.find((id) => id !== user?._id);
     socket.emit("sendMessage", { ...message, recipientId });
-  }, [message]);
+  }, [message, socket]);
 
-  // Function to mark messages as read
-  const markMessagesAsRead = async (messageId) => {
-    try {
-      await axios.patch(
-        `https://vybesapi.onrender.com/v1/messages/${messageId}/status`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.log("Error updating message status:", error);
-    }
-  };
-
-  // Update the sendMessage function
   const sendMessage = async () => {
     if (!chatId) {
       console.log("Chat ID is null, cannot send message.");
       return;
     }
+    console.log(onlineUsers);
+
+    // const recipientOnline = onlineUsers.includes(userId);
+    // if (!recipientOnline) {
+    //   console.log("Recipient is not online, cannot send message.");
+    //   return;
+    // }
 
     try {
       const response = await axios.post(
@@ -210,47 +237,32 @@ const Conversation = () => {
         senderId: user._id,
       };
 
-      // Emit the message through socket
-      socket.emit("sendMessage", newMessage);
-      console.log("Emitted message:", newMessage);
-
-      // Update local messages state immediately
-      setMessages((prev) => [...prev, newMessage]);
+      setMessages((prev) => [...prev, newMessage]); // Update messages state
       setMessage(""); // Clear the input field
       messagesScrollViewRef.current?.scrollToEnd({ animated: true });
+
+      socket.emit("sendMessage", { ...newMessage, recipientId: userId });
+      console.log("Emitted message to recipient:", newMessage);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Listen for incoming messages
   useEffect(() => {
-    if (socket === null) return;
+    if (socket) {
+      socket.on("getMessage", (res) => {
+        console.log("Received message:", res);
+        if (chatId === res.chatId) {
+          setMessages((prev) => [...prev, res]); // Update messages state
+          console.log("Updated messages:", [...messages, res]); // Log updated messages
+        }
+      });
 
-    socket.on("getMessage", (res) => {
-      console.log("Received message:", res); // Log the received message
-      if (chatId !== res.chatId) return; // Only update if the message is for this chat
-      setMessages((prev) => [...prev, res]);
-    });
-
-    return () => {
-      socket.off("getMessage");
-    };
-  }, [socket, chatId]);
-
-  useEffect(() => {
-    if (socket === null) return;
-
-    socket.on("getMessage", (res) => {
-      console.log("Received message:", res); // Log the received message
-      if (chatId !== res.chatId) return; // Only update if the message is for this chat
-      setMessages((prev) => [...prev, res]);
-    });
-
-    return () => {
-      socket.off("getMessage");
-    };
-  }, [socket, chatId]); // Only depend on socket and chatId
+      return () => {
+        socket.off("getMessage");
+      };
+    }
+  }, [socket, chatId, isMessageEmitted]);
 
   const handleImageSelect = async () => {
     try {
@@ -409,6 +421,7 @@ const Conversation = () => {
                 tips={showTips}
                 userName={contact?.userName}
                 accountType={contact?.accountType}
+                gender={contact?.gender}
               />
             </ScrollView>
 
@@ -416,6 +429,9 @@ const Conversation = () => {
               <ScrollView
                 className="flex-2 px-4 h-[60vh]"
                 ref={messagesScrollViewRef}
+                onContentSizeChange={() =>
+                  messagesScrollViewRef.current.scrollToEnd({ animated: true })
+                }
               >
                 {messages.map((msg) => (
                   <TouchableOpacity
@@ -538,9 +554,15 @@ const Conversation = () => {
                   multiline={true}
                   textAlignVertical="top"
                   value={message}
-                  onChangeText={setMessage}
+                  onChangeText={handleTyping}
                 />
               </View>
+
+              {isTyping && (
+                <Text className="text-gray-500 font-axiformaRegular mt-[-6px]">
+                  Typing...
+                </Text>
+              )}
 
               <View className="absolute bottom-0 left-0 right-0 flex-col items-center w-[93%] self-center mb-2 mx-4">
                 <Modal

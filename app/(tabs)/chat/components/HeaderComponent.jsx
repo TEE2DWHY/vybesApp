@@ -6,7 +6,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useRouteInfo } from "expo-router/build/hooks";
 
 const HeaderComponent = ({
@@ -38,14 +38,13 @@ const HeaderComponent = ({
     <>
       <View className="flex-row items-center justify-between border-b border-gray-200 pb-2">
         <View className="flex-row gap-6 items-center">
-          <Link href="/chat">
-            <AntDesign
-              name="left"
-              size={24}
-              color="#546881"
-              accessibilityLabel="Back"
-            />
-          </Link>
+          <AntDesign
+            name="left"
+            size={24}
+            color="#546881"
+            accessibilityLabel="Back"
+            onPress={() => router.back()}
+          />
           {!onSearch && (
             <Text className="capitalize text-[#495795] font-axiformaBlack text-lg">
               {pathname === "/chat" ? "Chats" : "Add Users"}
