@@ -26,6 +26,7 @@ import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatMessageTime } from "../../../../utils/formatMessageTime";
+import { format, isToday } from "date-fns";
 
 const Conversation = () => {
   const { user } = useAccount();
@@ -109,7 +110,7 @@ const Conversation = () => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `https://vybesapi.onrender.com/v1/user/get-user-by-id/${userId}`,
+          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -130,7 +131,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/chat",
+        "http://localhost:8000/v1/chat",
         {
           recipientId: userId,
         },
@@ -154,7 +155,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/chat/find/${userId}`,
+        `http://localhost:8000/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -222,7 +223,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/messages/send-message",
+        "http://localhost:8000/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
@@ -304,7 +305,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/messages/${chatId}`,
+        `http://localhost:8000/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -377,6 +378,18 @@ const Conversation = () => {
     });
   };
 
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+
+    if (isToday(date)) {
+      // If the date is today, return only the time
+      return format(date, "HH:mm"); // 24-hour format
+    } else {
+      // If the date is not today, return the date and time
+      return format(date, "dd/MM/yyyy HH:mm"); // Date and time
+    }
+  };
+
   return (
     <>
       <KeyboardAvoidingView
@@ -447,77 +460,92 @@ const Conversation = () => {
                   messagesScrollViewRef.current.scrollToEnd({ animated: true })
                 }
               >
-                {messages.map((msg) => (
-                  <TouchableOpacity
-                    key={msg._id}
-                    onLongPress={() => handleLongPress(msg)}
-                  >
-                    <View
-                      className={`my-2 flex-row items-end ${
-                        msg.senderId === user._id
-                          ? "justify-end"
-                          : "justify-start"
-                      }`}
-                    >
-                      <View
-                        className={`p-3 rounded-lg ${
-                          msg.text
-                            ? msg.senderId === user._id
-                              ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
-                              : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
-                            : "bg-transparent"
-                        }`}
+                {messages.map((msg, index) => {
+                  const messageDate = new Date(msg.createdAt);
+                  const showDateHeader =
+                    index === 0 ||
+                    new Date(messages[index - 1].createdAt).toDateString() !==
+                      messageDate.toDateString();
+
+                  return (
+                    <View key={msg._id}>
+                      {showDateHeader && (
+                        <Text className="text-center text-gray-400 my-2 font-axiformaRegular">
+                          {isToday(messageDate)
+                            ? format(messageDate, "dd/MM/yyyy")
+                            : format(messageDate, "dd/MM/yyyy HH:mm")}
+                        </Text>
+                      )}
+                      <TouchableOpacity
+                        onLongPress={() => handleLongPress(msg)}
                       >
-                        {msg.image ? (
-                          <Image
-                            source={{ uri: msg.image }}
-                            className="w-[280px] h-[160px]"
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <Text
-                            className={`${
-                              msg.senderId === user._id
-                                ? "text-[#ffff]"
-                                : "text-[#3D4C5E]"
-                            } font-axiformaRegular`}
+                        <View
+                          className={`my-2 flex-row items-end ${
+                            msg.senderId === user._id
+                              ? "justify-end"
+                              : "justify-start"
+                          }`}
+                        >
+                          <View
+                            className={`p-3 rounded-lg ${
+                              msg.text
+                                ? msg.senderId === user._id
+                                  ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
+                                  : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
+                                : "bg-transparent"
+                            }`}
                           >
-                            {msg.text}
-                          </Text>
-                        )}
-                        <View className="flex-row items-center justify-end">
-                          <Text
-                            className={`${
-                              msg.senderId === user._id
-                                ? "text-[#fff]"
-                                : "text-gray-500"
-                            } text-xs mr-2 font-axiformaRegular mt-2`}
-                          >
-                            {formatMessageTime(msg.createdAt)}
-                          </Text>
+                            {msg.image ? (
+                              <Image
+                                source={{ uri: msg.image }}
+                                className="w-[280px] h-[160px]"
+                                resizeMode="cover"
+                              />
+                            ) : (
+                              <Text
+                                className={`${
+                                  msg.senderId === user._id
+                                    ? "text-[#ffff]"
+                                    : "text-[#3D4C5E]"
+                                } font-axiformaRegular`}
+                              >
+                                {msg.text}
+                              </Text>
+                            )}
+                            <View className="flex-row items-center justify-end">
+                              <Text
+                                className={`${
+                                  msg.senderId === user._id
+                                    ? "text-[#fff]"
+                                    : "text-gray-500"
+                                } text-xs mr-2 font-axiformaRegular mt-2`}
+                              >
+                                {formatMessageTime(msg.createdAt)}
+                              </Text>
+                            </View>
+                          </View>
                         </View>
-                      </View>
+                        {msg.senderId === user._id && (
+                          <View className="self-end">
+                            <Ionicons
+                              name={
+                                msg.status === "read"
+                                  ? "checkmark-done"
+                                  : msg.status === "delivered"
+                                  ? "checkmark"
+                                  : "checkmark-outline"
+                              }
+                              size={18}
+                              color="#9941EE"
+                            />
+                          </View>
+                        )}
+                      </TouchableOpacity>
                     </View>
-                    {msg.senderId === user._id && (
-                      <View className="self-end">
-                        <Ionicons
-                          name={
-                            msg.status === "read"
-                              ? "checkmark-done"
-                              : msg.status === "delivered"
-                              ? "checkmark"
-                              : "checkmark-outline"
-                          }
-                          size={18}
-                          color="#9941EE"
-                        />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                ))}
+                  );
+                })}
               </ScrollView>
             )}
-
             <Modal visible={showModal} transparent={true} animationType="slide">
               <View className="flex-1 justify-center items-center bg-[#1b1b1ba0] bg-opacity-50">
                 <View className="w-4/5 bg-white-normal p-4 rounded-lg">
