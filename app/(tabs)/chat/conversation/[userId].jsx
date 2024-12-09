@@ -66,15 +66,14 @@ const Conversation = () => {
   const handleTyping = (text) => {
     setMessage(text);
     if (text) {
+      // Emit typing event to the recipient only
       socket.emit("typing", { recipientId: userId });
       setIsTyping(true);
 
-      // Clear previous timeout if user is still typing
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
 
-      // Set a timeout to clear typing indicator after 1 second of inactivity
       typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
         socket.emit("stopTyping", { recipientId: userId });
@@ -87,12 +86,16 @@ const Conversation = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("typing", () => {
-        setIsTyping(true);
+      socket.on("typing", (data) => {
+        if (data.recipientId === userId) {
+          setIsTyping(true);
+        }
       });
 
-      socket.on("stopTyping", () => {
-        setIsTyping(false);
+      socket.on("stopTyping", (data) => {
+        if (data.recipientId === userId) {
+          setIsTyping(false);
+        }
       });
 
       return () => {
@@ -100,7 +103,7 @@ const Conversation = () => {
         socket.off("stopTyping");
       };
     }
-  }, [socket]);
+  }, [socket, userId]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -382,27 +385,38 @@ const Conversation = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <SafeAreaView className="bg-white-normal h-full mt-12 my-4">
-            <View className="flex-row items-center justify-between p-4">
-              <View className="flex-row gap-3 items-center">
+            <View className="flex-row items-center p-4">
+              <View className="flex-row gap-3 items-center w-[75%]">
                 <AntDesign
                   name="left"
                   size={24}
                   color="#546881"
                   onPress={() => router.push("/chat")}
                 />
-                <View className="flex-row items-center ml-2">
+                <View className="flex-row items-center ml-2 flex-1">
                   <Image
                     source={{
                       uri: contact.image,
                     }}
                     className="w-10 h-10 rounded-full"
                   />
-                  <Text className="ml-2 text-[#6890BF] font-axiformaBlack capitalize">
-                    @{contact?.userName}
-                  </Text>
+                  <View className="ml-2 flex-1">
+                    <Text className="text-[#6890BF] font-axiformaBlack capitalize">
+                      @{contact?.userName}
+                    </Text>
+                    {isTyping && (
+                      <View className="flex-row items-center justify-start mt-1">
+                        <Text className="text-gray-500 font-axiformaRegular text-sm">
+                          {contact.userName} is typing...
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                 </View>
               </View>
-              <View className="flex-row gap-6">
+
+              {/* Adjusted icons container */}
+              <View className="flex-row gap-4 items-center">
                 <AntDesign name="videocamera" size={24} color="#7A91F9" />
                 <Ionicons name="call-outline" size={24} color="#7A91F9" />
                 <Entypo
@@ -557,12 +571,6 @@ const Conversation = () => {
                   onChangeText={handleTyping}
                 />
               </View>
-
-              {isTyping && (
-                <Text className="text-gray-500 font-axiformaRegular mt-[-6px]">
-                  Typing...
-                </Text>
-              )}
 
               <View className="absolute bottom-0 left-0 right-0 flex-col items-center w-[93%] self-center mb-2 mx-4">
                 <Modal
