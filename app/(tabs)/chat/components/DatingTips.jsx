@@ -21,6 +21,7 @@ const DatingTips = ({
 }) => {
   const [conversationOptions, setConversationOptions] = useState(false);
   const [step, setStep] = useState(0);
+  gender === "male" ? "he" : "her";
 
   const handleNext = () => {
     if (step < 10) {
@@ -181,10 +182,10 @@ const DatingTips = ({
                 <Text className="text-[#9941EE] font-extrabold">
                   @{userName}
                 </Text>{" "}
-                wants you to know more about her here, this does not stop you
-                from chatting about it with her , you can but these are help
-                tips you know her better to bring up conversations topics to
-                weigh in when having conversations,{" "}
+                wants you to know more about {gender === "male" ? "him" : "her"}{" "}
+                here, this does not stop you from chatting about it with her ,
+                you can but these are help tips you know her better to bring up
+                conversations topics to weigh in when having conversations,{" "}
                 <Text className="text-[#1b1b1b] font-extrabold">
                   Click next
                 </Text>{" "}

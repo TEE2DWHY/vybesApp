@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   SafeAreaView,
   View,
@@ -27,6 +27,7 @@ import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatMessageTime } from "../../../../utils/formatMessageTime";
 import { format, isToday } from "date-fns";
+import { handleImageSelect } from "../../../../utils/handleImageSelect";
 
 const Conversation = () => {
   const { user } = useAccount();
@@ -67,14 +68,11 @@ const Conversation = () => {
   const handleTyping = (text) => {
     setMessage(text);
     if (text) {
-      // Emit typing event to the recipient only
       socket.emit("typing", { recipientId: userId });
       setIsTyping(true);
-
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-
       typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
         socket.emit("stopTyping", { recipientId: userId });
@@ -241,7 +239,7 @@ const Conversation = () => {
         senderId: user._id,
       };
 
-      setMessages((prev) => [...prev, newMessage]); // Update messages state
+      setMessages((prev) => [...prev, newMessage]);
       setMessage(""); // Clear the input field
       messagesScrollViewRef.current?.scrollToEnd({ animated: true });
 
@@ -257,8 +255,8 @@ const Conversation = () => {
       socket.on("getMessage", (res) => {
         console.log("Received message:", res);
         if (chatId === res.chatId) {
-          setMessages((prev) => [...prev, res]); // Update messages state
-          console.log("Updated messages:", [...messages, res]); // Log updated messages
+          setMessages((prev) => [...prev, res]);
+          console.log("Updated messages:", [...messages, res]);
         }
       });
 
@@ -267,35 +265,6 @@ const Conversation = () => {
       };
     }
   }, [socket, chatId, isMessageEmitted]);
-
-  const handleImageSelect = async () => {
-    try {
-      const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status.granted) {
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        if (!result.canceled) {
-          const newMessage = {
-            id: messages.length + 1,
-            sender: "me",
-            image: result.assets[0].uri,
-            time: getCurrentTime(),
-            status: "sent",
-          };
-          setMessages([...messages, newMessage]);
-        }
-      } else {
-        console.log("Permission denied");
-      }
-    } catch (error) {
-      console.log("ImagePicker Error:", error);
-    }
-  };
 
   const getMessages = async () => {
     if (!chatId) {
@@ -313,7 +282,7 @@ const Conversation = () => {
         }
       );
       // console.log(response.data.payload);
-      setMessages(response.data.payload); // Assuming the response contains the messages
+      setMessages(response.data.payload);
     } catch (error) {
       console.log(error.message);
     }
@@ -371,25 +340,6 @@ const Conversation = () => {
     }
   };
 
-  const getCurrentTime = () => {
-    return new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatDateTime = (dateString) => {
-    const date = new Date(dateString);
-
-    if (isToday(date)) {
-      // If the date is today, return only the time
-      return format(date, "HH:mm"); // 24-hour format
-    } else {
-      // If the date is not today, return the date and time
-      return format(date, "dd/MM/yyyy HH:mm"); // Date and time
-    }
-  };
-
   return (
     <>
       <KeyboardAvoidingView
@@ -419,8 +369,8 @@ const Conversation = () => {
                     </Text>
                     {isTyping && (
                       <View className="flex-row items-center justify-start mt-1">
-                        <Text className="text-gray-500 font-axiformaRegular text-sm">
-                          {contact.userName} is typing...
+                        <Text className="text-gray-400 font-axiformaRegular text-sm">
+                          is typing...
                         </Text>
                       </View>
                     )}
@@ -471,9 +421,7 @@ const Conversation = () => {
                     <View key={msg._id}>
                       {showDateHeader && (
                         <Text className="text-center text-gray-400 my-2 font-axiformaRegular">
-                          {isToday(messageDate)
-                            ? format(messageDate, "dd/MM/yyyy")
-                            : format(messageDate, "dd/MM/yyyy HH:mm")}
+                          {format(messageDate, "dd/MM/yyyy")}
                         </Text>
                       )}
                       <TouchableOpacity
@@ -670,7 +618,13 @@ const Conversation = () => {
                         <View className="flex-col items-center mb-4">
                           <TouchableOpacity
                             className="px-4 py-2 rounded-full justify-center items-center  bg-[#FFF7EE] border border-[#FFE7CA]"
-                            onPress={handleImageSelect}
+                            onPress={() =>
+                              handleImageSelect(
+                                ImagePicker,
+                                messages,
+                                setMessages
+                              )
+                            }
                           >
                             <Ionicons name="image" size={30} color="#FFB053" />
                           </TouchableOpacity>

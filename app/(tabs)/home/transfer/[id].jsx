@@ -99,6 +99,25 @@ const Transfer = () => {
     });
   };
 
+  const subscribe = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/user/subscribe",
+        {
+          recipientId: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleTransfer = async () => {
     if (transferAmount > user?.walletBalance) {
       return setError("Insufficient Balance");
@@ -127,6 +146,7 @@ const Transfer = () => {
           },
         }
       );
+      await subscribe();
       setTransactionId(response?.data?.payload.tx.transactionId);
       setShowModal(true);
       showNotification();
@@ -179,7 +199,6 @@ const Transfer = () => {
     ]);
   };
 
-  // Listener for notification responses
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(
       (response) => {

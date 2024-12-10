@@ -15,7 +15,6 @@ import { StatusBar } from "expo-status-bar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
-import { storiesData } from "../../../../data/data";
 import locked from "../../../../assets/images/locked.png";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -25,11 +24,19 @@ import useFetch from "../../../../hooks/useFetch";
 import { userInstance } from "../../../../config/axios";
 import { useToken } from "../../../../hooks/useToken";
 import { handleCall } from "../../../../utils/handleCall";
+import axios from "axios";
+import { useAccount } from "../../../../hooks/useAccount";
+import { formatDistanceToNow } from "date-fns";
 
 const UserProfile = () => {
   const params = useLocalSearchParams();
   const { id } = params;
   const token = useToken();
+  const { user } = useAccount();
+  const [isSubscribed, setIsSubscribed] = useState(null);
+  const [storiesData, setStoriesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [storiesMessage, setStoriesMessage] = useState("");
 
   const {
     payload,
@@ -41,7 +48,6 @@ const UserProfile = () => {
     fn: userInstance,
     endpoint: `/get-user-by-id/${id}`,
     token: token,
-    // param: { userId: id },
   });
 
   useEffect(() => {
@@ -52,6 +58,50 @@ const UserProfile = () => {
       fetchUsers();
     }
   }, [getUser]);
+
+  const getAllSubscribers = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/user/is-subscribed/${user?._id}/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsSubscribed(response.data?.payload);
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      getAllSubscribers();
+    }
+  }, [token]);
+
+  const getAllStories = async () => {
+    try {
+      if (!token) return;
+      const response = await axios.get(
+        `http://localhost:8000/v1/story/get-all-user-stories/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setStoriesMessage(response.data?.message);
+      setStoriesData(response.data.payload || []);
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllStories();
+  }, [token]);
 
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -90,7 +140,6 @@ const UserProfile = () => {
   // Function to handle Biometric Authentication
   const handleBiometricAuth = async () => {
     try {
-      // Check if biometrics are set up
       const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
 
       if (!savedBiometrics) {
@@ -101,7 +150,6 @@ const UserProfile = () => {
         );
       }
 
-      // Check what type of biometric authentication is available
       const biometricTypes =
         await LocalAuthentication.supportedAuthenticationTypesAsync();
 
@@ -110,7 +158,6 @@ const UserProfile = () => {
           LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
         )
       ) {
-        // Authenticate with Face ID
         const result = await LocalAuthentication.authenticateAsync({
           promptMessage: "Authenticate with Face ID",
           cancelLabel: "Cancel",
@@ -137,8 +184,17 @@ const UserProfile = () => {
     }
   };
 
+  const formatPostedTime = (createdAt) => {
+    try {
+      return formatDistanceToNow(new Date(createdAt), { addSuffix: true });
+    } catch (error) {
+      console.error("Error formatting date:", error.message);
+      return "Unknown time";
+    }
+  };
+
   return (
-    <SafeAreaView classNam-e="mt-10">
+    <SafeAreaView className="mt-10">
       <ScrollView className="px-4">
         <View className="mt-4">
           <AntDesign
@@ -211,7 +267,7 @@ const UserProfile = () => {
                 </Text>
               </View>
               <View className="bg-[#FFB053] p-3 rounded-md">
-                <Text className="font-axiformaRegular text-[#593E1D]">
+                <Text className="font -axiformaRegular text-[#593E1D]">
                   4.8 Rating
                 </Text>
               </View>
@@ -234,51 +290,66 @@ const UserProfile = () => {
                   My Stories
                 </Text>
               </View>
-              <View
+              <TouchableOpacity
                 className={`${
                   activeTab === "My Media"
                     ? "border-b-[4px] border-[#7A91F9]"
                     : ""
                 }`}
+                onPress={() => {
+                  Alert.alert("Note", "Media section is in development");
+                  setActiveTab("My Media");
+                }}
               >
                 <Text
                   className={`text-base font-axiformaBlack pb-2 text-[#3D4C5E]`}
-                  onPress={() => setActiveTab("My Media")}
                 >
                   My Media
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
             <View>
               <Feather name="settings" size={24} color="#909DAD" />
             </View>
           </View>
           <View className="flex-row flex-wrap justify-between mt-2 border border-[#E9E9EB] rounded-lg p-3 bg-white-normal">
-            {storiesData.map((story, index) => (
-              <TouchableOpacity
-                key={story.id}
-                disabled={story.locked}
-                className="w-[49%] mb-4"
-              >
-                <Image
-                  source={{ uri: story.imageUrl }}
-                  className="w-full h-[220px] rounded-md"
-                  resizeMode="cover"
-                />
-
-                {/* Show overlay and padlock if the story is locked */}
-                {story.locked && (
-                  <View className="absolute inset-0 bg-[#361753b9] rounded-md justify-center items-center h-full w-full">
-                    <Feather name="lock" size={32} color="#ffffff" />
-                  </View>
-                )}
-                <View className="bg-[#9a41eea6] py-3 px-2 rounded-xl absolute bottom-3 text-left mx-1">
-                  <Text className="text-white-normal font-axiformaBlack text-center text-[11px]">
-                    Posted {story.postedAt}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            {storiesMessage === "User has no story" ? (
+              <View className="flex-row items-center justify-center w-full">
+                <Text className="font-axiformaRegular text-gray-500 text-center">
+                  No user story found.
+                </Text>
+              </View>
+            ) : (
+              storiesData.map((story, index) => {
+                const isLocked = !isSubscribed && index >= 2;
+                return (
+                  <TouchableOpacity
+                    key={story._id}
+                    disabled={isLocked}
+                    className="w-[49%] mb-4"
+                    onPress={() =>
+                      !isLocked && router.push(`/home/story/${story._id}`)
+                    }
+                  >
+                    <Image
+                      source={{ uri: story.media }}
+                      className="w-full h-[220px] rounded-md"
+                      resizeMode="cover"
+                    />
+                    {isLocked && (
+                      <View className="absolute inset-0 bg-[#361753b9] rounded-md justify-center items-center h-full w-full">
+                        <Feather name="lock" size={32} color="#ffffff" />
+                      </View>
+                    )}
+                    <View className="bg-[#9a41eea6] py-3 px-2 rounded-xl absolute bottom-3 text-left mx-1">
+                      <Text className="text-white-normal font-axiformaBlack text-center text-[11px]">
+                        Posted {formatPostedTime(story.createdAt)}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+            )}
           </View>
 
           <View className="bg-white-normal rounded-lg p-4 mt-8 mb-4 border border-[#E9E9EB]">
@@ -286,8 +357,8 @@ const UserProfile = () => {
               Instant Match
             </Text>
             <Text className="text-center text-sm my-2 text-[#47586E] font-axiformaRegular leading-6">
-              Get matched with {payload?.user?.userName} or unlock chat and
-              calls instantly with a monthly subscription of{" "}
+              Get matched with {payload?.user?.userName}, view all stories,
+              unlock chat and calls instantly with a monthly subscription of{" "}
               <Text className="text-[#7A91F9]">
                 {payload?.user?.premiumRate} Vybes Coins
               </Text>
@@ -300,7 +371,15 @@ const UserProfile = () => {
             />
             <TouchableOpacity
               className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md"
-              onPress={() => setShowModal(true)}
+              onPress={() => {
+                if (isSubscribed) {
+                  return Alert.alert(
+                    "Note",
+                    `You already have an active subscription with ${payload?.user?.userName}`
+                  );
+                }
+                setShowModal(true);
+              }}
             >
               <Text className="text-white-normal text-center font-axiformaRegular p-1">
                 Proceed to Make Payment
@@ -310,7 +389,18 @@ const UserProfile = () => {
 
           <View className="flex-col mt-4 mb-4 bg-white-normal border-2 border-[#DEEDFF] py-12 px-6 rounded-md">
             <View className="flex-row justify-between">
-              <TouchableOpacity className="bg-purple-normal w-2/5 py-3 rounded-full mr-2 flex-row items-center justify-center gap-2">
+              <TouchableOpacity
+                className="bg-purple-normal w-2/5 py-3 rounded-full mr-2 flex-row items-center justify-center gap-2"
+                onPress={() => {
+                  if (!isSubscribed) {
+                    return Alert.alert(
+                      "Note",
+                      `Subscribe to ${payload?.user?.userName}'s to access this feature.`
+                    );
+                  }
+                  // router.push()
+                }}
+              >
                 <Entypo name="chat" size={24} color="#ffff" />
                 <Text className="text-white-normal text-center font-axiformaRegular text-base">
                   Chat
@@ -318,7 +408,15 @@ const UserProfile = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 className="bg-white-normal w-2/5 py-3 rounded-full ml-2 border border-[#F0E3FC] flex-row items-center justify-center gap-2"
-                onPress={() => handleCall(payload?.user?.phoneNumber)}
+                onPress={() => {
+                  if (!isSubscribed) {
+                    return Alert.alert(
+                      "Note",
+                      `Subscribe to ${payload?.user?.userName}'s to access this feature.`
+                    );
+                  }
+                  handleCall(payload?.user?.phoneNumber);
+                }}
               >
                 <Ionicons name="call-sharp" size={24} color="#a241ee" />
                 <Text className="text-purple-normal text-center font-axiformaRegular text-base">

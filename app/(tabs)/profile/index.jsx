@@ -28,6 +28,7 @@ import Likes from "./components/Likes";
 import { userInstance } from "../../../config/axios";
 import { useToken } from "../../../hooks/useToken";
 import { useAccount } from "../../../hooks/useAccount";
+import axios from "axios";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,31 +38,91 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const token = useToken();
   const router = useRouter();
-  const { user } = useAccount();
+  const { user, setUser } = useAccount();
+  const [formData, setFormData] = useState({
+    fullName: user?.fullName || "",
+    userName: user?.userName || "",
+    bio: user?.bio || "",
+    accountType: user?.accountType || "",
+    email: user?.email || "",
+    phoneNumber: user?.phoneNumber || "",
+    location: user?.location || "",
+    image: user?.image || "",
+    dateOfBirth: user?.dateOfBirth || "",
+    availabilityStatus: user?.availabilityStatus || "",
+    gender: user?.gender || "",
+    height: user?.height || "",
+    weight: user?.weight || "",
+    premiumRate: user?.premiumRate || "",
+  });
 
   const handlePrevious = () => {
-    if (personalityTab > 4 || personalityTab > 1)
+    if (personalityTab > 1) {
       setPersonalityTab((prevState) => prevState - 1);
+    }
   };
 
-  const handleNext = async (formData) => {
-    if (personalityTab < 4) setPersonalityTab((prevState) => prevState + 1);
-    else {
-      console.log(formData);
+  const handleNext = async () => {
+    if (personalityTab < 4) {
+      setPersonalityTab((prevState) => prevState + 1);
+    } else {
       setIsLoading(true);
       try {
-        const userRoute = userInstance(token);
-        const response = await userRoute.patch("/update-details", formData);
-        // console.log(response.data);
+        const dataToSend = new FormData();
+        for (const key in formData) {
+          if (key === "image") {
+            const fileData = {
+              uri: formData.image,
+              name: "profile.jpg",
+              type: "image/jpeg",
+            };
+            dataToSend.append("image", fileData);
+          } else {
+            dataToSend.append(key, formData[key]);
+          }
+        }
+
+        const response = await axios.patch(
+          "http://localhost:8000/v1/user/update-details",
+          dataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
         Alert.alert("Success", response?.data.message);
+        setUser(response.data.payload.user);
       } catch (error) {
-        console.log("error", error);
+        console.log("error", error.response.data.message);
         Alert.alert("Error", "An error occurred with user update.");
       } finally {
         setIsLoading(false);
       }
     }
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (token) {
+          const userRoute = userInstance(token);
+          const response = await userRoute.get("/get-user");
+          setUser(response.data.payload.user);
+          setFormData((prevData) => ({
+            ...prevData,
+            ...response.data.payload.user,
+            dateOfBirth: response.data.payload.user?.dateOfBirth || "",
+          }));
+        }
+      } catch (error) {
+        console.log(error || error.message);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -87,7 +148,7 @@ const Profile = () => {
               <TouchableOpacity onPress={handlePrevious}>
                 <AntDesign name="left" size={24} style={{ color: "#B2BBC6" }} />
               </TouchableOpacity>
-              <View className=" bg-[#D6DDFD] w-3/5 py-2 rounded-lg">
+              <View className="bg-[#D6DDFD] w-3/5 py-2 rounded-lg">
                 <Text className="text-center text-lg text-[#6E83E0] font-axiformaBlack">
                   Step {personalityTab}/4
                 </Text>
@@ -96,8 +157,8 @@ const Profile = () => {
                 name="right"
                 size={24}
                 style={{ color: "#B2BBC6" }}
-                disabled={personalityTab === 4 ? true : false}
-                onPress={handleNext}
+                disabled={personalityTab === 4}
+                onPress={() => handlePersonalityNext(formData)}
               />
             </View>
           )}
@@ -328,9 +389,11 @@ const Profile = () => {
           {activeTab === "Personality" && (
             <Personality
               active={personalityTab}
-              handleNext={(formData) => handleNext(formData)}
+              handleNext={handleNext}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
+              formData={formData}
+              setFormData={setFormData}
             />
           )}
 

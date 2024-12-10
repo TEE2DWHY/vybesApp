@@ -9,6 +9,7 @@ const HomeLayout = () => {
         <Stack.Screen name="notification" options={{ headerShown: false }} />
         <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="transfer/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="story/[storyId]" options={{ headerShown: false }} />
       </Stack>
     </>
   );

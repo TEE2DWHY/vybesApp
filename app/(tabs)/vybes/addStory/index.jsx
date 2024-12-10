@@ -77,7 +77,7 @@ const AddStory = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Assuming `useToken` hook works correctly
+            Authorization: `Bearer ${token}`,
           },
         }
       );

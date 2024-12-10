@@ -23,25 +23,16 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
 import { useToken } from "../../../../hooks/useToken";
 
-const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
+const Personality = ({
+  active,
+  handleNext,
+  isLoading,
+  setIsLoading,
+  formData,
+  setFormData,
+}) => {
   const { user, setUser } = useAccount();
   const token = useToken();
-  const [formData, setFormData] = useState({
-    fullName: user?.fullName || "",
-    userName: user?.userName || "",
-    bio: user?.bio || "",
-    accountType: user?.accountType || "",
-    email: user?.email || "",
-    phoneNumber: user?.phoneNumber || "",
-    location: user?.location || "",
-    image: user?.image || "",
-    dateOfBirth: user?.dateOfBirth || "",
-    availabilityStatus: user?.availabilityStatus || "",
-    gender: user?.gender || "",
-    height: user?.height || "",
-    weight: user?.weight || "",
-    premiumRate: user?.premiumRate || "",
-  });
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [heightModal, setHeightModal] = useState(false);
@@ -65,34 +56,18 @@ const Personality = ({ active, handleNext, isLoading, setIsLoading }) => {
     setShow(!show);
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        if (token) {
-          const userRoute = userInstance(token);
-          const response = await userRoute.get("/get-user");
-          setUser(response.data.payload.user);
-          setFormData((prevData) => ({
-            ...prevData,
-            ...response.data.payload.user,
-            dateOfBirth: response.data.payload.user?.dateOfBirth || "",
-          }));
-        }
-      } catch (error) {
-        console.log(error || error.message);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
   const handleInputChange = (name, value) => {
-    if (name === "file") {
+    if (name === "image") {
       const fileData = new FormData();
-      fileData.append("file", value);
+      fileData.append("image", {
+        uri: value,
+        name: "profile.jpg",
+        type: "image/jpeg",
+      });
+
       setFormData((prevData) => ({
         ...prevData,
-        ...fileData,
+        image: fileData,
       }));
     } else {
       setFormData({
