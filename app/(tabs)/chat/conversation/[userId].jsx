@@ -27,6 +27,16 @@ import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatMessageTime } from "../../../../utils/formatMessageTime";
 import { format, isToday } from "date-fns";
+import * as Notifications from "expo-notifications";
+
+// Notification configuration
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const Conversation = () => {
   const { user } = useAccount();
@@ -100,6 +110,13 @@ const Conversation = () => {
     newSocket.on("getMessage", (res) => {
       if (chatId === res.chatId) {
         setMessages((prev) => [...prev, res]);
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Vybes App New Message",
+            body: res.text,
+          },
+          trigger: null,
+        });
       }
     });
 
@@ -107,6 +124,17 @@ const Conversation = () => {
       newSocket.disconnect();
     };
   }, [user, chatId]);
+
+  const requestNotificationPermission = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission for notifications was not granted.");
+    }
+  };
+
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -249,31 +277,6 @@ const Conversation = () => {
       getMessages();
     }
   }, [token, chatId]);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     // Listen for the incoming message
-  //     socket.on("getMessage", (res) => {
-  //       console.log("Received message:", res);
-
-  //       // Check if the message belongs to the current chat
-  //       if (chatId === res.chatId) {
-  //         // Update messages with the new message
-  //         setMessages((prevMessages) => {
-  //           // Append the new message to the previous messages
-  //           const updatedMessages = [...prevMessages, res];
-  //           console.log("Updated messages:", updatedMessages);
-  //           return updatedMessages; // Return the updated array
-  //         });
-  //       }
-  //     });
-
-  //     // Cleanup function to remove the listener when the component unmounts
-  //     return () => {
-  //       socket.off("getMessage"); // Remove the 'getMessage' event listener
-  //     };
-  //   }
-  // }, [socket, chatId]); // Make sure to re-run this effect if the socket or chatId changes
 
   const navigation = useNavigation();
   const attachmentModalRef = useRef(null);
