@@ -91,7 +91,7 @@ const Chat = () => {
     const currentUserIsContact = item.contact._id === user?._id;
     const contact = currentUserIsContact ? item.user : item.contact;
     const lastMessage = item.lastMessage || "";
-    const isOnline = onlineUsers.includes(contact._id);
+    const isOnline = onlineUsers.some((user) => user.userId === contact._id);
     const formattedTime = formatTime(item.time);
 
     return (

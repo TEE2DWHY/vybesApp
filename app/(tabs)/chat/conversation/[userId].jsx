@@ -56,18 +56,18 @@ const Conversation = () => {
   const handleTyping = (text) => {
     setMessage(text);
     if (text) {
-      socket.emit("typing", { recipientId: userId });
+      socket.emit("typing", { recipientId: userId }); // Emit typing event
       setIsTyping(true);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
       typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
-        socket.emit("stopTyping", { recipientId: userId });
+        socket.emit("stopTyping", { recipientId: userId }); // Emit stop typing event
       }, 1000);
     } else {
       setIsTyping(false);
-      socket.emit("stopTyping", { recipientId: userId });
+      socket.emit("stopTyping", { recipientId: userId }); // Emit stop typing event
     }
   };
 
@@ -81,6 +81,20 @@ const Conversation = () => {
 
     newSocket.on("getOnlineUsers", (res) => {
       setOnlineUsers(res);
+    });
+
+    // Listen for typing event
+    newSocket.on("typing", (data) => {
+      if (data?.recipientId === userId) {
+        setIsTyping(true); // Show typing indicator
+      }
+    });
+
+    // Listen for stop typing event
+    newSocket.on("stopTyping", (data) => {
+      if (data?.recipientId === userId) {
+        setIsTyping(false); // Hide typing indicator
+      }
     });
 
     newSocket.on("getMessage", (res) => {
@@ -98,7 +112,7 @@ const Conversation = () => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `https://a269-102-89-23-104.ngrok-free.app/v1/user/get-user-by-id/${userId}`,
+          `https://vybesapi.onrender.com/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -118,7 +132,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "https://a269-102-89-23-104.ngrok-free.app/v1/chat",
+        "https://vybesapi.onrender.com/v1/chat",
         {
           recipientId: userId,
         },
@@ -141,7 +155,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `https://a269-102-89-23-104.ngrok-free.app/v1/chat/find/${userId}`,
+        `https://vybesapi.onrender.com/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -179,7 +193,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.post(
-        "https://a269-102-89-23-104.ngrok-free.app/v1/messages/send-message",
+        "https://vybesapi.onrender.com/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
@@ -217,7 +231,7 @@ const Conversation = () => {
 
     try {
       const response = await axios.get(
-        `https://a269-102-89-23-104.ngrok-free.app/v1/messages/${chatId}`,
+        `https://vybesapi.onrender.com/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
