@@ -83,7 +83,7 @@ const Profile = () => {
         }
 
         const response = await axios.patch(
-          "http://localhost:8000/v1/user/update-details",
+          "https://vybesapi.onrender.com/v1/user/update-details",
           dataToSend,
           {
             headers: {
@@ -158,7 +158,7 @@ const Profile = () => {
                 size={24}
                 style={{ color: "#B2BBC6" }}
                 disabled={personalityTab === 4}
-                onPress={() => handlePersonalityNext(formData)}
+                onPress={() => handleNext()}
               />
             </View>
           )}

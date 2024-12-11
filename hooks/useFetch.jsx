@@ -22,7 +22,7 @@ const useFetch = ({ fn, endpoint, param, token }) => {
     }
   }, [fn, endpoint, token]);
 
-  return { message, payload, error, isLoading, fetchData };
+  return { message, payload, setPayload, error, isLoading, fetchData };
 };
 
 export default useFetch;

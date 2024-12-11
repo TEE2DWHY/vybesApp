@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   SafeAreaView,
   View,
@@ -21,13 +21,12 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import DatingTips from "../components/DatingTips";
 import * as ImagePicker from "expo-image-picker";
-import { io } from "socket.io-client";
+import { connectSocket } from "../../../../config/socket";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatMessageTime } from "../../../../utils/formatMessageTime";
 import { format, isToday } from "date-fns";
-import { handleImageSelect } from "../../../../utils/handleImageSelect";
 
 const Conversation = () => {
   const { user } = useAccount();
@@ -46,24 +45,13 @@ const Conversation = () => {
   const [chat, setChat] = useState();
   const [chatId, setChatId] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [isMessageEmitted, setIsMessageEmitted] = useState();
-  const messagesScrollViewRef = useRef();
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
+  const messagesScrollViewRef = useRef();
 
   useEffect(() => {
     messagesScrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
-
-  useEffect(() => {
-    if (socket && contact?._id) {
-      socket.emit("addNewUser ", contact._id);
-      socket.on("getOnlineUsers", (res) => {
-        setOnlineUsers(res.map((user) => user.userId));
-        console.log("Received online users:", res);
-      });
-    }
-  }, [socket, contact]);
 
   const handleTyping = (text) => {
     setMessage(text);
@@ -84,41 +72,42 @@ const Conversation = () => {
   };
 
   useEffect(() => {
-    if (socket) {
-      socket.on("typing", (data) => {
-        if (data.recipientId === userId) {
-          setIsTyping(true);
-        }
-      });
+    const newSocket = connectSocket(user?._id);
+    setSocket(newSocket);
 
-      socket.on("stopTyping", (data) => {
-        if (data.recipientId === userId) {
-          setIsTyping(false);
-        }
-      });
+    newSocket.on("connect", () => {
+      console.log("Socket connected:", newSocket.id);
+    });
 
-      return () => {
-        socket.off("typing");
-        socket.off("stopTyping");
-      };
-    }
-  }, [socket, userId]);
+    newSocket.on("getOnlineUsers", (res) => {
+      setOnlineUsers(res);
+    });
+
+    newSocket.on("getMessage", (res) => {
+      if (chatId === res.chatId) {
+        setMessages((prev) => [...prev, res]);
+      }
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [user, chatId]);
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
+          `https://a269-102-89-23-104.ngrok-free.app/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        // console.log(response.data);
-        setContact(response.data.payload.user);
+        setContact(response.data?.payload.user);
       } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message);
       }
     };
     if (token) {
@@ -129,7 +118,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/chat",
+        "https://a269-102-89-23-104.ngrok-free.app/v1/chat",
         {
           recipientId: userId,
         },
@@ -139,7 +128,6 @@ const Conversation = () => {
           },
         }
       );
-      // console.log(response.data.payload);
       setChatId(response.data.payload._id);
     } catch (error) {
       console.log(error);
@@ -153,14 +141,13 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/chat/find/${userId}`,
+        `https://a269-102-89-23-104.ngrok-free.app/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.data);
       setChat(response.data.payload);
     } catch (error) {
       console.log(error);
@@ -179,49 +166,20 @@ const Conversation = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    const newSocket = io("https://550a-102-88-71-68.ngrok-free.app");
-    setSocket(newSocket);
-    newSocket.on("connect", () => {
-      console.log("Socket connected:", newSocket.id);
-    });
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (socket && contact?._id) {
-      socket.emit("addNewUser", contact._id);
-      socket.on("getOnlineUsers", (res) => {
-        setOnlineUsers(res);
-        console.log("Received online users:", res);
-      });
-    }
-  }, [socket, contact]);
-
-  useEffect(() => {
-    if (socket === null) return;
-    const recipientId = chat?.members?.find((id) => id !== user?._id);
-    socket.emit("sendMessage", { ...message, recipientId });
-  }, [message, socket]);
-
   const sendMessage = async () => {
     if (!chatId) {
       console.log("Chat ID is null, cannot send message.");
       return;
     }
-    console.log(onlineUsers);
 
-    // const recipientOnline = onlineUsers.includes(userId);
-    // if (!recipientOnline) {
-    //   console.log("Recipient is not online, cannot send message.");
-    //   return;
-    // }
+    if (!socket || !socket.connected) {
+      console.log("Socket is not connected, cannot send message.");
+      return;
+    }
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/messages/send-message",
+        "https://a269-102-89-23-104.ngrok-free.app/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
@@ -243,28 +201,13 @@ const Conversation = () => {
       setMessage(""); // Clear the input field
       messagesScrollViewRef.current?.scrollToEnd({ animated: true });
 
+      // Emit the message to the socket
       socket.emit("sendMessage", { ...newMessage, recipientId: userId });
       console.log("Emitted message to recipient:", newMessage);
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("getMessage", (res) => {
-        console.log("Received message:", res);
-        if (chatId === res.chatId) {
-          setMessages((prev) => [...prev, res]);
-          console.log("Updated messages:", [...messages, res]);
-        }
-      });
-
-      return () => {
-        socket.off("getMessage");
-      };
-    }
-  }, [socket, chatId, isMessageEmitted]);
 
   const getMessages = async () => {
     if (!chatId) {
@@ -274,14 +217,13 @@ const Conversation = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/messages/${chatId}`,
+        `https://a269-102-89-23-104.ngrok-free.app/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      // console.log(response.data.payload);
       setMessages(response.data.payload);
     } catch (error) {
       console.log(error.message);
@@ -293,6 +235,31 @@ const Conversation = () => {
       getMessages();
     }
   }, [token, chatId]);
+
+  // useEffect(() => {
+  //   if (socket) {
+  //     // Listen for the incoming message
+  //     socket.on("getMessage", (res) => {
+  //       console.log("Received message:", res);
+
+  //       // Check if the message belongs to the current chat
+  //       if (chatId === res.chatId) {
+  //         // Update messages with the new message
+  //         setMessages((prevMessages) => {
+  //           // Append the new message to the previous messages
+  //           const updatedMessages = [...prevMessages, res];
+  //           console.log("Updated messages:", updatedMessages);
+  //           return updatedMessages; // Return the updated array
+  //         });
+  //       }
+  //     });
+
+  //     // Cleanup function to remove the listener when the component unmounts
+  //     return () => {
+  //       socket.off("getMessage"); // Remove the 'getMessage' event listener
+  //     };
+  //   }
+  // }, [socket, chatId]); // Make sure to re-run this effect if the socket or chatId changes
 
   const navigation = useNavigation();
   const attachmentModalRef = useRef(null);
@@ -378,7 +345,6 @@ const Conversation = () => {
                 </View>
               </View>
 
-              {/* Adjusted icons container */}
               <View className="flex-row gap-4 items-center">
                 <AntDesign name="videocamera" size={24} color="#7A91F9" />
                 <Ionicons name="call-outline" size={24} color="#7A91F9" />
@@ -418,7 +384,7 @@ const Conversation = () => {
                       messageDate.toDateString();
 
                   return (
-                    <View key={msg._id}>
+                    <View key={msg?._id}>
                       {showDateHeader && (
                         <Text className="text-center text-gray-400 my-2 font-axiformaRegular">
                           {format(messageDate, "dd/MM/yyyy")}
@@ -429,7 +395,7 @@ const Conversation = () => {
                       >
                         <View
                           className={`my-2 flex-row items-end ${
-                            msg.senderId === user._id
+                            msg.senderId === user?._id
                               ? "justify-end"
                               : "justify-start"
                           }`}
@@ -437,7 +403,7 @@ const Conversation = () => {
                           <View
                             className={`p-3 rounded-lg ${
                               msg.text
-                                ? msg.senderId === user._id
+                                ? msg.senderId === user?._id
                                   ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
                                   : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
                                 : "bg-transparent"
@@ -452,7 +418,7 @@ const Conversation = () => {
                             ) : (
                               <Text
                                 className={`${
-                                  msg.senderId === user._id
+                                  msg.senderId === user?._id
                                     ? "text-[#ffff]"
                                     : "text-[#3D4C5E]"
                                 } font-axiformaRegular`}
@@ -535,7 +501,7 @@ const Conversation = () => {
                 <Entypo
                   name="attachment"
                   size={24}
-                  color="#B2BBC6"
+                  color="#B2BBC C6"
                   onPress={() => setShowAttachmentModal(true)}
                 />
                 <TextInput

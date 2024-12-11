@@ -6,19 +6,18 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Platform,
 } from "react-native";
+import { connectSocket, disconnectSocket } from "../../../config/socket";
+import { useToken } from "../../../hooks/useToken";
+import { useAccount } from "../../../hooks/useAccount";
+import axios from "axios";
+import { Spinner } from "../../../components/Spinner";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ChatModal from "../../../modal/ChatModal";
 import { StatusBar } from "expo-status-bar";
 import Empty from "./components/Empty";
 import HeaderComponent from "./components/HeaderComponent";
 import { router } from "expo-router";
-import { useToken } from "../../../hooks/useToken";
-import axios from "axios";
-import { Spinner } from "../../../components/Spinner";
-import { io } from "socket.io-client";
-import { useAccount } from "../../../hooks/useAccount";
 import { format, parseISO, isToday } from "date-fns";
 
 const Chat = () => {
@@ -34,7 +33,7 @@ const Chat = () => {
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/contact/contacts/confirmed",
+          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -51,45 +50,48 @@ const Chat = () => {
 
     if (token) {
       getMyContacts();
+      socket.current = connectSocket(user?._id); // Initialize socket connection
+
+      socket.current.on("getOnlineUsers", (users) => {
+        setOnlineUsers(users);
+      });
+
+      socket.current.on("getMessage", (message) => {
+        // Update contacts with the new message
+        setContacts((prevContacts) => {
+          return prevContacts.map((contact) => {
+            if (
+              contact.contact._id === message.senderId ||
+              contact.user._id === message.senderId
+            ) {
+              return {
+                ...contact,
+                lastMessage: message.text,
+                time: message.createdAt,
+              };
+            }
+            return contact;
+          });
+        });
+      });
     }
-  }, [token]);
 
-  useEffect(() => {
-    socket.current = io("https://550a-102-88-71-68.ngrok-free.app");
-
-    socket.current.on("connect", () => {
-      console.log("Socket connected:", socket.current.id);
-    });
-
-    socket.current.emit("addNewUser", user?._id);
-
-    socket.current.on("getOnlineUsers", (users) => {
-      // Set online users by their userIds
-      setOnlineUsers(users);
-    });
-
+    // Cleanup socket connection on component unmount
     return () => {
-      socket.current.disconnect();
-      console.log("Socket disconnected.");
+      disconnectSocket(); // Properly disconnect socket when the component is unmounted
     };
-  }, [user]);
+  }, [token, user]); // Make sure the useEffect reruns when token or user changes
 
   const formatTime = (timeString) => {
     const date = parseISO(timeString);
-
-    if (isToday(date)) {
-      return format(date, "HH:mm");
-    } else {
-      return format(date, "EEE, HH:mm");
-    }
+    return isToday(date) ? format(date, "HH:mm") : format(date, "EEE, HH:mm");
   };
 
   const renderItem = ({ item }) => {
     const currentUserIsContact = item.contact._id === user?._id;
     const contact = currentUserIsContact ? item.user : item.contact;
-    const lastMessage = item.lastMessage;
-    const isOnline = onlineUsers.includes(item.contact?._id);
-
+    const lastMessage = item.lastMessage || "";
+    const isOnline = onlineUsers.includes(contact._id);
     const formattedTime = formatTime(item.time);
 
     return (
@@ -150,7 +152,7 @@ const Chat = () => {
                     />
                   ) : null}
                   <Text className="text-[#909DAD] font-axiformaRegular text-sm flex-1">
-                    {lastMessage}
+                    {lastMessage.text || lastMessage}
                   </Text>
                 </>
               ) : (

@@ -49,7 +49,7 @@ const App = () => {
   const getCurrentContacts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/contact/get-contacts",
+        "https://vybesapi.onrender.com/v1/contact/get-contacts",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ const App = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/story/get-active-stories/${activeSection}`,
+        `https://vybesapi.onrender.com/v1/story/get-active-stories/${activeSection}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const App = () => {
     if (token) {
       try {
         const response = await axios.post(
-          "http://localhost:8000/v1/contact/add-contact",
+          "https://vybesapi.onrender.com/v1/contact/add-contact",
           {
             contactId: selectedUserStory?.user?._id,
           },
@@ -123,7 +123,7 @@ const App = () => {
     } else {
       try {
         const response = await axios.patch(
-          "http://localhost:8000/v1/story/like",
+          "https://vybesapi.onrender.com/v1/story/like",
           {
             storyId: currentStory.storyId,
           },
@@ -157,7 +157,7 @@ const App = () => {
   const unlikeStory = async () => {
     try {
       await axios.patch(
-        "http://localhost:8000/v1/story/unlike",
+        "https://vybesapi.onrender.com/v1/story/unlike",
         {
           storyId: selectedUserStory?.stories[currentIndex]?.storyId,
         },
@@ -297,24 +297,30 @@ const App = () => {
         </View>
 
         {data.length === 0 ? (
-          <View className="items-center justify-center absolute top-[50%] w-full z-50">
-            <Image
-              source={empty}
-              className="w-20 h-20 my-4"
-              resizeMode="contain"
-            />
-            <Text className="font-axiformaRegular text-[#909DAD]">
-              No user story found at the moment.
-            </Text>
-            <TouchableOpacity
-              className="bg-purple-normal px-8 py-4 rounded-full font-axiformaRegular text-white-normal mt-4"
-              onPress={handleMediaUpload}
-            >
-              <Text className="font-axiformaBlackItalic text-white-normal">
-                Add Story
+          <>
+            <View className="items-center justify-center absolute top-[50%] w-full z-50">
+              <Image
+                source={empty}
+                className="w-20 h-20 my-4"
+                resizeMode="contain"
+              />
+              <Text className="font-axiformaRegular text-[#909DAD]">
+                No user story found at the moment.
               </Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                className="bg-purple-normal px-8 py-4 rounded-full font-axiformaRegular text-white-normal mt-4"
+                onPress={handleMediaUpload}
+              >
+                <Text className="font-axiformaBlackItalic text-white-normal">
+                  Add Story
+                </Text>
+              </TouchableOpacity>
+
+              <Text className="text-purple-normal font-axiformaRegular text-center w-[60%] leading-5 text-sm mt-4 z-50">
+                Only stories within the last 24hrs will appear here.
+              </Text>
+            </View>
+          </>
         ) : (
           <ScrollView
             className="bg-purple-normal px-6 py-4 mt-6"

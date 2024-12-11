@@ -72,7 +72,7 @@ const AddStory = () => {
 
       // Upload the data to the backend (using axios)
       const response = await axios.post(
-        "http://localhost:8000/v1/story/add",
+        "https://vybesapi.onrender.com/v1/story/add",
         formData,
         {
           headers: {
@@ -82,7 +82,7 @@ const AddStory = () => {
         }
       );
 
-      console.log("Story uploaded successfully:", response.data);
+      // console.log("Story uploaded successfully:", response.data);
       setIsLoading(false);
       setIsStorySent(true);
 
@@ -90,7 +90,7 @@ const AddStory = () => {
       setTimeout(() => {
         setIsLoading(false);
         router.back(); // Use the router to navigate back
-      }, 3500);
+      }, 2500);
     } catch (error) {
       console.error(
         "Error uploading story:",

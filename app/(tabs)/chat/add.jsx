@@ -39,7 +39,7 @@ const Add = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/contact/contacts/suggested-accounts",
+        "https://vybesapi.onrender.com/v1/contact/contacts/suggested-accounts",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -71,7 +71,7 @@ const Add = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/contact/search-contacts?username=${searchText}`,
+        `https://vybesapi.onrender.com/v1/contact/search-contacts?username=${searchText}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -100,7 +100,7 @@ const Add = () => {
     setAddingUser(contactId);
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/contact/add-contact",
+        "https://vybesapi.onrender.com/v1/contact/add-contact",
         { contactId },
         {
           headers: { Authorization: `Bearer ${token}` },

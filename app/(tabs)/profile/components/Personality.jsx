@@ -169,7 +169,7 @@ const Personality = ({
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   value={formData.fullName.toLowerCase()}
                   onChangeText={(value) => handleInputChange("fullName", value)}
-                  // editable={!user?.fullName}
+                  editable={!user?.fullName}
                 />
               </View>
 
@@ -182,7 +182,7 @@ const Personality = ({
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
                   onChangeText={(value) => handleInputChange("userName", value)}
                   value={formData.userName}
-                  // editable={!user?.userName}
+                  editable={!user?.userName}
                 />
               </View>
 
@@ -371,7 +371,7 @@ const Personality = ({
                     <TextInput
                       placeholder="YY/MM/DD"
                       className="py-2 text-base font-axiformaRegular"
-                      editable={false}
+                      editable={formData.dateOfBirth === "" ? true : false}
                       value={formData.dateOfBirth}
                     />
                     <AntDesign
@@ -379,6 +379,7 @@ const Personality = ({
                       size={24}
                       color="gray"
                       onPress={showDatePicker}
+                      disabled={formData.dateOfBirth === "" ? false : true}
                     />
                   </View>
 

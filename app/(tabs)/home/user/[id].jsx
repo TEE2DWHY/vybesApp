@@ -43,6 +43,7 @@ const UserProfile = () => {
     isLoading,
     message,
     error,
+    setPayload,
     fetchData: getUser,
   } = useFetch({
     fn: userInstance,
@@ -56,13 +57,14 @@ const UserProfile = () => {
         await getUser();
       };
       fetchUsers();
+      setPayload(payload?.user);
     }
   }, [getUser]);
 
   const getAllSubscribers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/user/is-subscribed/${user?._id}/${id}`,
+        `https://vybesapi.onrender.com/v1/user/is-subscribed/${user?._id}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,7 +87,7 @@ const UserProfile = () => {
     try {
       if (!token) return;
       const response = await axios.get(
-        `http://localhost:8000/v1/story/get-all-user-stories/${id}`,
+        `https://vybesapi.onrender.com/v1/story/get-all-user-stories/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
