@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
-import { format, formatDate } from "date-fns";
+import { format } from "date-fns";
 import { router } from "expo-router";
 import { Spinner } from "../../../../components/Spinner";
 
@@ -34,7 +28,6 @@ const Transactions = () => {
             },
           }
         );
-        console.log(response.data);
         setTransactions(response.data.payload.transactions || []);
       } catch (error) {
         setError(error.response?.data?.message);
