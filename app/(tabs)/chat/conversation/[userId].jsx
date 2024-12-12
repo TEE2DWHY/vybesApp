@@ -140,7 +140,7 @@ const Conversation = () => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `https://vybesapi.onrender.com/v1/user/get-user-by-id/${userId}`,
+          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -160,7 +160,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/chat",
+        "http://localhost:8000/v1/chat",
         {
           recipientId: userId,
         },
@@ -183,7 +183,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/chat/find/${userId}`,
+        `http://localhost:8000/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -213,15 +213,13 @@ const Conversation = () => {
       console.log("Chat ID is null, cannot send message.");
       return;
     }
-
     if (!socket || !socket.connected) {
       console.log("Socket is not connected, cannot send message.");
       return;
     }
-
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/messages/send-message",
+        "http://localhost:8000/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
@@ -233,17 +231,13 @@ const Conversation = () => {
           },
         }
       );
-
       const newMessage = {
         ...response.data.payload,
         senderId: user._id,
       };
-
       setMessages((prev) => [...prev, newMessage]);
-      setMessage(""); // Clear the input field
+      setMessage("");
       messagesScrollViewRef.current?.scrollToEnd({ animated: true });
-
-      // Emit the message to the socket
       socket.emit("sendMessage", { ...newMessage, recipientId: userId });
       console.log("Emitted message to recipient:", newMessage);
     } catch (error) {
@@ -254,12 +248,11 @@ const Conversation = () => {
   const getMessages = async () => {
     if (!chatId) {
       console.log("Chat ID is null, skipping message fetch.");
-      return; // Skip fetching messages if chatId is null
+      return;
     }
-
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/messages/${chatId}`,
+        `http://localhost:8000/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

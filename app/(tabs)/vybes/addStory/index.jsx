@@ -72,7 +72,7 @@ const AddStory = () => {
 
       // Upload the data to the backend (using axios)
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/story/add",
+        "http://localhost:8000/v1/story/add",
         formData,
         {
           headers: {

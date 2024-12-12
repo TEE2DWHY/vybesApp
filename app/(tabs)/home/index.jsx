@@ -43,7 +43,7 @@ const Home = () => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "https://vybesapi.onrender.com/v1/notification/notifications",
+        "http://localhost:8000/v1/notification/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
         }

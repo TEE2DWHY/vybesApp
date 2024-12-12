@@ -10,6 +10,9 @@ import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
+import { format, formatDate } from "date-fns";
+import { router } from "expo-router";
+import { Spinner } from "../../../../components/Spinner";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal");
@@ -24,18 +27,18 @@ const Transactions = () => {
       setError(null);
       try {
         const response = await axios.get(
-          "https://vybesapi.onrender.com/v1/transaction/type",
+          `http://localhost:8000/v1/transaction/type?transactionType=${activeTab}`,
           {
-            params: { transactionType: activeTab },
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setTransactions(response.data.transactions || []);
+        console.log(response.data);
+        setTransactions(response.data.payload.transactions || []);
       } catch (error) {
-        setError("Failed to load transactions. Please try again.");
-        console.error(error.response?.data.message);
+        setError(error.response?.data?.message);
+        // console.error(error.response?.data?.message);
       } finally {
         setIsLoading(false);
       }
@@ -43,7 +46,7 @@ const Transactions = () => {
     if (token) {
       getTransactions();
     }
-  }, [activeTab]);
+  }, [token, activeTab]);
 
   const renderTransactions = (data, type) => (
     <View className="mb-12">
@@ -55,19 +58,27 @@ const Transactions = () => {
       <View className="mt-4 border-2 rounded-xl p-4 border-[#F3F9FF] bg-white-normal h-fit">
         {data.map((transaction) => (
           <View
-            key={transaction.id}
+            key={transaction._id}
             className="flex-row justify-between mb-8 border-b pb-1 border-[#EEF6FF]"
           >
             <View className="gap-4">
               <Text className="font-axiformaBlack text-[#3D4C5E]">{type}</Text>
               {(type === "Transferred Coins" || type === "Received Coins") && (
-                <Text className="text-purple-normal font-axiformaRegular text-xs">
-                  {type === "Transferred Coins" ? "to" : "from"}{" "}
-                  {transaction.to}
-                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push(`/home/user/${transaction?.receiverId}`)
+                  }
+                >
+                  <Text className="text-purple-normal font-axiformaRegular text-xs">
+                    {type === "Transferred Coins" ? "to" : "from"}{" "}
+                    {transaction.receiver}
+                  </Text>
+                </TouchableOpacity>
               )}
               <Text className="text-[#909DAD] font-axiformaRegular text-xs">
-                {transaction.date}
+                {format(transaction.createdAt, "dd-MM-yyyy")}
+                {"   "}
+                {format(transaction.createdAt, "HH:mm")}
               </Text>
             </View>
             <View>
@@ -80,7 +91,14 @@ const Transactions = () => {
                     : "text-[#FFB053] text-base"
                 } font-axiformaBlack`}
               >
-                {transaction.amount}
+                {type === "Deposit"
+                  ? "+"
+                  : type === "Transferred Coins"
+                  ? "-"
+                  : " "}{" "}
+                {`${type === "Deposit" ? "#" : ""}${transaction.amount} ${
+                  type === "Transferred Coins" ? "Vybe Coin" : ""
+                }`}
               </Text>
             </View>
           </View>
@@ -175,11 +193,13 @@ const Transactions = () => {
         </ScrollView>
 
         {isLoading ? (
-          <View className="flex-1 justify-center items-center mt-10">
-            <ActivityIndicator size="large" color="#8BC0FE" />
+          <View className="flex-1 justify-center items-center h-[40vh]">
+            <Spinner />
           </View>
         ) : error ? (
-          <Text className="text-red-500 text-center mt-10">{error}</Text>
+          <Text className="text-purple-normal text-center mt-20 font-axiformaRegular capitalize text-sm leading-6">
+            {error}
+          </Text>
         ) : (
           renderTransactions(transactions, activeTab)
         )}

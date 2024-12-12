@@ -102,7 +102,7 @@ const Transfer = () => {
   const subscribe = async () => {
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/user/subscribe",
+        "http://localhost:8000/v1/user/subscribe",
         {
           recipientId: id,
         },
@@ -135,7 +135,7 @@ const Transfer = () => {
     setIsTransferLoading(true);
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/user/transfer-coin",
+        "http://localhost:8000/v1/user/transfer-coin",
         {
           amountToSend: transferAmount,
           receiverUserName: accountHandle,

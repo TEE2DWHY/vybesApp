@@ -45,7 +45,7 @@ const PrivacySettings = () => {
     const fetchPrivacySettings = async () => {
       try {
         const response = await axios.get(
-          "https://vybesapi.onrender.com/v1/privacy-settings/get-settings",
+          "http://localhost:8000/v1/privacy-settings/get-settings",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ const PrivacySettings = () => {
   const initializeSettingsInBackend = async (settings) => {
     try {
       await axios.post(
-        "https://vybesapi.onrender.com/v1/privacy-settings/create",
+        "http://localhost:8000/v1/privacy-settings/create",
         settings,
         {
           headers: {
@@ -107,7 +107,7 @@ const PrivacySettings = () => {
 
     try {
       await axios.put(
-        "https://vybesapi.onrender.com/v1/privacy-settings/update",
+        "http://localhost:8000/v1/privacy-settings/update",
         newSettings,
         {
           headers: {

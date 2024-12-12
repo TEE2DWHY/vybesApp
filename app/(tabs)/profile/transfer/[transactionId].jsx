@@ -28,7 +28,7 @@ const TransferDetails = () => {
       const getTransaction = async () => {
         try {
           const response = await axios.get(
-            `https://vybesapi.onrender.com/v1/transaction/${transactionId.toString()}`,
+            `http://localhost:8000/v1/transaction/current-transaction/${transactionId.toString()}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

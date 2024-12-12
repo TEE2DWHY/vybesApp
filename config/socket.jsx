@@ -4,8 +4,7 @@ let socket = null;
 
 const connectSocket = (userId) => {
   if (!socket || !socket.connected) {
-    // Only initialize the socket if it's not already initialized or if it's disconnected
-    socket = io("https://vybesapi.onrender.com");
+    socket = io("http://localhost:8000");
 
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);
@@ -17,14 +16,14 @@ const connectSocket = (userId) => {
       console.log("Socket disconnected");
     });
   }
-  return socket; // Always return the current socket
+  return socket;
 };
 
 const disconnectSocket = () => {
   if (socket) {
     // Only disconnect if socket is initialized
     socket.disconnect();
-    socket = null; // Set socket back to null after disconnect
+    socket = null;
     console.log("Socket disconnected.");
   }
 };
