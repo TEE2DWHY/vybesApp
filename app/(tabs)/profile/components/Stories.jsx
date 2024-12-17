@@ -26,9 +26,12 @@ const Stories = () => {
   const getAllStories = async () => {
     try {
       if (!token) return;
-      const response = await axios.get("http://localhost:8000/v1/story/all", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        "https://vybesapi.onrender.com/v1/story/all",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setStoriesData(response.data.payload || []);
       setMessage(response.data?.message || "Stories fetched successfully");
     } catch (error) {

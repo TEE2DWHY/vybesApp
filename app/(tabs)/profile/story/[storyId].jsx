@@ -31,14 +31,17 @@ const Story = () => {
     const getStory = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:8000/v1/story`, {
-          params: {
-            storyId: storyId,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `https://vybesapi.onrender.com/v1/story`,
+          {
+            params: {
+              storyId: storyId,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setStory(response.data.payload);
       } catch (error) {
         console.error("Error fetching story:", error);

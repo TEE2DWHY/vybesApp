@@ -49,7 +49,7 @@ const App = () => {
   const getCurrentContacts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/contact/get-contacts",
+        "https://vybesapi.onrender.com/v1/contact/get-contacts",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ const App = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/story/get-active-stories/${activeSection}`,
+        `https://vybesapi.onrender.com/v1/story/get-active-stories/${activeSection}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const App = () => {
     if (token) {
       try {
         const response = await axios.post(
-          "http://localhost:8000/v1/contact/add-contact",
+          "https://vybesapi.onrender.com/v1/contact/add-contact",
           {
             contactId: selectedUserStory?.user?._id,
           },
@@ -123,7 +123,7 @@ const App = () => {
     } else {
       try {
         const response = await axios.patch(
-          "http://localhost:8000/v1/story/like",
+          "https://vybesapi.onrender.com/v1/story/like",
           {
             storyId: currentStory.storyId,
           },
@@ -157,7 +157,7 @@ const App = () => {
   const unlikeStory = async () => {
     try {
       await axios.patch(
-        "http://localhost:8000/v1/story/unlike",
+        "https://vybesapi.onrender.com/v1/story/unlike",
         {
           storyId: selectedUserStory?.stories[currentIndex]?.storyId,
         },
@@ -298,7 +298,7 @@ const App = () => {
 
         {data.length === 0 ? (
           <>
-            <View className="items-center justify-center absolute top-[50%] w-full z-50">
+            <View className="items-center justify-center absolute top-[40%] w-full z-50">
               <Image
                 source={empty}
                 className="w-20 h-20 my-4"
@@ -316,7 +316,7 @@ const App = () => {
                 </Text>
               </TouchableOpacity>
 
-              <Text className="text-purple-normal font-axiformaRegular text-center w-[60%] leading-5 text-sm mt-4 z-50">
+              <Text className="text-purple-normal font-axiformaRegular text-center w-[60%] leading-5 text-[12px] mt-4 z-50">
                 Only stories within the last 24hrs will appear here.
               </Text>
             </View>

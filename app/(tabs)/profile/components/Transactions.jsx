@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-import { TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
 import { format } from "date-fns";
@@ -13,6 +19,7 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
   const token = useToken();
 
   useEffect(() => {
@@ -21,7 +28,7 @@ const Transactions = () => {
       setError(null);
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/transaction/type?transactionType=${activeTab}`,
+          `https://vybesapi.onrender.com/v1/transaction/type?transactionType=${activeTab}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -31,7 +38,6 @@ const Transactions = () => {
         setTransactions(response.data.payload.transactions || []);
       } catch (error) {
         setError(error.response?.data?.message);
-        // console.error(error.response?.data?.message);
       } finally {
         setIsLoading(false);
       }
@@ -112,11 +118,11 @@ const Transactions = () => {
               Filter using date ranges
             </Text>
           </View>
-          <View className="flex-row">
+          <View className="flex-row relative">
             <Text className="capitalize text-[#B2BBC6] mt-2 font-axiformaRegular">
-              1 Week
+              Filter
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Feather
                 name="sliders"
                 size={20}
@@ -196,6 +202,67 @@ const Transactions = () => {
         ) : (
           renderTransactions(transactions, activeTab)
         )}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <TouchableOpacity
+            className="flex-1 justify-center items-center bg-[#1b1b1b64] bg-opacity-50"
+            onPress={() => setModalVisible(false)}
+          >
+            <View className="bg-white-normal rounded-lg p-4 w-4/5">
+              <Text className="text-lg font-axiformaBlack mb-4">
+                Filter Options
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  /* Handle Today Filter */ setModalVisible(false);
+                }}
+              >
+                <Text className="font-axiformaRegular mb-2">Today</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  /* Handle Last Week Filter */ setModalVisible(false);
+                }}
+              >
+                <Text className="font-axiformaRegular mb-2">Last Week</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  /* Handle Last 6 Months Filter */ setModalVisible(false);
+                }}
+              >
+                <Text className="font-axiformaRegular mb-2">Last 6 Months</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  /* Handle Last Year Filter */ setModalVisible(false);
+                }}
+              >
+                <Text className="font-axiformaRegular mb-2">Last Year</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  /* Handle Custom Filter */ setModalVisible(false);
+                }}
+              >
+                <Text className="font-axiformaRegular mb-2">Custom</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                className="mt-4"
+              >
+                <Text className="text-blue-500 font-axiformaRegular">
+                  Close
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );

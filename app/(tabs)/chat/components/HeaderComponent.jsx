@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Text, TextInput, View, Keyboard } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -91,9 +91,7 @@ const HeaderComponent = ({
                 name="search"
                 size={24}
                 color="#7A91F9"
-                onPress={() => {
-                  setOnSearch(true);
-                }}
+                onPress={() => setOnSearch(true)}
               />
               <View className="relative">
                 <Entypo
