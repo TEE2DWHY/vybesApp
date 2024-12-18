@@ -83,7 +83,7 @@ const Profile = () => {
         }
 
         const response = await axios.patch(
-          "https://vybesapi.onrender.com/v1/user/update-details",
+          "http://localhost:8000/v1/user/update-details",
           dataToSend,
           {
             headers: {

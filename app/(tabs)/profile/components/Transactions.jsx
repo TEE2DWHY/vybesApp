@@ -19,7 +19,7 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
   const token = useToken();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Transactions = () => {
       setError(null);
       try {
         const response = await axios.get(
-          `https://vybesapi.onrender.com/v1/transaction/type?transactionType=${activeTab}`,
+          `http://localhost:8000/v1/transaction/type?transactionType=${activeTab}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,6 +46,26 @@ const Transactions = () => {
       getTransactions();
     }
   }, [token, activeTab]);
+
+  const fetchTransactionsByDateRange = async (dateRange) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/transaction/date?dateRange=${dateRange}&transactionType=${activeTab}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setTransactions(response.data.payload.transactions || []);
+    } catch (error) {
+      setError(error.response?.data?.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const renderTransactions = (data, type) => (
     <View className="mb-12">
@@ -219,38 +239,43 @@ const Transactions = () => {
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  /* Handle Today Filter */ setModalVisible(false);
+                  fetchTransactionsByDateRange("today");
+                  setModalVisible(false);
                 }}
               >
                 <Text className="font-axiformaRegular mb-2">Today</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  /* Handle Last Week Filter */ setModalVisible(false);
+                  fetchTransactionsByDateRange("lastWeek");
+                  setModalVisible(false);
                 }}
               >
                 <Text className="font-axiformaRegular mb-2">Last Week</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  /* Handle Last 6 Months Filter */ setModalVisible(false);
+                  fetchTransactionsByDateRange("lastMonth");
+                  setModalVisible(false);
+                }}
+              >
+                <Text className="font-axiformaRegular mb-2">Last Month</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  fetchTransactionsByDateRange("last6Months");
+                  setModalVisible(false);
                 }}
               >
                 <Text className="font-axiformaRegular mb-2">Last 6 Months</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  /* Handle Last Year Filter */ setModalVisible(false);
+                  fetchTransactionsByDateRange("lastYear");
+                  setModalVisible(false);
                 }}
               >
                 <Text className="font-axiformaRegular mb-2">Last Year</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  /* Handle Custom Filter */ setModalVisible(false);
-                }}
-              >
-                <Text className="font-axiformaRegular mb-2">Custom</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}

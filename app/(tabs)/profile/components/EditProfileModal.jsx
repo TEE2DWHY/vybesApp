@@ -5,8 +5,12 @@ import {
   Modal,
   ScrollView,
   TextInput,
+  Alert,
 } from "react-native";
 import React from "react";
+import axios from "axios";
+import { useToken } from "../../../../hooks/useToken";
+import { useAccount } from "../../../../hooks/useAccount";
 
 const EditProfileModal = ({
   editModal,
@@ -14,6 +18,27 @@ const EditProfileModal = ({
   userData,
   handleInputChange,
 }) => {
+  const token = useToken();
+  const { setUser } = useAccount();
+  const updateUserDetails = async () => {
+    try {
+      const response = await axios.patch(
+        "http://localhost:8000/v1/user/update-details",
+        userData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUser(response.data?.payload?.user);
+      Alert.alert("Success", response.data?.message);
+    } catch (error) {
+      console.log(error.message);
+      Alert.alert("Error", error.response?.data?.message);
+      console.log(error.response.data?.message);
+    }
+  };
   return (
     <Modal visible={editModal} transparent={true} animationType="fade">
       <TouchableOpacity
@@ -26,7 +51,12 @@ const EditProfileModal = ({
             <Text className="text-white-normal font-axiformaBlack">
               Edit Profile Account
             </Text>
-            <TouchableOpacity onPress={() => setEditModal(false)}>
+            <TouchableOpacity
+              onPress={() => {
+                updateUserDetails();
+                setEditModal(false);
+              }}
+            >
               <Text className="text-[#16A34A] font-axiformaBlack">Done</Text>
             </TouchableOpacity>
           </View>
@@ -69,17 +99,17 @@ const EditProfileModal = ({
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
             </View>
-            {/* <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
+            <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
               <Text className="text-[#546881] font-axiformaRegular">
-                Password:
+                Phone Number:
               </Text>
               <TextInput
-                value={userData.password || "******"}
-                onChangeText={(text) => handleInputChange("password", text)}
-                secureTextEntry
+                value={userData?.phoneNumber || ""}
+                onChangeText={(text) => handleInputChange("phoneNumber", text)}
+                // secureTextEntry
                 className="font-axiformaRegular text-[#1D242D] text-[14px]"
               />
-            </View> */}
+            </View>
             <View className="flex-row justify-between mb-4 border-b border-[#E9E9EB] pb-2">
               <Text className="text-[#546881] font-axiformaRegular">
                 Wallet Balance:

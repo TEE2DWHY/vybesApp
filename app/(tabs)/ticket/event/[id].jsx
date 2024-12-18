@@ -37,7 +37,7 @@ const Event = () => {
 
       try {
         const response = await axios.get(
-          `https://vybesapi.onrender.com/v1/event/${id}`
+          `http://localhost:8000/v1/event/${id}`
         );
         setTicket(response.data.payload);
         setTickets(response.data.payload.tickets);

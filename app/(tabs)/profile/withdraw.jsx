@@ -18,6 +18,7 @@ import Feather from "@expo/vector-icons/Feather";
 import axios from "axios";
 import { router } from "expo-router";
 import { useAccount } from "../../../hooks/useAccount";
+import { useToken } from "../../../hooks/useToken";
 
 const Withdraw = () => {
   const { user } = useAccount();
@@ -29,6 +30,7 @@ const Withdraw = () => {
   const [banks, setBanks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
+  const token = useToken();
 
   useEffect(() => {
     const fetchBanks = async () => {
@@ -72,18 +74,24 @@ const Withdraw = () => {
         "Please provide all details to proceed with the withdrawal."
       );
     }
-    if (user?.walletBalance * 0.005 < parseFloat(withdrawAmount)) {
+    console.log(user?.walletBalance * 0.005);
+    if (user?.walletBalance < parseFloat(withdrawAmount)) {
       return setError("Insufficient Balance.");
     }
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/transaction/withdraw",
+        "http://localhost:8000/v1/transaction/withdraw",
         {
           amount: withdrawAmount,
           bankCode: selectedBank.code,
           accountNumber,
           email: user?.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -93,7 +101,7 @@ const Withdraw = () => {
         alert("Withdrawal failed: " + response.data.message);
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.response.data.message);
       alert("An error occurred while processing your withdrawal.");
     } finally {
       setLoading(false);

@@ -9,8 +9,8 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
-import { clear, getItem, removeItem } from "../../../../utils/AsyncStorage";
-import { useEffect, useState } from "react";
+import { clear, removeItem } from "../../../../utils/AsyncStorage";
+import { useState } from "react";
 import { useAccount } from "../../../../hooks/useAccount";
 import EditProfileModal from "./EditProfileModal";
 import ShareProfile from "../../../../modal/ShareProfile";
@@ -27,6 +27,7 @@ const Account = () => {
     userName: user?.userName || "",
     dateOfBirth: user?.dateOfBirth || "",
     accountType: user?.accountType || "",
+    phoneNumber: user?.phoneNumber || "",
     password: "",
     walletBalance: user?.walletBalance || "",
     giftedCoins: "",
