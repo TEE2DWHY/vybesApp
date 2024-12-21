@@ -23,13 +23,12 @@ const DepositDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [transactionData, setTransactionData] = useState(null);
   const { user } = useAccount();
-
   useEffect(() => {
     if (token && transactionId) {
       const getTransaction = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:8000/v1/transaction/${transactionId.toString()}`,
+            `http://localhost:8000/v1/transaction/current-transaction/${transactionId.toString()}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -196,7 +195,7 @@ const DepositDetails = () => {
 
           <Text
             className="text-[#546881] text-sm mt-2"
-            onPress={handleCall("090229717250")}
+            onPress={() => handleCall("090229717250")}
           >
             Call 090229717250
           </Text>
