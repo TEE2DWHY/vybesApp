@@ -102,7 +102,7 @@ const Chat = () => {
       : `Say hi to ${contact?.userName}`;
 
     return (
-      <View className="flex-row items-center justify-between my-4">
+      <View className="flex-row items-center justify-between my-2 border-b border-b-gray-200 pb-2">
         <TouchableOpacity
           className="flex-row items-center gap-4"
           onPress={() => router.push(`/chat/conversation/${contact._id}`)}
