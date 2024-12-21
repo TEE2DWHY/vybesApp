@@ -20,6 +20,7 @@ const EditProfileModal = ({
 }) => {
   const token = useToken();
   const { setUser } = useAccount();
+
   const updateUserDetails = async () => {
     try {
       const response = await axios.patch(
@@ -39,6 +40,7 @@ const EditProfileModal = ({
       console.log(error.response.data?.message);
     }
   };
+
   return (
     <Modal visible={editModal} transparent={true} animationType="fade">
       <TouchableOpacity

@@ -41,6 +41,7 @@ const Chat = () => {
           }
         );
         setContacts(response.data.payload);
+        console.log(response.data?.payload);
       } catch (error) {
         console.log(error);
       } finally {
@@ -80,9 +81,13 @@ const Chat = () => {
     return () => {
       disconnectSocket(); // Properly disconnect socket when the component is unmounted
     };
-  }, [token, user]); // Make sure the useEffect reruns when token or user changes
+  }, [token]); // Make sure the useEffect reruns when token or user changes
 
   const formatTime = (timeString) => {
+    if (!timeString) {
+      return ""; // Return an empty string or a fallback value if timeString is invalid
+    }
+
     const date = parseISO(timeString);
     return isToday(date) ? format(date, "HH:mm") : format(date, "EEE, HH:mm");
   };
@@ -90,9 +95,11 @@ const Chat = () => {
   const renderItem = ({ item }) => {
     const currentUserIsContact = item.contact._id === user?._id;
     const contact = currentUserIsContact ? item.user : item.contact;
-    const lastMessage = item.lastMessage || "";
+    const lastMessage = item.lastMessage;
     const isOnline = onlineUsers.some((user) => user.userId === contact._id);
-    const formattedTime = formatTime(item.time);
+    const formattedTime = item.time
+      ? formatTime(item.time)
+      : `Say hi to ${contact?.userName}`;
 
     return (
       <View className="flex-row items-center justify-between my-4">
@@ -156,6 +163,7 @@ const Chat = () => {
                   </Text>
                 </>
               ) : (
+                // Display default message when lastMessage is null
                 <Text className="text-[#909DAD] font-axiformaRegular text-sm">
                   Start a conversation with {contact.userName}
                 </Text>
@@ -179,7 +187,7 @@ const Chat = () => {
             className="mb-14"
             data={contacts}
             renderItem={renderItem}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.contact?._id}
             ListHeaderComponent={() => (
               <HeaderComponent
                 showChatModal={() => setShowChatModal(!showChatModal)}

@@ -9,12 +9,15 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import HeaderComponent from "./components/HeaderComponent";
 import axios from "axios";
 import { useToken } from "../../../hooks/useToken";
 import { Spinner } from "../../../components/Spinner";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
+import { useAccount } from "../../../hooks/useAccount";
 
 const Add = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -28,6 +31,7 @@ const Add = () => {
   const [contacts, setContacts] = useState([]);
   const [originalContacts, setOriginalContacts] = useState([]);
   const token = useToken();
+  const { user } = useAccount();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -44,10 +48,13 @@ const Add = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      console.log(response.data.payload);
 
-      const filteredContacts = (response.data.payload || []).filter(
-        (item) => item.status === "pending" || item.status === "not_sent"
-      );
+      // Filter out the logged-in user
+      const filteredContacts = (response.data.payload || []).filter((item) => {
+        const contactId = item.user._id || item.contact._id;
+        return contactId !== token; // Exclude the logged-in user
+      });
 
       setOriginalContacts(filteredContacts);
       setContacts(filteredContacts);
@@ -96,6 +103,31 @@ const Add = () => {
     }
   };
 
+  const confirmContact = async (contactId) => {
+    setAddingUser(contactId);
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/contact/confirm-contact",
+        {
+          userId: user?._id,
+          contactId: contactId,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      Alert.alert("Success", response.data?.message);
+      await fetchUsers();
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to add user."
+      );
+    } finally {
+      setAddingUser(null);
+    }
+  };
+
   const addUser = async (contactId) => {
     setAddingUser(contactId);
     try {
@@ -123,7 +155,11 @@ const Add = () => {
   }, [token]);
 
   const renderItem = ({ item }) => {
-    const contact = item.contact || item.user || item || {};
+    // Ensure the logged-in user is not rendered
+    const contact = user?._id === item?.user?._id ? item?.contact : item?.user;
+    // If contact is the logged-in user, return null to prevent rendering
+    if (contact._id === token) return null;
+
     const userName = contact.userName || "Unknown";
     const accountType = contact.accountType?.toLowerCase() || "default";
 
@@ -135,17 +171,26 @@ const Add = () => {
 
     const { badgeColor, badgeTextColor } =
       badgeStyles[accountType] || badgeStyles.default;
+
     const isPending = item.status === "pending";
     const isNotSent = item.status === "not_sent";
 
+    // Check if the logged-in user is the recipient (not the sender) and the request is pending
+    const isRequestReceived = item.isReceivedByUser && isPending;
+
+    // Check if the logged-in user has sent the request
+    const isRequestSentByUser = item.isSentByUser && isPending;
+
     return (
       <View className="flex-row items-center py-4 border-b border-gray-200">
-        <Image
-          source={{
-            uri: contact.image || "https://via.placeholder.com/150",
-          }}
-          className="h-12 w-12 rounded-full mr-4"
-        />
+        <TouchableOpacity
+          onPress={() => router.push(`/home/user/${contact._id}`)}
+        >
+          <Image
+            source={{ uri: contact.image }}
+            className="h-12 w-12 rounded-full mr-4"
+          />
+        </TouchableOpacity>
 
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
@@ -170,20 +215,42 @@ const Add = () => {
         </View>
 
         <View className="mr-2">
-          {isPending ? (
-            <Text className="text-[#AFA4F8] text-xs">Request Sent</Text>
-          ) : isNotSent ? (
-            addingUser === contact._id ? (
-              <Spinner />
-            ) : (
-              <MaterialIcons
-                name="person-add-alt-1"
-                size={24}
-                color="#AFA4F8"
-                onPress={() => addUser(contact._id)}
-              />
-            )
-          ) : null}
+          {/* Display Accept Request only if the logged-in user has received the request */}
+          {isRequestReceived && (
+            <TouchableOpacity
+              onPress={() => confirmContact(contact._id)} // Call confirmContact on press
+              className="px-2  py-2 bg-purple-normal rounded-md"
+            >
+              <Text className="text-white-normal text-xs font-axiformaRegular">
+                Accept Request
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* For not sent requests, show the add button */}
+          {isNotSent && (
+            <TouchableOpacity
+              onPress={() => addUser(contact._id)}
+              disabled={addingUser === contact._id}
+            >
+              {addingUser === contact._id ? (
+                <Spinner />
+              ) : (
+                <MaterialIcons
+                  name="person-add-alt-1"
+                  size={24}
+                  color="#a241ee"
+                />
+              )}
+            </TouchableOpacity>
+          )}
+
+          {/* Display "Request Sent" if the logged-in user has sent the request but it is still pending */}
+          {isRequestSentByUser && (
+            <Text className="text-xs text-purple-normal font-axiformaRegular">
+              Request Sent
+            </Text>
+          )}
         </View>
       </View>
     );
