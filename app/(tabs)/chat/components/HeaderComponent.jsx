@@ -91,7 +91,7 @@ const HeaderComponent = ({
                 name="search"
                 size={24}
                 color="#7A91F9"
-                onPress={() => setOnSearch(true)}
+                // onPress={() => setOnSearch(true)}
               />
               <View className="relative">
                 <Entypo

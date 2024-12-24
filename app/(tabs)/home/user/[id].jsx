@@ -64,7 +64,7 @@ const UserProfile = () => {
   const getAllSubscribers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/user/is-subscribed/${user?._id}/${id}`,
+        `https://vybesapi.onrender.com/v1/user/is-subscribed/${user?._id}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ const UserProfile = () => {
     try {
       if (!token) return;
       const response = await axios.get(
-        `http://localhost:8000/v1/story/get-all-user-stories/${id}`,
+        `https://vybesapi.onrender.com/v1/story/get-all-user-stories/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -354,41 +354,34 @@ const UserProfile = () => {
             )}
           </View>
 
-          <View className="bg-white-normal rounded-lg p-4 mt-8 mb-4 border border-[#E9E9EB]">
-            <Text className="text-center font-axiformaBlack text-lg text-[#333333]">
-              Instant Match
-            </Text>
-            <Text className="text-center text-sm my-2 text-[#47586E] font-axiformaRegular leading-6">
-              Get matched with {payload?.user?.userName}, view all stories,
-              unlock chat and calls instantly with a monthly subscription of{" "}
-              <Text className="text-[#7A91F9]">
-                {payload?.user?.premiumRate} Vybes Coins
+          {!isSubscribed && (
+            <View className="bg-white-normal rounded-lg p-4 mt-8 mb-4 border border-[#E9E9EB]">
+              <Text className="text-center font-axiformaBlack text-lg text-[#333333]">
+                Instant Match
               </Text>
-              .
-            </Text>
-            <Image
-              source={locked}
-              className="w-40 h-40 self-center"
-              resizeMode="contain"
-            />
-            <TouchableOpacity
-              className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md"
-              onPress={() => {
-                if (isSubscribed) {
-                  return Alert.alert(
-                    "Note",
-                    `You already have an active subscription with ${payload?.user?.userName}`
-                  );
-                }
-                setShowModal(true);
-              }}
-            >
-              <Text className="text-white-normal text-center font-axiformaRegular p-1">
-                Proceed to Make Payment
+              <Text className="text-center text-sm my-2 text-[#47586E] font-axiformaRegular leading-6">
+                Get matched with {payload?.user?.userName}, view all stories,
+                unlock chat and calls instantly with a monthly subscription of{" "}
+                <Text className="text-[#7A91F9]">
+                  {payload?.user?.premiumRate} Vybes Coins
+                </Text>
+                .
               </Text>
-            </TouchableOpacity>
-          </View>
-
+              <Image
+                source={locked}
+                className="w-40 h-40 self-center"
+                resizeMode="contain"
+              />
+              <TouchableOpacity
+                className="bg-[#9a41ee] py-3 px-5 rounded-full self-center mt-2 shadow-md"
+                onPress={() => setShowModal(true)}
+              >
+                <Text className="text-white-normal text-center font-axiformaRegular p-1">
+                  Proceed to Make Payment
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <View className="flex-col mt-4 mb-4 bg-white-normal border-2 border-[#DEEDFF] py-12 px-6 rounded-md">
             <View className="flex-row justify-between">
               <TouchableOpacity

@@ -16,6 +16,7 @@ import notificationImage from "../../../assets/images/notification.png";
 import { useToken } from "../../../hooks/useToken";
 import axios from "axios";
 import { router } from "expo-router";
+import { Spinner } from "../../../components/Spinner";
 
 const Notification = () => {
   const token = useToken();
@@ -31,13 +32,13 @@ const Notification = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/notification/notifications",
+        "https://vybesapi.onrender.com/v1/notification/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { page: 1, limit: 10 },
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       setNotifications(response.data.payload || []);
     } catch (err) {
       setError(
@@ -52,7 +53,7 @@ const Notification = () => {
   const markNotificationsAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        `http://localhost:8000/v1/notification/notifications/${notificationId}/read`,
+        `https://vybesapi.onrender.com/v1/notification/notifications/${notificationId}/read`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -84,7 +85,7 @@ const Notification = () => {
 
   return (
     <SafeAreaView className="h-full bg-white">
-      <View className="flex-row items-center justify-between px-4 py-4">
+      <View className="flex-row items-center justify-between px-4 py-4 mt-6">
         <TouchableOpacity>
           <MaterialCommunityIcons
             name="arrow-left-top-bold"
@@ -108,7 +109,8 @@ const Notification = () => {
       >
         {loading && (
           <View className="flex-1 items-center justify-center min-h-[70vh]">
-            <ActivityIndicator size="large" color="#6C63FF" />
+            <Spinner />
+            {/* <ActivityIndicator size="large" color="#6C63FF" /> */}
           </View>
         )}
 

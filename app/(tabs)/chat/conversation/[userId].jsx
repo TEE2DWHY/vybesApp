@@ -140,7 +140,7 @@ const Conversation = () => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/user/get-user-by-id/${userId}`,
+          `https://vybesapi.onrender.com/v1/user/get-user-by-id/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -160,7 +160,7 @@ const Conversation = () => {
   const createChat = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/chat",
+        "https://vybesapi.onrender.com/v1/chat",
         {
           recipientId: userId,
         },
@@ -183,7 +183,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/chat/find/${userId}`,
+        `https://vybesapi.onrender.com/v1/chat/find/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -219,7 +219,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/messages/send-message",
+        "https://vybesapi.onrender.com/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
@@ -252,7 +252,7 @@ const Conversation = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/messages/${chatId}`,
+        `https://vybesapi.onrender.com/v1/messages/${chatId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

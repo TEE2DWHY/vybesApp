@@ -4,7 +4,7 @@ let socket = null;
 
 const connectSocket = (userId) => {
   if (!socket || !socket.connected) {
-    socket = io("http://localhost:8000");
+    socket = io("https://vybesapi.onrender.com");
 
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);

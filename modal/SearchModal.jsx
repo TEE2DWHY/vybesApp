@@ -29,7 +29,7 @@ const SearchModal = ({
       const fetchAllUsers = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:8000/v1/user/get-users`,
+            `https://vybesapi.onrender.com/v1/user/get-users`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ const SearchModal = ({
   const search = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/user/get-user-by-username/${searchText}`,
+        `https://vybesapi.onrender.com/v1/user/get-user-by-username/${searchText}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

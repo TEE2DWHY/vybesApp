@@ -88,7 +88,7 @@ const Deposit = () => {
         };
 
         const backendResponse = await axios.post(
-          "http://localhost:8000/v1/transaction/deposit",
+          "https://vybesapi.onrender.com/v1/transaction/deposit",
           depositData,
           {
             headers: {

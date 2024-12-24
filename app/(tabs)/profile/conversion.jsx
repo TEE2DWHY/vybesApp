@@ -38,7 +38,7 @@ const Conversion = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/user/convert-coin",
+        "https://vybesapi.onrender.com/v1/user/convert-coin",
         { amount: amount },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -72,7 +72,7 @@ const Conversion = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/user/transfer-coin",
+        "https://vybesapi.onrender.com/v1/user/transfer-coin",
         {
           amountToSend: transferAmount,
           receiverUserName: receiverHandle,
