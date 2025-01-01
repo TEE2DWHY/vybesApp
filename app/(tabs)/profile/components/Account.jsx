@@ -28,7 +28,7 @@ const Account = () => {
     dateOfBirth: user?.dateOfBirth || "",
     accountType: user?.accountType || "",
     phoneNumber: user?.phoneNumber || "",
-    password: "",
+    password: "****",
     walletBalance: user?.walletBalance || "",
     giftedCoins: "",
     completedHooks: "",
@@ -139,7 +139,7 @@ const Account = () => {
               Password:
             </Text>
             <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
-              {user?.password || "*****"}
+              {"*****"}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
