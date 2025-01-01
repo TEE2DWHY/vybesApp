@@ -88,7 +88,7 @@ const Deposit = () => {
         };
 
         const backendResponse = await axios.post(
-          "https://vybesapi.onrender.com/v1/transaction/deposit",
+          "http://localhost:8000/v1/transaction/deposit",
           depositData,
           {
             headers: {
@@ -99,7 +99,7 @@ const Deposit = () => {
 
         if (backendResponse.status === 200) {
           alert("Deposit Successful and Vybe Coins credited! Redirecting...");
-          console.log(backendResponse.data);
+          // console.log(backendResponse.data);
           await refetchUser();
           setTimeout(() => {
             router.push(

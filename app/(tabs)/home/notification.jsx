@@ -32,7 +32,7 @@ const Notification = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "https://vybesapi.onrender.com/v1/notification/notifications",
+        "http://localhost:8000/v1/notification/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { page: 1, limit: 10 },
@@ -53,7 +53,7 @@ const Notification = () => {
   const markNotificationsAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        `https://vybesapi.onrender.com/v1/notification/notifications/${notificationId}/read`,
+        `http://localhost:8000/v1/notification/notifications/${notificationId}/read`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

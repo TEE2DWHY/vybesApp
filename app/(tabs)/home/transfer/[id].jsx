@@ -102,7 +102,7 @@ const Transfer = () => {
   const subscribe = async () => {
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/user/subscribe",
+        "http://localhost:8000/v1/user/subscribe",
         {
           recipientId: id,
         },
@@ -135,7 +135,7 @@ const Transfer = () => {
     setIsTransferLoading(true);
     try {
       const response = await axios.post(
-        "https://vybesapi.onrender.com/v1/user/transfer-coin",
+        "http://localhost:8000/v1/user/transfer-coin",
         {
           amountToSend: transferAmount,
           receiverUserName: accountHandle,
@@ -232,7 +232,7 @@ const Transfer = () => {
             onPress={() => router.back()}
           />
           <TouchableOpacity
-            className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 rounded-md"
+            className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-3 rounded-md"
             onPress={() => router.push("/profile/txDashboard")}
           >
             <View className="flex-row items-center">
@@ -248,16 +248,16 @@ const Transfer = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="flex-row items-center justify-center bg-[#361753] py-4 mt-5 w-full">
-          <Text className="text-base text-white-normal font-axiformaRegular mr-2 text-center">
+        <View className="flex-row items-center justify-center bg-[#361753] py-3 mt-5 w-full">
+          <Text className="text-sm text-white-normal font-axiformaRegular mr-2 text-center">
             Transfer Coin
           </Text>
           <FontAwesome5 name="coins" size={24} color="#fff" />
         </View>
 
         {accountHandle && transferAmount && (
-          <View className="bg-[#5c71dd] mt-8 p-4 w-[90%] self-center rounded-2xl">
-            <Text className="text-white-normal font-axiformaRegular text-center leading-6 capitalize text-base">
+          <View className="bg-[#dde0ef] mt-8 p-2 w-[90%] self-center rounded-2xl">
+            <Text className="text-[#4e565e] font-axiformaRegular text-center leading-6 capitalize text-sm">
               You are about to initiate a transfer of {transferAmount} Vybes
               coin to {accountHandle}
             </Text>
@@ -286,9 +286,9 @@ const Transfer = () => {
               <AntDesign name="closecircleo" size={20} color="#B2BBC6" />
             </TouchableOpacity>
           </View>
-          <Text className="mt-3 text-gray-700 font-medium text-base px-4 font-axiformaRegular text-right">
+          <Text className="mt-3 text-gray-700 font-medium text-sm px-4 font-axiformaRegular text-right">
             Available Balance :{" "}
-            <Text className="font-axiformaBlackItalic">
+            <Text className="font-axiformaMedium">
               {user?.walletBalance} Vybes Coin{" "}
               <MaterialCommunityIcons
                 name="star-three-points"
@@ -321,7 +321,7 @@ const Transfer = () => {
             {isTransferLoading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text className="text-white-normal font-semibold text-lg font-axiformaRegular">
+              <Text className="text-white-normal font-semibold text-lg font-axiformaMedium">
                 Transfer
               </Text>
             )}

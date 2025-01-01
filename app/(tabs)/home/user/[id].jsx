@@ -37,6 +37,8 @@ const UserProfile = () => {
   const [storiesData, setStoriesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [storiesMessage, setStoriesMessage] = useState("");
+  const [showTooltip, setShowTooltip] = useState(true); // State for tooltip visibility
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 }); // Position of the tooltip
 
   const {
     payload,
@@ -64,7 +66,7 @@ const UserProfile = () => {
   const getAllSubscribers = async () => {
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/user/is-subscribed/${user?._id}/${id}`,
+        `http://localhost:8000/v1/user/is-subscribed/${user?._id}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +89,7 @@ const UserProfile = () => {
     try {
       if (!token) return;
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/story/get-all-user-stories/${id}`,
+        `http://localhost:8000/v1/story/get-all-user-stories/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -195,6 +197,15 @@ const UserProfile = () => {
     }
   };
 
+  // Function to handle the positioning of the tooltip
+  const handleTooltipPosition = (event) => {
+    const { locationX, locationY } = event.nativeEvent;
+    setTooltipPosition({
+      top: locationY - 50, // Position the tooltip slightly above the image
+      left: locationX - 50, // Position the tooltip slightly to the left
+    });
+  };
+
   return (
     <SafeAreaView className="mt-10">
       <ScrollView className="px-4">
@@ -206,12 +217,12 @@ const UserProfile = () => {
             onPress={() => router.push("/home")}
           />
           <View className="bg-white-normal rounded-2xl p-4 my-10 border-2 border-[#DEEDFF] shadow-md">
-            <View className="flex-row items-center justify-center border border-gray-100 p-4 rounded-2xl">
-              <Text className="text-purple-normal font-axiformaRegular capitalize text-base">
+            <View className="flex-row items-center justify-center border border-gray-100 p-2 rounded-2xl">
+              <Text className="text-purple-normal font-axiformaRegular text-sm capitalize">
                 @{payload?.user?.userName}
               </Text>
-              <View className="bg-[#D9F3F1] rounded-full py-2 px-6 ml-4 border-[#6BADA9] border flex-row items-center">
-                <Text className="text-[#2F4C4A] mr-1 font-axiformaBlack capitalize">
+              <View className="bg-[#D9F3F1] rounded-full py-1 px-4 ml-4 border-[#6BADA9] border flex-row items-center">
+                <Text className="text-[#2F4C4A] mr-1 font-axiformaMedium capitalize">
                   {payload?.user?.accountType}
                 </Text>
                 <Ionicons
@@ -221,7 +232,7 @@ const UserProfile = () => {
                 />
               </View>
             </View>
-            <View className="relative self-center flex-row items-center justify-center w-[180px] h-[180px]">
+            <View className="relative self-center flex-row items-center justify-center w-[120px] h-[120px]">
               <Image
                 source={{
                   uri: payload?.user?.image,
@@ -233,17 +244,17 @@ const UserProfile = () => {
                 style={{
                   backgroundColor,
                   borderRadius: 9999,
-                  width: 20,
-                  height: 20,
+                  width: 15,
+                  height: 15,
                   position: "absolute",
                   bottom: 0,
-                  right: 16,
+                  right: 12,
                   zIndex: 9999,
                 }}
               />
             </View>
 
-            <View className="flex-row items-center justify-center border border-[#EEF6FF] mt-6 p-4 rounded-2xl">
+            <View className="flex-row items-center justify-center border border-[#EEF6FF] mt-6 p-2 rounded-2xl">
               <Text className="text-[#3D4C5E] font-axiformaRegular capitalize text-sm text-center">
                 {payload?.user?.bio}
               </Text>
@@ -255,21 +266,23 @@ const UserProfile = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 2,
+                gap: 4,
               }}
               horizontal
               showsHorizontalScrollIndicator={false}
             >
               <View className="bg-[#B1C3FF] text-[#3E4459] rounded-md p-3">
-                <Text className="font-axiformaRegular">20 miles away</Text>
+                <Text className="font-axiformaRegular text-sm">
+                  20 miles away
+                </Text>
               </View>
               <View className="bg-[#F3E5E7] rounded-md p-3 border-[#4C3C3E]">
-                <Text className="font-axiformaRegular text-[#4C3C3E]">
+                <Text className="font-axiformaRegular text-[#4C3C3E] text-sm">
                   80% Match
                 </Text>
               </View>
               <View className="bg-[#FFB053] p-3 rounded-md">
-                <Text className="font -axiformaRegular text-[#593E1D]">
+                <Text className="font -axiformaRegular text-[#593E1D] text-sm">
                   4.8 Rating
                 </Text>
               </View>
@@ -329,9 +342,13 @@ const UserProfile = () => {
                     key={story._id}
                     disabled={isLocked}
                     className="w-[49%] mb-4"
-                    onPress={() =>
-                      !isLocked && router.push(`/home/story/${story._id}`)
-                    }
+                    onPress={(event) => {
+                      if (index === 0 && showTooltip) {
+                        setShowTooltip(false); // Hide the tooltip when the first story is clicked
+                      }
+                      handleTooltipPosition(event); // Get position for the tooltip
+                      !isLocked && router.push(`/home/story/${story._id}`);
+                    }}
                   >
                     <Image
                       source={{ uri: story.media }}
@@ -343,6 +360,24 @@ const UserProfile = () => {
                         <Feather name="lock" size={32} color="#ffffff" />
                       </View>
                     )}
+                    {index === 0 &&
+                      showTooltip && ( // Show tooltip only for the first story
+                        <View
+                          style={{
+                            position: "absolute",
+                            top: tooltipPosition.top,
+                            left: tooltipPosition.left,
+                            backgroundColor: "#3E4459",
+                            padding: 4,
+                            borderRadius: 6,
+                            opacity: 0.8,
+                          }}
+                        >
+                          <Text className="text-white-normal font-axiformaRegular text-[12px]">
+                            Click to Enlarge
+                          </Text>
+                        </View>
+                      )}
                     <View className="bg-[#9a41eea6] py-3 px-2 rounded-xl absolute bottom-3 text-left mx-1">
                       <Text className="text-white-normal font-axiformaBlack text-center text-[11px]">
                         Posted {formatPostedTime(story.createdAt)}

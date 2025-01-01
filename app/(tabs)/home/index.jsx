@@ -28,7 +28,11 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const token = useToken();
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState("");
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   const {
     payload: allUsers,
@@ -43,7 +47,7 @@ const Home = () => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "https://vybesapi.onrender.com/v1/notification/notifications",
+        "http://localhost:8000/v1/notification/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -126,7 +130,7 @@ const Home = () => {
             </View>
           </View>
         </View>
-        <Text className="text-[22px] text-purple-normal font-axiformaBlack pt-1 mb-3">
+        <Text className="text-[22px] text-purple-normal font-axiformaMedium pt-1 mb-3">
           Your Matches
         </Text>
       </View>

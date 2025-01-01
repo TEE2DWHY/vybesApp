@@ -621,7 +621,7 @@ const Conversation = () => {
                             <Ionicons
                               name="location"
                               size={30}
-                              color="#E7ECFF"
+                              color="#FF8674"
                             />
                           </TouchableOpacity>
                           <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">

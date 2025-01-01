@@ -36,7 +36,7 @@ const HeaderComponent = ({
 
   return (
     <>
-      <View className="flex-row items-center justify-between border-b border-gray-200 pb-2">
+      <View className="flex-row items-center justify-between border-b border-gray-200 pb-2 mt-6">
         <View className="flex-row gap-6 items-center">
           <AntDesign
             name="left"

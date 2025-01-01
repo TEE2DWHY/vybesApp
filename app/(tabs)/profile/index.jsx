@@ -83,7 +83,7 @@ const Profile = () => {
         }
 
         const response = await axios.patch(
-          "https://vybesapi.onrender.com/v1/user/update-details",
+          "http://localhost:8000/v1/user/update-details",
           dataToSend,
           {
             headers: {
@@ -175,7 +175,7 @@ const Profile = () => {
                 onPress={() => router.back()}
               />
               <TouchableOpacity
-                className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-4 rounded-md"
+                className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-3 rounded-md"
                 onPress={() => router.push("/profile/txDashboard")}
               >
                 <View className="flex-row items-center">

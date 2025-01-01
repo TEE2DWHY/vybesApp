@@ -161,7 +161,7 @@ const FilterModal = ({ onClose }) => {
 
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/user/filter-users`,
+        `http://localhost:8000/v1/user/filter-users`,
         {
           params: queryParams,
           headers: {

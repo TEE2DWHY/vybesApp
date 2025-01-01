@@ -25,6 +25,7 @@ const coinValues = [
 
 const TxDashboard = () => {
   const { user } = useAccount();
+
   const formatNumber = (value) => {
     if (!value || value === 0) return "0";
 
@@ -48,7 +49,7 @@ const TxDashboard = () => {
           />
           <Image
             source={{
-              uri: user?.image,
+              uri: user?.image || "",
             }}
             className="w-10 h-10 rounded-full"
             resizeMode="cover"
