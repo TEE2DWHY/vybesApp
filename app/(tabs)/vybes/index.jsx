@@ -26,7 +26,7 @@ import { useAccount } from "../../../hooks/useAccount";
 const App = () => {
   const [activeSection, setActiveSection] = useState("Baddies");
   const token = useToken();
-  const { user } = useAccount();
+  const { user, setUser } = useAccount();
   const [baddiesData, setBaddiesData] = useState([]);
   const [vybersData, setVybersData] = useState([]);
   const [selectedUserStory, setSelectedUserStory] = useState(null);
@@ -184,6 +184,64 @@ const App = () => {
     } catch (error) {
       console.log(error);
       Alert.alert("Error", error?.response.data?.message);
+    }
+  };
+
+  const bookmarkStory = async () => {
+    const storyId = selectedUserStory?.stories[currentIndex]?.storyId;
+
+    // Check if the story is already bookmarked
+    const isBookmarked = user?.bookmarks?.some(
+      (bookmark) => bookmark.storyId === storyId
+    );
+    if (isBookmarked) {
+      // If already bookmarked, unbookmark it
+      await unBookmarkStory(storyId);
+    } else {
+      // Otherwise, bookmark it
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/v1/story/bookmark",
+          { storyId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        // console.dir(response.data, { depth: null });
+        setUser(response.data.payload);
+      } catch (error) {
+        console.log(error);
+        Alert.alert(
+          "Error",
+          error?.response?.data?.message || "An error occurred."
+        );
+      }
+    }
+  };
+
+  const unBookmarkStory = async (storyId) => {
+    try {
+      // Send the request to unbookmark the story
+      const response = await axios.patch(
+        "http://localhost:8000/v1/story/unbookmark",
+        { storyId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setUser(response.data.payload);
+      // console.dir(response.data, { depth: null });
+    } catch (error) {
+      console.log(error.respons?.data.message);
+      Alert.alert(
+        "Error",
+        error?.response?.data?.message || "An error occurred."
+      );
     }
   };
 
@@ -503,8 +561,22 @@ const App = () => {
                 </View>
               </View>
               <View className="flex-col gap-6 ml-1">
-                <TouchableOpacity>
-                  <FontAwesome5 name="bookmark" size={30} color="#fff" />
+                <TouchableOpacity onPress={() => bookmarkStory()}>
+                  <FontAwesome5
+                    name="bookmark"
+                    size={30}
+                    color={
+                      user?.bookmarks?.some(
+                        (bookmark) =>
+                          bookmark.storyId.toString() ===
+                          selectedUserStory?.stories[
+                            currentIndex
+                          ]?.storyId.toString()
+                      )
+                        ? "#FFD65A"
+                        : "#fff"
+                    }
+                  />
                 </TouchableOpacity>
                 {!myContacts.some(
                   (contact) => contact?.contact === selectedUserStory?.user?._id
