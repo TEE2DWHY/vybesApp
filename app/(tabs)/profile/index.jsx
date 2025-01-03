@@ -24,11 +24,12 @@ import Privacy from "./components/Privacy";
 import Settings from "./components/Settings";
 import Transactions from "./components/Transactions";
 import Stories from "./components/Stories";
-import Likes from "./components/Likes";
 import { userInstance } from "../../../config/axios";
 import { useToken } from "../../../hooks/useToken";
 import { useAccount } from "../../../hooks/useAccount";
+import Entypo from "@expo/vector-icons/Entypo";
 import axios from "axios";
+import Bookmarks from "./components/Bookmarks";
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -270,25 +271,25 @@ const Profile = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 className={`${
-                  activeTab === "Likes"
+                  activeTab === "Bookmarks"
                     ? "bg-purple-normal border-none"
                     : "border-gray-400 border"
                 } px-3 py-2 rounded-md  flex-row items-center mr-3`}
-                onPress={() => setActiveTab("Likes")}
+                onPress={() => setActiveTab("Bookmarks")}
               >
-                <AntDesign
-                  name="hearto"
+                <Entypo
+                  name="bookmark"
                   size={20}
-                  color={activeTab === "Likes" ? "#fff" : "#B2BBC6"}
+                  color={activeTab === "Bookmarks" ? "#fff" : "#B2BBC6"}
                 />
                 <Text
                   className={`ml-2  font-axiformaBlack ${
-                    activeTab === "Likes"
+                    activeTab === "Bookmarks"
                       ? "text-white-normal"
                       : "text-[#B2BBC6]"
                   }`}
                 >
-                  Likes
+                  Bookmarks
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -403,7 +404,7 @@ const Profile = () => {
           {activeTab === "Transactions" && <Transactions />}
           {activeTab === "Settings" && <Settings />}
           {activeTab === "Stories" && <Stories />}
-          {activeTab === "Likes" && <Likes />}
+          {activeTab === "Bookmarks" && <Bookmarks />}
 
           {modalVisible && (
             <EditProfile
