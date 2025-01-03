@@ -85,7 +85,7 @@ const DatingTips = ({
                     <Ionicons
                       name="chevron-back-circle-outline"
                       size={24}
-                      disabled={step === 1 ? "true" : "false"}
+                      disabled={step === 1}
                       color="black"
                       onPress={() => handlePrevious()}
                     />

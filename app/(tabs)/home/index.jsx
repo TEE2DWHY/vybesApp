@@ -7,6 +7,7 @@ import {
   View,
   RefreshControl,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { StatusBar } from "expo-status-bar";
@@ -47,7 +48,7 @@ const Home = () => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/notification/notifications",
+        "https://vybesapi.onrender.com/v1/notification/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -93,7 +94,7 @@ const Home = () => {
   );
 
   return (
-    <SafeAreaView className="h-full bg-gray-200 mt-8">
+    <SafeAreaView className="h-full bg-gray-200 pt-8">
       <View className="pt-6 px-5">
         <View className="sticky top-0 z-10 bg-gray-200 pb-4">
           <View className="flex-row items-center justify-between border-b-[#a0ace2] border-b-[1px] pb-4">
@@ -101,12 +102,16 @@ const Home = () => {
               onPress={() => setShowFilterModal(!showFilterModal)}
               className="bg-[#a241ee] rounded-md p-1"
             >
-              <Feather name="sliders" size={24} style={{ color: "#fff" }} />
+              <Feather name="sliders" size={20} style={{ color: "#fff" }} />
             </TouchableOpacity>
-            <View className="rounded-3xl flex-row items-center justify-between w-[68%] py-2 px-3 bg-white-normal">
+            <View
+              className={`rounded-3xl flex-row items-center justify-between w-[68%] px-4 bg-white-normal ${
+                Platform.OS === "ios" ? "py-3" : "py-1"
+              }`}
+            >
               <Feather
                 name="search"
-                size={24}
+                size={20}
                 style={{ color: "#47586 E" }}
                 onPress={() => setShowSearchModal(true)}
               />
@@ -123,7 +128,7 @@ const Home = () => {
               )}
               <Feather
                 name="bell"
-                size={28}
+                size={24}
                 style={{ color: "#99A0C5" }}
                 onPress={() => router.push("/home/notification")}
               />

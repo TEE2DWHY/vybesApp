@@ -28,7 +28,7 @@ const Transactions = () => {
       setError(null);
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/transaction/type?transactionType=${activeTab}`,
+          `https://vybesapi.onrender.com/v1/transaction/type?transactionType=${activeTab}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ const Transactions = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/transaction/date?dateRange=${dateRange}&transactionType=${activeTab}`,
+        `https://vybesapi.onrender.com/v1/transaction/date?dateRange=${dateRange}&transactionType=${activeTab}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

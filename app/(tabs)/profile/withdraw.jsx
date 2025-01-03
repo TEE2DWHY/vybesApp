@@ -81,7 +81,7 @@ const Withdraw = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/transaction/withdraw",
+        "https://vybesapi.onrender.com/v1/transaction/withdraw",
         {
           amount: withdrawAmount,
           bankCode: selectedBank.code,
@@ -110,9 +110,9 @@ const Withdraw = () => {
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white-normal">
+      <SafeAreaView className="flex-1 bg-white-normal pt-4">
         <ScrollView className="mt-10">
-          <View className="flex-row justify-between items-center px-4">
+          <View className="flex-row justify-between items-center px-3">
             <AntDesign
               name="left"
               size={24}

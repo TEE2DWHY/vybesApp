@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -57,6 +57,10 @@ const Profile = () => {
     premiumRate: user?.premiumRate || "",
   });
 
+  // ScrollView reference
+  const scrollViewRef = useRef(null);
+  const tabRefs = useRef({});
+
   const handlePrevious = () => {
     if (personalityTab > 1) {
       setPersonalityTab((prevState) => prevState - 1);
@@ -84,7 +88,7 @@ const Profile = () => {
         }
 
         const response = await axios.patch(
-          "http://localhost:8000/v1/user/update-details",
+          "https://vybesapi.onrender.com/v1/user/update-details",
           dataToSend,
           {
             headers: {
@@ -131,10 +135,23 @@ const Profile = () => {
     console.log("Profile details fetched successfully.");
   };
 
+  const scrollToTab = (tabName) => {
+    const tabRef = tabRefs.current[tabName];
+    if (tabRef) {
+      tabRef.measureLayout(
+        scrollViewRef.current.getScrollResponder().getInnerViewNode(),
+        (x, y) => {
+          scrollViewRef.current.scrollTo({ y, animated: true });
+        }
+      );
+    }
+  };
+
   return (
     <>
       <SafeAreaView className="h-full w-full mt-10">
         <ScrollView
+          ref={scrollViewRef}
           className="px-4"
           refreshControl={
             (activeTab === "Account" ||
@@ -143,6 +160,7 @@ const Profile = () => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             )
           }
+          focusable
         >
           {activeTab === "Personality" && (
             <View className="flex-row justify-between w-full items-center px-2 mt-3">

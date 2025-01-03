@@ -37,7 +37,7 @@ const Event = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/event/${id}`
+          `https://vybesapi.onrender.com/v1/event/${id}`
         );
         setTicket(response.data.payload);
         setTickets(response.data.payload.tickets);
@@ -62,7 +62,7 @@ const Event = () => {
   };
 
   return (
-    <SafeAreaView className="mt-10">
+    <SafeAreaView className="pt-10">
       <ScrollView>
         {/* Header Section */}
         <View className="flex-row items-center justify-between mb-8">
@@ -94,7 +94,7 @@ const Event = () => {
             className="absolute left-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
             onPress={() => console.log("Scroll Left")}
           >
-            <AntDesign name="left" size={16} color="#fff" />
+            <AntDesign name="left" size={14} color="#fff" />
           </TouchableOpacity>
           <View className="w-full h-full rounded-[20px] overflow-hidden">
             <Image
@@ -108,7 +108,7 @@ const Event = () => {
             className="absolute right-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
             onPress={() => console.log("Scroll Right")}
           >
-            <AntDesign name="right" size={16} color="#fff" />
+            <AntDesign name="right" size={14} color="#fff" />
           </TouchableOpacity>
         </View>
 

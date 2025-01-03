@@ -49,7 +49,7 @@ const App = () => {
   const getCurrentContacts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/contact/get-contacts",
+        "https://vybesapi.onrender.com/v1/contact/get-contacts",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ const App = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/story/get-active-stories/${activeSection}`,
+        `https://vybesapi.onrender.com/v1/story/get-active-stories/${activeSection}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const App = () => {
     if (token) {
       try {
         const response = await axios.post(
-          "http://localhost:8000/v1/contact/add-contact",
+          "https://vybesapi.onrender.com/v1/contact/add-contact",
           {
             contactId: selectedUserStory?.user?._id,
           },
@@ -123,7 +123,7 @@ const App = () => {
     } else {
       try {
         const response = await axios.patch(
-          "http://localhost:8000/v1/story/like",
+          "https://vybesapi.onrender.com/v1/story/like",
           {
             storyId: currentStory.storyId,
           },
@@ -157,7 +157,7 @@ const App = () => {
   const unlikeStory = async () => {
     try {
       await axios.patch(
-        "http://localhost:8000/v1/story/unlike",
+        "https://vybesapi.onrender.com/v1/story/unlike",
         {
           storyId: selectedUserStory?.stories[currentIndex]?.storyId,
         },
@@ -201,7 +201,7 @@ const App = () => {
       // Otherwise, bookmark it
       try {
         const response = await axios.post(
-          "http://localhost:8000/v1/story/bookmark",
+          "https://vybesapi.onrender.com/v1/story/bookmark",
           { storyId },
           {
             headers: {
@@ -225,7 +225,7 @@ const App = () => {
     try {
       // Send the request to unbookmark the story
       const response = await axios.patch(
-        "http://localhost:8000/v1/story/unbookmark",
+        "https://vybesapi.onrender.com/v1/story/unbookmark",
         { storyId },
         {
           headers: {
@@ -297,7 +297,7 @@ const App = () => {
     activeSection === "Baddies" ? "Baddie Story" : "Vybers Story";
 
   return (
-    <SafeAreaView className="bg-white-normal h-full mt-10">
+    <SafeAreaView className="bg-white-normal h-full pt-10">
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex-row items-center justify-center mt-4 mb-2">
           <TouchableOpacity
@@ -609,7 +609,7 @@ const App = () => {
           )}
         </View>
       </ScrollView>
-      <StatusBar backgroundColor="#fffff" style="dark" />
+      <StatusBar backgroundColor="#ffff" style="dark" />
     </SafeAreaView>
   );
 };

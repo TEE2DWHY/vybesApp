@@ -32,7 +32,7 @@ const Notification = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/notification/notifications",
+        "https://vybesapi.onrender.com/v1/notification/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { page: 1, limit: 10 },
@@ -53,7 +53,7 @@ const Notification = () => {
   const markNotificationsAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        `http://localhost:8000/v1/notification/notifications/${notificationId}/read`,
+        `https://vybesapi.onrender.com/v1/notification/notifications/${notificationId}/read`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -84,7 +84,7 @@ const Notification = () => {
   }, [token]);
 
   return (
-    <SafeAreaView className="h-full bg-white">
+    <SafeAreaView className="h-full pt-4">
       <View className="flex-row items-center justify-between px-4 py-4 mt-6">
         <TouchableOpacity>
           <MaterialCommunityIcons
@@ -192,7 +192,7 @@ const Notification = () => {
           </View>
         )}
       </ScrollView>
-      <StatusBar backgroundColor="#ffffff" style="dark" />
+      <StatusBar backgroundColor="#ffff" style="dark" />
     </SafeAreaView>
   );
 };

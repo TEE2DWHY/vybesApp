@@ -24,7 +24,7 @@ const EditProfileModal = ({
   const updateUserDetails = async () => {
     try {
       const response = await axios.patch(
-        "http://localhost:8000/v1/user/update-details",
+        "https://vybesapi.onrender.com/v1/user/update-details",
         userData,
         {
           headers: {

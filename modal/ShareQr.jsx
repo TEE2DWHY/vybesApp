@@ -28,7 +28,7 @@ const ShareQr = ({ closeModal, showQr, userImage }) => {
             <Text className="text-white-normal text-base font-medium mr-2 font-axiformaBook">
               Share QR Code
             </Text>
-            <Ionicons name="share-social" size={20} color="#FFFFFF" />
+            <Ionicons name="share-social" size={20} color="#ffff" />
           </TouchableOpacity>
         </View>
       </Modal>

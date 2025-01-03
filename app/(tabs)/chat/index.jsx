@@ -33,7 +33,7 @@ const Chat = () => {
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/contact/contacts/confirmed",
+          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -177,7 +177,7 @@ const Chat = () => {
 
   return (
     <>
-      <SafeAreaView className="h-full mt-10">
+      <SafeAreaView className="h-full pt-4">
         {loading ? (
           <View className="flex-1 justify-center items-center">
             <Spinner />

@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, Platform } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -11,14 +11,20 @@ import AccountWrapper from "../../hooks/useAccount";
 
 const TabIcon = ({ icon, name, focused }) => {
   return (
-    <View className="items-center justify-center gap-2 mb-2 w-full">
-      <Text>{icon}</Text>
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 4,
+      }}
+    >
+      <View style={{ marginBottom: 2 }}>{icon}</View>
       <Text
-        className={`${
-          !focused
-            ? `font-axiformaRegular text-[#B2BBC6]`
-            : `font-axiformaBlack text-purple-normal`
-        } text-xs text-white`}
+        style={{
+          fontFamily: focused ? "axiformaMedium" : "axiformaRegular",
+          color: focused ? "#9941EE" : "#B2BBC6",
+          fontSize: Platform.OS === "ios" ? 9 : 12,
+        }}
       >
         {name}
       </Text>
@@ -35,10 +41,11 @@ const TabsLayout = () => {
           tabBarActiveTintColor: "#9941EE",
           tabBarInactiveTintColor: "#B2BBC6",
           tabBarStyle: {
-            // backgroundColor: "#fffff",
+            backgroundColor: "#fff",
             borderTopWidth: 0,
-            height: 100,
-            bottom: 0,
+            height: 80,
+            paddingTop: 10,
+            paddingBottom: 10,
           },
         }}
       >
@@ -53,10 +60,9 @@ const TabsLayout = () => {
                   <MaterialIcons
                     name="home"
                     size={24}
-                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                    color={focused ? "#9941EE" : "#B2BBC6"}
                   />
                 }
-                color={color}
                 name="Home"
                 focused={focused}
               />
@@ -75,10 +81,9 @@ const TabsLayout = () => {
                   <Foundation
                     name="ticket"
                     size={24}
-                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                    color={focused ? "#9941EE" : "#B2BBC6"}
                   />
                 }
-                color={color}
                 name="Ticket"
                 focused={focused}
               />
@@ -97,10 +102,9 @@ const TabsLayout = () => {
                   <MaterialCommunityIcons
                     name="star-three-points"
                     size={24}
-                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                    color={focused ? "#9941EE" : "#B2BBC6"}
                   />
                 }
-                color={color}
                 name="Vybe"
                 focused={focused}
               />
@@ -119,10 +123,9 @@ const TabsLayout = () => {
                   <Ionicons
                     name="chatbubbles"
                     size={24}
-                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                    color={focused ? "#9941EE" : "#B2BBC6"}
                   />
                 }
-                color={color}
                 name="Chat"
                 focused={focused}
               />
@@ -141,10 +144,9 @@ const TabsLayout = () => {
                   <FontAwesome5
                     name="user-circle"
                     size={24}
-                    color={!focused ? "#B2BBC6" : "#a241ee"}
+                    color={focused ? "#9941EE" : "#B2BBC6"}
                   />
                 }
-                color={color}
                 name="Profile"
                 focused={focused}
               />
@@ -152,7 +154,7 @@ const TabsLayout = () => {
           }}
         />
       </Tabs>
-      <StatusBar backgroundColor="#ffff" style="dark" />
+      <StatusBar backgroundColor="#fff" style="dark" />
     </AccountWrapper>
   );
 };

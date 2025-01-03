@@ -15,7 +15,7 @@ const Bookmarks = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:8000/v1/story/get-all-bookmarked",
+        "https://vybesapi.onrender.com/v1/story/get-all-bookmarked",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ const Bookmarks = () => {
       </View>
 
       {loading ? (
-        <View className="flex-1 justify-center items-center mt-10">
+        <View className="flex-1 justify-center items-center mt-16">
           <Spinner />
         </View>
       ) : bookmarks.length === 0 ? (

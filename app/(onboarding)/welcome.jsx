@@ -164,7 +164,7 @@ const Welcome = () => {
           )}
         </View>
       </View>
-      <StatusBar backgroundColor="#ffffff" style="dark" />
+      <StatusBar backgroundColor="#ffff" style="dark" />
     </SafeAreaView>
   );
 };

@@ -38,7 +38,7 @@ const Conversion = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/user/convert-coin",
+        "https://vybesapi.onrender.com/v1/user/convert-coin",
         { amount: amount },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -72,7 +72,7 @@ const Conversion = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/user/transfer-coin",
+        "https://vybesapi.onrender.com/v1/user/transfer-coin",
         {
           amountToSend: transferAmount,
           receiverUserName: receiverHandle,
@@ -93,9 +93,9 @@ const Conversion = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white-normal">
+    <SafeAreaView className="flex-1 bg-white-normal pt-4">
       <ScrollView className="mt-10">
-        <View className="flex-row justify-between items-center px-4">
+        <View className="flex-row justify-between items-center px-3">
           <AntDesign
             name="left"
             size={24}
@@ -118,19 +118,19 @@ const Conversion = () => {
           <FontAwesome6 name="arrows-rotate" size={20} color="white" />
         </View>
 
-        <View className="flex-row items-center gap-4 mt-2 w-[80%] px-6">
+        <View className="flex-row items-center justify-center gap-4 mt-2 w-full px-6">
           <TouchableOpacity
-            className={`${
+            className={`rounded-lg ${
               activeTab === "convert"
                 ? "bg-[#FFB053]"
-                : "bg-transparent border border-[#B2BBC6]"
+                : "bg-transparent border  border-[#B2BBC6]"
             } p-4`}
             onPress={() => setActiveTab("convert")}
           >
             <Text
               className={`${
                 activeTab === "convert"
-                  ? "font-axiformaBlack"
+                  ? "font-axiformaMedium"
                   : "text-[#B2BBC6] font-axiformaRegular"
               }`}
             >
@@ -139,7 +139,7 @@ const Conversion = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            className={`${
+            className={`rounded-lg ${
               activeTab === "transfer"
                 ? "bg-[#FFB053]"
                 : "bg-transparent border border-[#B2BBC6]"
@@ -149,7 +149,7 @@ const Conversion = () => {
             <Text
               className={`${
                 activeTab === "transfer"
-                  ? "font-axiformaBlack"
+                  ? "font-axiformaMedium"
                   : "text-[#B2BBC6] font-axiformaRegular"
               }`}
             >
@@ -289,7 +289,7 @@ const Conversion = () => {
           </>
         )}
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#FFFFFF" />
+      <StatusBar style="dark" backgroundColor="#ffff" />
     </SafeAreaView>
   );
 };

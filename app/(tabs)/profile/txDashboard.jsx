@@ -38,9 +38,9 @@ const TxDashboard = () => {
     return formatter.format(value);
   };
   return (
-    <SafeAreaView className="h-full mt-10">
+    <SafeAreaView className="h-full mt-10 w-full">
       <ScrollView className="px-4 mt-2" showsVerticalScrollIndicator={false}>
-        <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center justify-between w-full px-1">
           <AntDesign
             name="left"
             size={24}
@@ -159,7 +159,7 @@ const TxDashboard = () => {
         <Text className="text-[#47586E] capitalize font-axiformaBlack mt-8 mb-4 text-base">
           Coin Value
         </Text>
-        <View className="mt-1 rounded-lg bg-[#FFFFFF] border border-[#F3F9FF] p-4 mb-12">
+        <View className="mt-1 rounded-lg bg-[#ffff] border border-[#F3F9FF] p-4 mb-12">
           {coinValues.map((item, index) => (
             <View
               key={index}

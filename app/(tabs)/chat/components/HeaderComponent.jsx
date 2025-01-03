@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Platform, Text, TextInput, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -36,7 +36,11 @@ const HeaderComponent = ({
 
   return (
     <>
-      <View className="flex-row items-center justify-between border-b border-gray-200 pb-2 mt-6">
+      <View
+        className={`flex-row items-center justify-between border-b border-gray-200 pb-2 ${
+          Platform.OS === "ios" ? "pt-2" : "pt-6"
+        }`}
+      >
         <View className="flex-row gap-6 items-center">
           <AntDesign
             name="left"

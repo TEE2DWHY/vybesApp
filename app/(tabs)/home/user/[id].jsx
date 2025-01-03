@@ -66,7 +66,7 @@ const UserProfile = () => {
   const getAllSubscribers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/user/is-subscribed/${user?._id}/${id}`,
+        `https://vybesapi.onrender.com/v1/user/is-subscribed/${user?._id}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -89,7 +89,7 @@ const UserProfile = () => {
     try {
       if (!token) return;
       const response = await axios.get(
-        `http://localhost:8000/v1/story/get-all-user-stories/${id}`,
+        `https://vybesapi.onrender.com/v1/story/get-all-user-stories/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -248,7 +248,7 @@ const UserProfile = () => {
                   height: 15,
                   position: "absolute",
                   bottom: 0,
-                  right: 12,
+                  right: 8,
                   zIndex: 9999,
                 }}
               />
@@ -357,7 +357,7 @@ const UserProfile = () => {
                     />
                     {isLocked && (
                       <View className="absolute inset-0 bg-[#361753b9] rounded-md justify-center items-center h-full w-full">
-                        <Feather name="lock" size={32} color="#ffffff" />
+                        <Feather name="lock" size={32} color="#ffff" />
                       </View>
                     )}
                     {index === 0 &&

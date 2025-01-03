@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  Platform,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -32,7 +33,7 @@ const Ticket = () => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/event/all-events"
+          "https://vybesapi.onrender.com/v1/event/all-events"
         );
         setEvents(response.data.payload);
 
@@ -50,11 +51,15 @@ const Ticket = () => {
   }, []);
 
   return (
-    <SafeAreaView className="mt-12">
+    <SafeAreaView className="pt-12">
       <ScrollView>
         {/* Header */}
         <View className="flex-row items-center justify-between px-4">
-          <View className="rounded-3xl border border-[#DFC4FA] px-6 py-2 flex-row items-center justify-between w-4/5 bg-white-normal">
+          <View
+            className={`rounded-3xl border border-[#DFC4FA] px-8 ${
+              Platform.OS === "ios" ? "py-3" : "py-1"
+            } flex-row items-center justify-between w-4/5 bg-white-normal`}
+          >
             <View className="flex-row items-center gap-2">
               <EvilIcons name="location" size={22} color="#DFC4FA" />
               <TextInput
@@ -62,10 +67,10 @@ const Ticket = () => {
                 className="font-axiformaRegular text-sm w-4/5"
               />
             </View>
-            <Feather name="search" size={22} color="#3D4C5E" />
+            <Feather name="search" size={20} color="#3D4C5E" />
           </View>
           <TouchableOpacity className="bg-[#7A91F9] rounded-md p-1">
-            <Feather name="sliders" size={22} style={{ color: "#fff" }} />
+            <Feather name="sliders" size={20} style={{ color: "#fff" }} />
           </TouchableOpacity>
         </View>
 

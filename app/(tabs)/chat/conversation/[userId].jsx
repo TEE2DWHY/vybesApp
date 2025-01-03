@@ -511,12 +511,16 @@ const Conversation = () => {
               </View>
             </Modal>
 
-            <View className="flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal p-4 rounded-md self-center mb-2 mx-4">
+            <View
+              className={`flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal ${
+                Platform.OS === "ios" ? "p-4 my-4" : "p-2 my-8"
+              } rounded-md self-center mx-4`}
+            >
               <View className="flex-row items-center gap-4 flex-1">
                 <Entypo
                   name="attachment"
-                  size={24}
-                  color="#B2BBC C6"
+                  size={22}
+                  color="#5C6DBB"
                   onPress={() => setShowAttachmentModal(true)}
                 />
                 <TextInput

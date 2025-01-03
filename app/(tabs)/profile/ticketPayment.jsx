@@ -122,7 +122,7 @@ const ticketPayment = () => {
               ].map((step, index) => (
                 <View
                   key={index}
-                  className="flex-row mb-2 items-center bg-[#FFFFFF]"
+                  className="flex-row mb-2 items-center bg-[#ffff]"
                 >
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.
@@ -235,7 +235,7 @@ const ticketPayment = () => {
               ].map((step, index) => (
                 <View
                   key={index}
-                  className="flex-row mb-2 items-center bg-[#FFFFFF]"
+                  className="flex-row mb-2 items-center bg-[#ffff]"
                 >
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.

@@ -102,7 +102,7 @@ const Account = () => {
             />
           </TouchableOpacity>
         </View>
-        <View className="p-4 mt-2 rounded-lg border-[#FFFFFF] border bg-white-normal ">
+        <View className="p-4 mt-2 rounded-lg border-[#ffff] border bg-white-normal ">
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2 mt-3">
             <Text className="text-[#546881] font-axiformaRegular">Name:</Text>
             <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">

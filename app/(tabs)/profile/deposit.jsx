@@ -88,7 +88,7 @@ const Deposit = () => {
         };
 
         const backendResponse = await axios.post(
-          "http://localhost:8000/v1/transaction/deposit",
+          "https://vybesapi.onrender.com/v1/transaction/deposit",
           depositData,
           {
             headers: {
@@ -208,7 +208,7 @@ const Deposit = () => {
               </Text>
             </TouchableOpacity>
 
-            <View className="mt-8 bg-white-normal border border-[#eeeeef] rounded-lg p-4 mx-4">
+            <View className="mt-8 bg-white-normal border border-[#eeeeef] rounded-lg p-4 mx-4 mb-6">
               <Text className="text-[#151A20] font-semibold text-xl mb-4 font-axiformaBlack text-center">
                 Top Up Steps
               </Text>
@@ -220,7 +220,7 @@ const Deposit = () => {
               ].map((step, index) => (
                 <View
                   key={index}
-                  className="flex-row mb-2 items-center bg-[#FFFFFF]"
+                  className="flex-row mb-2 items-center bg-[#ffff]"
                 >
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.
@@ -390,7 +390,7 @@ const Deposit = () => {
               ].map((step, index) => (
                 <View
                   key={index}
-                  className="flex-row mb-2 items-center bg-[#FFFFFF]"
+                  className="flex-row mb-2 items-center bg-[#ffff]"
                 >
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.
@@ -404,7 +404,7 @@ const Deposit = () => {
           </>
         )}
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#fffff" />
+      <StatusBar style="dark" backgroundColor="#ffff" />
     </SafeAreaView>
   );
 };
