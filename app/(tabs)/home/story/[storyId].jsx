@@ -62,16 +62,16 @@ const Story = () => {
   };
 
   return (
-    <SafeAreaView className="h-full bg-[#F8F9FB]">
+    <SafeAreaView className="h-full bg-[#F8F9FB] pt-10">
       <ScrollView className="px-4 pt-2">
         <AntDesign
           name="left"
-          size={24}
+          size={20}
           color="#3D4C5E"
           onPress={() => router.back()}
         />
         <View className="flex-row items-center justify-between mt-4 py-4">
-          <Text className="font-axiformaBlack text-[20px] text-[#3D4C5E] capitalize">
+          <Text className="font-axiformaMedium text-[20px] text-[#3D4C5E] capitalize">
             {story?.user?.userName} Story
           </Text>
           <Feather name="settings" size={24} color="#546881" />
@@ -145,7 +145,7 @@ const Story = () => {
                 Account Views
               </Text>
               <TouchableOpacity className="bg-[#DBEBFF] flex-row items-center rounded-lg px-4 py-4">
-                <Feather name="eye" size={22} color="#8BC0FE" />
+                <Feather name="eye" size={22} color="#ffff" />
                 <Text className="font-axiformaRegular ml-4 text-[#314359]">
                   {story?.views.length > 0 ? story.views.length : 0} Views
                 </Text>

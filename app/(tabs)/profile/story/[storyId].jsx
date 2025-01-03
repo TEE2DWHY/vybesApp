@@ -5,7 +5,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  ActivityIndicator, // Import ActivityIndicator
+  ActivityIndicator,
+  Platform, // Import ActivityIndicator
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -63,11 +64,15 @@ const Story = () => {
   };
 
   return (
-    <SafeAreaView className="h-full bg-[#F8F9FB]">
+    <SafeAreaView
+      className={`h-full bg-[#F8F9FB] ${
+        Platform.OS === "ios" ? "pt-2" : "pt-10"
+      }`}
+    >
       <ScrollView className="px-4 pt-2">
         <AntDesign
           name="left"
-          size={24}
+          size={22}
           color="#3D4C5E"
           onPress={() => router.back()}
         />

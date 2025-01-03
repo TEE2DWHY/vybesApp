@@ -69,7 +69,7 @@ const Transactions = () => {
 
   const renderTransactions = (data, type) => (
     <View className="mb-12">
-      <View className="bg-[#6da1d6] mt-4 py-3 font-axiformaRegular w-3/5 px-2">
+      <View className="bg-[#6da1d6] mt-4 py-3 font-axiformaRegular w-3/5 px-2 rounded-sm">
         <Text className="capitalize text-[#fff] text-center font-axiformaBook">
           Find Transactions Below
         </Text>
@@ -108,7 +108,7 @@ const Transactions = () => {
                     : type === "Transferred Coins" || type === "Received Coins"
                     ? "text-[#8BC0FE] text-base"
                     : "text-[#FFB053] text-base"
-                } font-axiformaBlack`}
+                } font-axiformaMedium`}
               >
                 {type === "Deposit"
                   ? "+"

@@ -80,7 +80,7 @@ const Stories = () => {
       </View>
 
       <View className="mt-8 flex-row justify-between items-center">
-        <Text className="font-axiformaBlack text-[#3D4C5E] text-lg">
+        <Text className="font-axiformaMedium text-[#3D4C5E] text-lg">
           My Stories
         </Text>
         <Feather name="settings" size={24} color="#909DAD" />

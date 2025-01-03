@@ -41,7 +41,7 @@ const Chat = () => {
           }
         );
         setContacts(response.data.payload);
-        console.log(response.data?.payload);
+        // console.log(response.data?.payload);
       } catch (error) {
         console.log(error);
       } finally {

@@ -198,7 +198,7 @@ const Account = () => {
             </Text>
             <View className="flex-row justify-between">
               <View className="flex-1 items-center">
-                <Text className="text-[#7A91F9] text-xl">
+                <Text className="text-[#7A91F9] text-xl font-axiformaMedium">
                   {user?.following?.vybers}
                 </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
@@ -206,7 +206,7 @@ const Account = () => {
                 </Text>
               </View>
               <View className="flex-1 items-center">
-                <Text className="text-[#2AB49B] text-xl">
+                <Text className="text-[#2AB49B] text-xl font-axiformaMedium">
                   {user?.following?.vybers}
                 </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
@@ -221,7 +221,7 @@ const Account = () => {
             </Text>
             <View className="flex-row justify-between">
               <View className="flex-1 items-center">
-                <Text className="text-[#7A91F9] text-xl">
+                <Text className="text-[#7A91F9] text-xl font-axiformaMedium">
                   {user?.followers?.vybers}
                 </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
@@ -229,7 +229,7 @@ const Account = () => {
                 </Text>
               </View>
               <View className="flex-1 items-center">
-                <Text className="text-[#2AB49B] text-xl">
+                <Text className="text-[#2AB49B] text-xl font-axiformaMedium">
                   {user?.followers?.vybers}
                 </Text>
                 <Text className="text-[#546881] font-axiformaRegular">
