@@ -100,9 +100,9 @@ const Home = () => {
           <View className="flex-row items-center justify-between border-b-[#a0ace2] border-b-[1px] pb-4">
             <TouchableOpacity
               onPress={() => setShowFilterModal(!showFilterModal)}
-              className="bg-[#a241ee] rounded-md p-1"
+              className="bg-[#a241ee] rounded-sm p-1"
             >
-              <Feather name="sliders" size={20} style={{ color: "#fff" }} />
+              <Feather name="sliders" size={18} style={{ color: "#fff" }} />
             </TouchableOpacity>
             <View
               className={`rounded-3xl flex-row items-center justify-between w-[68%] px-4 bg-white-normal ${
@@ -112,7 +112,7 @@ const Home = () => {
               <Feather
                 name="search"
                 size={20}
-                style={{ color: "#47586 E" }}
+                style={{ color: "#47586E" }}
                 onPress={() => setShowSearchModal(true)}
               />
               <TextInput
@@ -158,7 +158,7 @@ const Home = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          className="mb-12"
+          className="mb-2"
         />
       )}
 

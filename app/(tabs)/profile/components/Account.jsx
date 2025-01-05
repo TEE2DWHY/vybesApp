@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -10,14 +11,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
 import { clear, removeItem } from "../../../../utils/AsyncStorage";
-import { useState } from "react";
 import { useAccount } from "../../../../hooks/useAccount";
 import EditProfileModal from "./EditProfileModal";
 import ShareProfile from "../../../../modal/ShareProfile";
 import ShareQr from "../../../../modal/ShareQr";
+import { Skeleton } from "moti/skeleton";
 
 const Account = () => {
-  const { user } = useAccount();
+  const { user, loading, setLoading } = useAccount();
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [showShareProfile, setShareProfileModal] = useState(false);
@@ -51,12 +52,25 @@ const Account = () => {
           @{user?.userName}
         </Text>
         <TouchableOpacity onPress={() => setImageModalVisible(true)}>
-          <Image
-            source={{
-              uri: user?.image,
-            }}
-            className="w-[150px] h-[150px] rounded-[80px] border-[4px]  border-[#9ec2ec]"
-          />
+          {loading ? (
+            // Show skeleton loader while image is loading
+            <Skeleton
+              colorMode="light"
+              height={150}
+              width={150}
+              radius={75}
+              className="mb-4"
+            />
+          ) : (
+            // Actual Image once it is loaded
+            <Image
+              source={{
+                uri: user?.image,
+              }}
+              className="w-[150px] h-[150px] rounded-[75px] border-[4px]  border-[#9ec2ec]"
+              onLoad={() => setLoading(false)}
+            />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -102,10 +116,10 @@ const Account = () => {
             />
           </TouchableOpacity>
         </View>
-        <View className="p-4 mt-2 rounded-lg border-[#ffff] border bg-white-normal ">
+        <View className="p-4 mt-2 rounded-lg border-[#fff] border bg-white-normal ">
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2 mt-3">
             <Text className="text-[#546881] font-axiformaRegular">Name:</Text>
-            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
               {user?.fullName}
             </Text>
           </View>
@@ -113,7 +127,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               UserName:
             </Text>
-            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
               {" "}
               @{user?.userName}
             </Text>
@@ -122,7 +136,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Date Of Birth:
             </Text>
-            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
               {user?.dateOfBirth}
             </Text>
           </View>
@@ -130,7 +144,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Account Type:
             </Text>
-            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
               {user?.accountType}
             </Text>
           </View>
@@ -138,7 +152,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Password:
             </Text>
-            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
               {"*****"}
             </Text>
           </View>
@@ -146,7 +160,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Wallet Balance:
             </Text>
-            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
               {user?.walletBalance}
             </Text>
           </View>
@@ -154,7 +168,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Gifted Coins:
             </Text>
-            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
               {user?.giftedCoins || 0}
             </Text>
           </View>
@@ -162,13 +176,13 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Subscribers:
             </Text>
-            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
               {user?.subscribers || 0}
             </Text>
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">E-Mail:</Text>
-            <Text className="font-axiformaBlack text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
               {`${user?.email?.slice(0, 5)}...@${user?.email?.split("@")[1]}`}
             </Text>
           </View>
@@ -176,7 +190,7 @@ const Account = () => {
             <Text className="text-[#546881] font-axiformaRegular">
               Phone No:
             </Text>
-            <Text className="font-axiformaBlack  text-[#1D242D] text-[14px]">
+            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
               {user?.phoneNumber}
             </Text>
           </View>

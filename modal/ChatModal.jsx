@@ -6,7 +6,7 @@ import { Link } from "expo-router";
 
 const ChatModal = () => {
   return (
-    <View className="z-[50] bg-white border rounded-lg w-[180px] h-[190px] border-[#ffff] absolute top-[120px] right-5 bg-white-normal overflow-hidden">
+    <View className="z-[50] bg-white border rounded-lg w-[180px] h-[190px] border-[#fff] absolute top-[120px] right-5 bg-white-normal overflow-hidden">
       <View className="flex-row gap-4 items-center py-4 px-4 border-b border-[#F2F4F6]">
         <AntDesign name="lock1" size={20} color="#A3ADBB" />
         <Link href={"/chat/privacy"}>

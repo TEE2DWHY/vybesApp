@@ -26,7 +26,7 @@ const ShareProfile = ({ closeModal, showProfile, userImage }) => {
               <Text className="capitalize text-white-normal font-axiformaRegular text-sm">
                 Share Your Profile Via
               </Text>
-              <AntDesign name="sharealt" size={20} color="#ffff" />
+              <AntDesign name="sharealt" size={20} color="#fff" />
             </View>
 
             <View className="flex-row items-center">

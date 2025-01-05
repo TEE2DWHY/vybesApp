@@ -172,7 +172,7 @@ const Verify = () => {
           </View>
         </ScrollView>
 
-        <StatusBar backgroundColor="#ffff" style="dark" />
+        <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>
     </>
   );

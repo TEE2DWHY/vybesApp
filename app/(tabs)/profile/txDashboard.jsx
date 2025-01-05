@@ -93,7 +93,7 @@ const TxDashboard = () => {
             <Text className="text-white-normal font-axiformaRegular mr-1">
               Deposit
             </Text>
-            <AntDesign name="plussquareo" size={20} color="#ffff" />
+            <AntDesign name="plussquareo" size={20} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity
             className="bg-[#86D8D3] px-4 py-3 rounded-lg flex-row items-center justify-center"
@@ -112,7 +112,7 @@ const TxDashboard = () => {
             <Fontisto name="spinner-refresh" size={20} color="#593E1D" />
           </TouchableOpacity>
         </ScrollView>
-        <View className="self-center flex-row space-x-14 bg-white-normal p-8 rounded-md border border-[#F3F9FF]">
+        <View className="self-center flex-row  gap-8  bg-white-normal p-8 rounded-md border border-[#F3F9FF]">
           <TouchableOpacity
             className="gap-4"
             onPress={() => router.push("/profile/conversion")}
@@ -159,7 +159,7 @@ const TxDashboard = () => {
         <Text className="text-[#47586E] capitalize font-axiformaBlack mt-8 mb-4 text-base">
           Coin Value
         </Text>
-        <View className="mt-1 rounded-lg bg-[#ffff] border border-[#F3F9FF] p-4 mb-12">
+        <View className="mt-1 rounded-lg bg-[#fff] border border-[#F3F9FF] p-4 mb-12">
           {coinValues.map((item, index) => (
             <View
               key={index}
@@ -183,7 +183,7 @@ const TxDashboard = () => {
           ))}
         </View>
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#ffff" />
+      <StatusBar style="dark" backgroundColor="#fff" />
     </SafeAreaView>
   );
 };

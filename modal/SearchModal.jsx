@@ -73,7 +73,7 @@ const SearchModal = ({
           source={{ uri: searchedUser.image }}
           className="w-10 h-10 rounded-full mr-3"
         />
-        <Text className="font-axiformaBlack text-[#ffff] capitalize">
+        <Text className="font-axiformaBlack text-[#fff] capitalize">
           {searchedUser.userName}
         </Text>
       </View>
@@ -111,7 +111,7 @@ const SearchModal = ({
       />
       <View className="justify-end items-center bg-[#1b1b1b67] bg-opacity-50 w-full h-[200px]">
         <View className="w-full bg-purple-darker rounded-tl-[20px] rounded-tr-[20px] p-5">
-          <Text className="text-lg font-axiformaBlack text-[#ffff] mb-4">
+          <Text className="text-lg font-axiformaBlack text-[#fff] mb-4">
             Search
           </Text>
 
@@ -158,7 +158,7 @@ const SearchModal = ({
                       source={{ uri: item?.image }}
                       className="w-10 h-10 rounded-full mr-3"
                     />
-                    <Text className="font-axiformaBlack text-[#ffff] capitalize">
+                    <Text className="font-axiformaBlack text-[#fff] capitalize">
                       {item.userName}
                     </Text>
                   </View>
@@ -185,7 +185,7 @@ const SearchModal = ({
           )}
 
           <TouchableOpacity onPress={closeModal} className="self-end mt-4">
-            <Text className="text-[#ffff] font-axiformaBook">Done</Text>
+            <Text className="text-[#fff] font-axiformaBook">Done</Text>
           </TouchableOpacity>
         </View>
       </View>

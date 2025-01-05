@@ -12,7 +12,7 @@ const EditProfile = ({ closeModal, modalVisible }) => {
       >
         <View className="flex-1 justify-end items-center bg-black bg-opacity-50">
           <View className="w-full bg-[#4D2478] rounded-t-lg p-5">
-            <Text className="text-lg font-axiformaBold text-[#ffff] mb-4">
+            <Text className="text-lg font-axiformaBold text-[#fff] mb-4">
               Edit Profile Account
             </Text>
             <View className="bg-white p-5 rounded-lg">

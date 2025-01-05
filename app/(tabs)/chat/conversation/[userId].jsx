@@ -434,7 +434,7 @@ const Conversation = () => {
                               <Text
                                 className={`${
                                   msg.senderId === user?._id
-                                    ? "text-[#ffff]"
+                                    ? "text-[#fff]"
                                     : "text-[#3D4C5E]"
                                 } font-axiformaRegular`}
                               >

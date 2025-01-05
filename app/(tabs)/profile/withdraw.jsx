@@ -225,7 +225,7 @@ const Withdraw = () => {
           </View>
         </ScrollView>
 
-        <StatusBar style="dark" backgroundColor="#ffff" />
+        <StatusBar style="dark" backgroundColor="#fff" />
 
         <Modal
           animationType="fade"

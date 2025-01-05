@@ -289,7 +289,7 @@ const Conversion = () => {
           </>
         )}
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#ffff" />
+      <StatusBar style="dark" backgroundColor="#fff" />
     </SafeAreaView>
   );
 };

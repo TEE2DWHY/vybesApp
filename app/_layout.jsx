@@ -1,6 +1,7 @@
-import { StrictMode, useEffect } from "react";
+import { useEffect } from "react";
 import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
 

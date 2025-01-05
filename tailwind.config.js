@@ -1,9 +1,11 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
     "./modal/**/*.{js,jsx,ts,tsx}",
   ],
+  presets: [require("nativewind/preset")],
   theme: {
     extend: {
       colors: {
@@ -39,7 +41,7 @@ module.exports = {
         },
         white: {
           light: "#fcfdfd",
-          normal: "#ffff",
+          normal: "#fff",
           dark: "#f6f8f9",
         },
       },

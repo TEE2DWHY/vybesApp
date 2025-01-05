@@ -143,7 +143,7 @@ const Deposit = () => {
           <Text className="text-base text-white-normal font-axiformaRegular mr-2 text-center">
             Deposit
           </Text>
-          <AntDesign name="plussquareo" size={24} color="#ffff" />
+          <AntDesign name="plussquareo" size={24} color="#fff" />
         </View>
 
         <View className="flex-row justify-between mt-10 px-4">
@@ -220,7 +220,7 @@ const Deposit = () => {
               ].map((step, index) => (
                 <View
                   key={index}
-                  className="flex-row mb-2 items-center bg-[#ffff]"
+                  className="flex-row mb-2 items-center bg-[#fff]"
                 >
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.
@@ -390,7 +390,7 @@ const Deposit = () => {
               ].map((step, index) => (
                 <View
                   key={index}
-                  className="flex-row mb-2 items-center bg-[#ffff]"
+                  className="flex-row mb-2 items-center bg-[#fff]"
                 >
                   <Text className="text-gray-700 font-medium mr-2 font-axiformaRegular">
                     {index + 1}.
@@ -404,7 +404,7 @@ const Deposit = () => {
           </>
         )}
       </ScrollView>
-      <StatusBar style="dark" backgroundColor="#ffff" />
+      <StatusBar style="dark" backgroundColor="#fff" />
     </SafeAreaView>
   );
 };

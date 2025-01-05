@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -22,7 +22,8 @@ const Story = () => {
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
   const params = useLocalSearchParams();
-  const { storyId } = params;
+  console.log(params.id);
+  const { id } = params;
   const [showViews, setShowViews] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
 
@@ -34,7 +35,7 @@ const Story = () => {
           `https://vybesapi.onrender.com/v1/story`,
           {
             params: {
-              storyId: storyId,
+              storyId: id,
             },
             headers: {
               Authorization: `Bearer ${token}`,
@@ -52,7 +53,7 @@ const Story = () => {
     if (token) {
       getStory();
     }
-  }, [storyId, token]);
+  }, [id, token]);
 
   const formatPostedTime = (createdAt) => {
     const parsedDate = new Date(createdAt);
@@ -145,7 +146,7 @@ const Story = () => {
                 Account Views
               </Text>
               <TouchableOpacity className="bg-[#DBEBFF] flex-row items-center rounded-lg px-4 py-4">
-                <Feather name="eye" size={22} color="#ffff" />
+                <Feather name="eye" size={22} color="#fff" />
                 <Text className="font-axiformaRegular ml-4 text-[#314359]">
                   {story?.views.length > 0 ? story.views.length : 0} Views
                 </Text>

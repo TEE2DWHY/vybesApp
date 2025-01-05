@@ -256,7 +256,7 @@ const Transfer = () => {
         </View>
 
         {accountHandle && transferAmount && (
-          <View className="bg-[#dde0ef] mt-8 p-2 w-[90%] self-center rounded-2xl">
+          <View className="bg-[#dde0ef] mt-8 py-2 px-6 w-[80%] self-center rounded-2xl">
             <Text className="text-[#4e565e] font-axiformaRegular text-center leading-6 capitalize text-sm">
               You are about to initiate a transfer of {transferAmount} Vybes
               coin to {accountHandle}
@@ -264,11 +264,11 @@ const Transfer = () => {
           </View>
         )}
 
-        <View className="mt-8 p-y2 px-4">
+        <View className="mt-12 p-y2 px-4">
           <Text className="text-gray-700 font-medium mb-2 font-axiformaRegular">
             Account Handle
           </Text>
-          <View className="flex-row justify-between items-center p-4 rounded-lg shadow border border-gray-200">
+          <View className="flex-row justify-between items-center p-4 rounded-lg border border-gray-200">
             <View className="flex-row items-center">
               <AntDesign name="user" size={24} color="#47586E" />
               <TextInput

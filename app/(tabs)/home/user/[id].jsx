@@ -37,8 +37,8 @@ const UserProfile = () => {
   const [storiesData, setStoriesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [storiesMessage, setStoriesMessage] = useState("");
-  const [showTooltip, setShowTooltip] = useState(true); // State for tooltip visibility
-  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 }); // Position of the tooltip
+  const [showTooltip, setShowTooltip] = useState(true);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
 
   const {
     payload,
@@ -260,13 +260,13 @@ const UserProfile = () => {
               </Text>
             </View>
             <ScrollView
-              className="gap-2 mt-6 border-b border-[#DBEBFF] pb-4"
+              className="mt-6 border-b border-[#DBEBFF] pb-4"
               contentContainerStyle={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 4,
+                flexDirection: "row", // Align content horizontally
+                justifyContent: "center", // Horizontally center the content
+                alignItems: "center", // Vertically center the content
+                gap: 16, // Add some space between items (optional)
+                paddingHorizontal: 16, // Add some horizontal padding to avoid the content sticking to the edges
               }}
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -282,7 +282,7 @@ const UserProfile = () => {
                 </Text>
               </View>
               <View className="bg-[#FFB053] p-3 rounded-md">
-                <Text className="font -axiformaRegular text-[#593E1D] text-sm">
+                <Text className="font-axiformaRegular text-[#593E1D] text-sm">
                   4.8 Rating
                 </Text>
               </View>
@@ -357,7 +357,7 @@ const UserProfile = () => {
                     />
                     {isLocked && (
                       <View className="absolute inset-0 bg-[#361753b9] rounded-md justify-center items-center h-full w-full">
-                        <Feather name="lock" size={32} color="#ffff" />
+                        <Feather name="lock" size={32} color="#fff" />
                       </View>
                     )}
                     {index === 0 &&
@@ -431,7 +431,7 @@ const UserProfile = () => {
                   // router.push()
                 }}
               >
-                <Entypo name="chat" size={24} color="#ffff" />
+                <Entypo name="chat" size={24} color="#fff" />
                 <Text className="text-white-normal text-center font-axiformaRegular text-base">
                   Chat
                 </Text>

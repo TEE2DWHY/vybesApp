@@ -3,7 +3,8 @@ import { useAccount } from "../../../../hooks/useAccount";
 import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
 import { useEffect, useState } from "react";
-import { Spinner } from "../../../../components/Spinner";
+import { router } from "expo-router";
+import { Skeleton } from "moti/skeleton";
 
 const Bookmarks = () => {
   const { user } = useAccount();
@@ -22,7 +23,7 @@ const Bookmarks = () => {
           },
         }
       );
-      console.log(response.data.payload);
+      // console.log(response.data);
       setBookMarks(response.data.payload);
     } catch (error) {
       console.log(error);
@@ -52,17 +53,28 @@ const Bookmarks = () => {
       </View>
 
       <View className="mt-8 flex-row justify-between items-center">
-        <Text className="font-axiformaMedium text-[#3D4C5E] text-sm">
+        <Text className="font-axiformaMedium text-[#3D4C5E] text-base">
           My BookMarks
         </Text>
-        <Text className="text-[#3D4C5E] font-axiformaRegular">
-          {bookmarks?.length} Bookmarks
+        <Text className="text-[#3D4C5E] font-axiformaRegular text-base">
+          {loading ? "Loading Bookmarks..." : `${bookmarks?.length} Bookmarks`}
         </Text>
       </View>
 
       {loading ? (
-        <View className="flex-1 justify-center items-center mt-16">
-          <Spinner />
+        // Show skeleton loaders for each bookmark while loading
+        <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3 mb-10">
+          {[...Array(4)].map((_, index) => (
+            <View key={index} className="w-[49%] mb-4">
+              <Skeleton
+                height={240}
+                width="100%"
+                radius={8}
+                className="mb-2"
+                colorMode="light"
+              />
+            </View>
+          ))}
         </View>
       ) : bookmarks.length === 0 ? (
         <View className="w-full items-center">
@@ -73,7 +85,11 @@ const Bookmarks = () => {
       ) : (
         <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3 mb-10">
           {bookmarks.map((bookmark) => (
-            <TouchableOpacity key={bookmark._id} className="w-[49%] mb-4">
+            <TouchableOpacity
+              key={bookmark._id}
+              className="w-[49%] mb-4"
+              onPress={() => router.push(`/home/story/${bookmark?.storyId}`)}
+            >
               <Image
                 source={{ uri: bookmark?.postUrl }}
                 className="w-full h-[240px] rounded-md"

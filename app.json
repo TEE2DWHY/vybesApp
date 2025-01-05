@@ -11,7 +11,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffff"
+      "backgroundColor": "#fff"
     },
     "ios": {
       "newArchEnabled": true,
@@ -25,7 +25,7 @@
       "newArchEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/vybe.png",
-        "backgroundColor": "#ffff"
+        "backgroundColor": "#fff"
       },
       "permissions": [
         "INTERNET",

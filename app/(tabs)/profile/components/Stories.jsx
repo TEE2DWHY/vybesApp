@@ -95,7 +95,7 @@ const Stories = () => {
           storiesData.map((story) => (
             <TouchableOpacity
               key={story._id}
-              onPress={() => router.push(`/profile/story/${story._id}`)}
+              onPress={() => router.push(`/profile/mystory/${story._id}`)}
               className="w-[49%] mb-4"
             >
               <Image

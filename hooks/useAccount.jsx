@@ -54,7 +54,7 @@ const AccountWrapper = ({ children }) => {
 
   return (
     <accountContext.Provider
-      value={{ user, setUser, loading, refetchUser, error }}
+      value={{ user, setUser, loading, setLoading, refetchUser, error }}
     >
       {children}
     </accountContext.Provider>

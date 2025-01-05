@@ -194,7 +194,7 @@ const Profile = () => {
                 onPress={() => router.back()}
               />
               <TouchableOpacity
-                className="w-3/5 flex-row items-center justify-center bg-[#7A91F9] p-3 rounded-md"
+                className="w-[50%] flex-row items-center justify-center bg-[#7A91F9] p-3 rounded-md"
                 onPress={() => router.push("/profile/txDashboard")}
               >
                 <View className="flex-row items-center">
@@ -431,7 +431,7 @@ const Profile = () => {
             />
           )}
         </ScrollView>
-        <StatusBar backgroundColor="#ffff" style="dark" />
+        <StatusBar backgroundColor="#fff" style="dark" />
       </SafeAreaView>
     </>
   );

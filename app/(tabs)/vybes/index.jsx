@@ -312,7 +312,11 @@ const App = () => {
                 colors={["#9C27B0", "#4CAF50"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                className="px-4 py-3 rounded-full"
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 12,
+                  borderRadius: 100,
+                }}
               >
                 <Text className="text-white-normal font-axiformaBlack text-center text-base">
                   Vybers
@@ -338,7 +342,11 @@ const App = () => {
                 colors={["#9C27B0", "#4CAF50"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                className="px-4 py-3 rounded-full"
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 12,
+                  borderRadius: 100,
+                }}
               >
                 <Text className="text-white-normal font-axiformaBlack text-center text-base">
                   Baddie
@@ -609,7 +617,7 @@ const App = () => {
           )}
         </View>
       </ScrollView>
-      <StatusBar backgroundColor="#ffff" style="dark" />
+      <StatusBar backgroundColor="#fff" style="dark" />
     </SafeAreaView>
   );
 };
