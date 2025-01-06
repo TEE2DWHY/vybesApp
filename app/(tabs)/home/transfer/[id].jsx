@@ -46,7 +46,7 @@ const Transfer = () => {
   const token = useToken();
   const params = useLocalSearchParams();
   const { id } = params;
-  console.log(user);
+  // console.log(user);
 
   const {
     payload,

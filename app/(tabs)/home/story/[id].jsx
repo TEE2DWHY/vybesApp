@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -6,54 +7,52 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { StatusBar } from "expo-status-bar";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
+import { router, useLocalSearchParams } from "expo-router";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 import { Spinner } from "../../../../components/Spinner";
+import { StatusBar } from "expo-status-bar";
 
 const Story = () => {
-  const router = useRouter();
   const token = useToken();
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
   const params = useLocalSearchParams();
-  console.log(params.id);
   const { id } = params;
   const [showViews, setShowViews] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
+  console.log(id);
+
+  const getStory = async () => {
+    try {
+      const response = await axios.get(
+        `https://vybesapi.onrender.com/v1/story`,
+        {
+          params: {
+            storyId: id,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      setStory(response.data.payload);
+    } catch (error) {
+      console.error("Error fetching story:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getStory = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `https://vybesapi.onrender.com/v1/story`,
-          {
-            params: {
-              storyId: id,
-            },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setStory(response.data.payload);
-      } catch (error) {
-        console.error("Error fetching story:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (token) {
       getStory();
     }
-  }, [id, token]);
+  }, [story, token]);
 
   const formatPostedTime = (createdAt) => {
     const parsedDate = new Date(createdAt);
@@ -69,15 +68,11 @@ const Story = () => {
           name="left"
           size={20}
           color="#3D4C5E"
-          onPress={() => router.back()}
+          onPress={() => {
+            router.back();
+          }}
         />
-        <View className="flex-row items-center justify-between mt-4 py-4">
-          <Text className="font-axiformaMedium text-[20px] text-[#3D4C5E] capitalize">
-            {story?.user?.userName} Story
-          </Text>
-          <Feather name="settings" size={24} color="#546881" />
-        </View>
-
+        {/* Story Details */}
         {loading ? (
           <View className="flex-1 justify-center items-center h-[50vh]">
             <Spinner />

@@ -14,6 +14,7 @@ import axios from "axios";
 import { useToken } from "../../../../hooks/useToken";
 import { formatDistanceToNow } from "date-fns";
 import { Spinner } from "../../../../components/Spinner";
+import { Skeleton } from "moti/skeleton";
 
 const Stories = () => {
   const token = useToken();
@@ -88,8 +89,18 @@ const Stories = () => {
 
       <View className="flex-row flex-wrap justify-between mt-6 border border-[#E9E9EB] rounded-lg p-3 mb-12">
         {loading ? (
-          <View className="flex-1 justify-center items-center">
-            <Spinner />
+          <View className="flex-row flex-wrap justify-between rounded-lg p-3">
+            {[...Array(4)].map((_, index) => (
+              <View key={index} className="w-[47%] mb-4">
+                <Skeleton
+                  height={240}
+                  width="100%"
+                  radius={8}
+                  className="mb-2"
+                  colorMode="light"
+                />
+              </View>
+            ))}
           </View>
         ) : message !== "You have not create any story yet." ? (
           storiesData.map((story) => (
@@ -111,7 +122,7 @@ const Stories = () => {
             </TouchableOpacity>
           ))
         ) : (
-          <Text className="text-[#3D4C5E] text-center w-full  font-axiformaRegular capitalize mt-2">
+          <Text className="text-[#3D4C5E] text-center w-full font-axiformaRegular capitalize mt-2">
             You have not uploaded any story yet.
           </Text>
         )}

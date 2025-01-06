@@ -324,7 +324,7 @@ const Conversation = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <SafeAreaView className="bg-white-normal h-full mt-12 my-4">
+          <SafeAreaView className="bg-white-normal h-full pt-12">
             <View className="flex-row items-center p-4">
               <View className="flex-row gap-3 items-center w-[75%]">
                 <AntDesign
@@ -513,7 +513,7 @@ const Conversation = () => {
 
             <View
               className={`flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal ${
-                Platform.OS === "ios" ? "p-4 my-4" : "p-2 my-8"
+                Platform.OS === "ios" ? "p-4 my-4" : "p-2 my-8 mb-5"
               } rounded-md self-center mx-4`}
             >
               <View className="flex-row items-center gap-4 flex-1">

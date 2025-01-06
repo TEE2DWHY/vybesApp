@@ -15,10 +15,10 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
-import { formatDistanceToNow } from "date-fns";
+// import { formatDistanceToNow } from "date-fns";
 import { Spinner } from "../../../../components/Spinner";
 
-const Story = () => {
+const MyStory = () => {
   const router = useRouter();
   const token = useToken();
   const [story, setStory] = useState(null);
@@ -56,12 +56,12 @@ const Story = () => {
     }
   }, [storyId, token]);
 
-  const formatPostedTime = (createdAt) => {
-    const parsedDate = new Date(createdAt);
-    return isNaN(parsedDate)
-      ? "Invalid date"
-      : formatDistanceToNow(parsedDate, { addSuffix: true });
-  };
+  // const formatPostedTime = (createdAt) => {
+  //   const parsedDate = new Date(createdAt);
+  //   return isNaN(parsedDate)
+  //     ? "Invalid date"
+  //     : formatDistanceToNow(parsedDate, { addSuffix: true });
+  // };
 
   return (
     <SafeAreaView
@@ -122,7 +122,7 @@ const Story = () => {
 
             <View className="absolute bottom-4 left-4 bg-[#7a4ce59a] rounded-md px-4 py-4">
               <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                Posted {formatPostedTime(story.createdAt)}
+                Posted
               </Text>
             </View>
           </View>
@@ -259,4 +259,4 @@ const Story = () => {
   );
 };
 
-export default Story;
+export default MyStory;

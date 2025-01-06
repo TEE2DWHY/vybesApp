@@ -27,6 +27,7 @@ import { handleCall } from "../../../../utils/handleCall";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "expo-router";
 
 const UserProfile = () => {
   const params = useLocalSearchParams();
@@ -347,7 +348,7 @@ const UserProfile = () => {
                         setShowTooltip(false); // Hide the tooltip when the first story is clicked
                       }
                       handleTooltipPosition(event); // Get position for the tooltip
-                      !isLocked && router.push(`/home/story/${story._id}`);
+                      !isLocked && router.push(`/home/story/${story?._id}`);
                     }}
                   >
                     <Image

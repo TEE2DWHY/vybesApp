@@ -135,7 +135,7 @@ const Home = () => {
             </View>
           </View>
         </View>
-        <Text className="text-[22px] text-purple-normal font-axiformaMedium pt-1 mb-3">
+        <Text className="text-[22px] text-purple-normal font-medium pt-1 mb-3">
           Your Matches
         </Text>
       </View>
@@ -158,7 +158,7 @@ const Home = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          className="mb-2"
+          className="pb-2"
         />
       )}
 

@@ -20,10 +20,10 @@ const TabIcon = ({ icon, name, focused }) => {
     >
       <View style={{ marginBottom: 2 }}>{icon}</View>
       <Text
+        className={focused ? "font-axiformaMedium" : "font-axiformaRegular"}
         style={{
-          fontFamily: focused ? "axiformaMedium" : "axiformaRegular",
           color: focused ? "#9941EE" : "#B2BBC6",
-          fontSize: Platform.OS === "ios" ? 9 : 12,
+          fontSize: Platform.OS === "ios" ? 9 : 9,
         }}
       >
         {name}

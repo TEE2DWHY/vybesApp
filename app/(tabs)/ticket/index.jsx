@@ -14,12 +14,14 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import axios from "axios";
+import { Skeleton } from "moti/skeleton";
 
 const Ticket = () => {
   const [activeTab, setActiveTab] = useState("All Events");
   const [events, setEvents] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [firstEvent, setFirstEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const tabs = [
     "All Events",
@@ -31,6 +33,7 @@ const Ticket = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      setLoading(true); // Set loading to true before fetching data
       try {
         const response = await axios.get(
           "https://vybesapi.onrender.com/v1/event/all-events"
@@ -45,6 +48,8 @@ const Ticket = () => {
         }
       } catch (error) {
         console.error(error.response?.data.message || error.message);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     };
     fetchEvents();
@@ -111,59 +116,90 @@ const Ticket = () => {
           </View>
         </ScrollView>
 
-        {/* Header Image */}
-        <TouchableOpacity
-          className="w-[90%] h-[240px] rounded-2xl self-center my-4 relative"
-          onPress={() => {
-            if (firstEvent) {
-              router.push(`/ticket/event/${firstEvent._id}`);
-            }
-          }}
-        >
-          {firstEvent && (
-            <Image
-              source={{ uri: firstEvent.image }}
-              resizeMode="cover"
-              className="w-full h-full rounded-2xl"
+        {/* First Event Image */}
+        {loading ? (
+          <View className="self-center my-4 ml-4">
+            <Skeleton
+              height={140}
+              width="95%"
+              radius={12}
+              className="self-center my-4"
+              colorMode="light"
             />
-          )}
+          </View>
+        ) : (
           <TouchableOpacity
-            className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50"
+            className="w-[90%] h-[240px] rounded-2xl self-center my-4 relative"
             onPress={() => {
               if (firstEvent) {
                 router.push(`/ticket/event/${firstEvent._id}`);
               }
             }}
           >
-            <Text className="text-white-normal font-axiformaRegular">
-              Buy Ticket
-            </Text>
+            {firstEvent && (
+              <Image
+                source={{ uri: firstEvent.image }}
+                resizeMode="cover"
+                className="w-full h-full rounded-2xl"
+              />
+            )}
+            <TouchableOpacity
+              className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50"
+              onPress={() => {
+                if (firstEvent) {
+                  router.push(`/ticket/event/${firstEvent._id}`);
+                }
+              }}
+            >
+              <Text className="text-white-normal font-axiformaRegular">
+                Buy Ticket
+              </Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
+        )}
 
         {/* Filter By Date */}
         <View className="self-end flex-row items-center px-4 gap-2 pr-4 mt-4">
-          <Text className="font-axiformaRegular">Filter by Date Range</Text>
+          <Text className="font-axiformaRegular text-sm">
+            Filter by Date Range
+          </Text>
           <TouchableOpacity>
-            <Feather name="sliders" size={22} color={"#7A91F9"} />
+            <Feather name="sliders" size={18} color={"#7A91F9"} />
           </TouchableOpacity>
         </View>
 
-        {/* Ticket Images */}
+        {/* Event Images */}
         <View className="flex-row items-center justify-between flex-wrap w-full px-4 my-4">
-          {events.map((event) => (
-            <TouchableOpacity
-              key={event._id}
-              className="w-[46%] h-[180px] mb-4"
-              onPress={() => router.push(`/ticket/event/${event._id}`)}
-            >
-              <Image
-                source={{ uri: event.image }}
-                className="rounded-md h-full w-full"
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
-          ))}
+          {loading ? (
+            // Show skeleton loaders for event images while loading
+            <View className="flex-row flex-wrap justify-between mt-6 rounded-lg p-3 mb-10">
+              {[...Array(4)].map((_, index) => (
+                <View key={index} className="w-[47%] mb-4">
+                  <Skeleton
+                    height={240}
+                    width="100%"
+                    radius={8}
+                    className="mb-2"
+                    colorMode="light"
+                  />
+                </View>
+              ))}
+            </View>
+          ) : (
+            events.map((event) => (
+              <TouchableOpacity
+                key={event._id}
+                className="w-[46%] h-[180px] mb-4"
+                onPress={() => router.push(`/ticket/event/${event._id}`)}
+              >
+                <Image
+                  source={{ uri: event.image }}
+                  className="rounded-md h-full w-full"
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </ScrollView>
       <StatusBar backgroundColor="#fff" style="dark" />

@@ -53,16 +53,14 @@ const Account = () => {
         </Text>
         <TouchableOpacity onPress={() => setImageModalVisible(true)}>
           {loading ? (
-            // Show skeleton loader while image is loading
             <Skeleton
               colorMode="light"
               height={150}
               width={150}
-              radius={75}
+              radius={"round"}
               className="mb-4"
             />
           ) : (
-            // Actual Image once it is loaded
             <Image
               source={{
                 uri: user?.image,

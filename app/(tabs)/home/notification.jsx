@@ -147,7 +147,7 @@ const Notification = () => {
                         {notification.title[0]}{" "}
                       </Text>
                     </View>
-                    <Text className="font-axiformaRegular text-sm text-gray-900 truncate capitalize">
+                    <Text className="font-axiformaRegular text-sm text-gray-900 truncate capitalize ml-2">
                       {notification.title}
                     </Text>
                   </View>
