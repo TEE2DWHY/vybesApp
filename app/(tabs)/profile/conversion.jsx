@@ -118,7 +118,7 @@ const Conversion = () => {
           <FontAwesome6 name="arrows-rotate" size={20} color="white" />
         </View>
 
-        <View className="flex-row items-center justify-center gap-4 mt-2 w-full px-6">
+        <View className="flex-row items-center justify-center gap-4 mt-6 w-full px-6">
           <TouchableOpacity
             className={`rounded-lg ${
               activeTab === "convert"
@@ -165,7 +165,7 @@ const Conversion = () => {
                 <Text className="font-axiformaRegular mb-2">
                   Amount (NGN) to be converted to coin
                 </Text>
-                <View className="flex-row p-4 rounded-lg shadow border border-gray-200">
+                <View className="flex-row p-4 rounded-lg  border border-gray-200">
                   <View className="flex-row items-center">
                     <FontAwesome6 name="naira-sign" size={20} color="#546881" />
                     <TextInput
@@ -199,7 +199,7 @@ const Conversion = () => {
                 <Text className="capitalize font-axiformaRegular mb-2">
                   Total coins converted
                 </Text>
-                <View className="flex-row p-4 rounded-lg shadow border border-gray-200">
+                <View className="flex-row p-4 rounded-lg border border-gray-200">
                   <View className="flex-row items-center">
                     <FontAwesome5 name="coins" size={24} color="#9941EE" />
                     <TextInput

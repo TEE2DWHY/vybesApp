@@ -139,7 +139,7 @@ const Withdraw = () => {
 
           <View className="mt-6 px-2">
             <View className="bg-white p-4">
-              <View className="flex-row justify-between items-center mb-4 p-4 rounded-lg shadow border border-gray-200">
+              <View className="flex-row justify-between items-center mb-4 p-4 rounded-lg border border-gray-200">
                 <View className="flex-row items-center">
                   <AntDesign name="home" size={24} color="#47586E" />
                   <Text className="ml-2 text-gray-800 text-sm font-medium font-axiformaRegular">
@@ -161,7 +161,7 @@ const Withdraw = () => {
                 </TouchableOpacity>
               </View>
 
-              <View className="flex-row justify-between items-center p-4 rounded-lg shadow-lg border border-gray-200">
+              <View className="flex-row justify-between items-center p-4 rounded-lg  border border-gray-200">
                 <View className="flex-row items-center">
                   <AntDesign name="user" size={24} color="#47586E" />
                   <TextInput
@@ -197,7 +197,7 @@ const Withdraw = () => {
           </View>
 
           <View className="mt-6 px-6">
-            <View className="flex-row items-center px-4 py-2 bg-white border border-gray-300 rounded-lg">
+            <View className="flex-row items-center px-4  bg-white border border-gray-300 rounded-lg py-4 h-fit">
               <TextInput
                 placeholder="Enter amount"
                 keyboardType="numeric"
@@ -234,7 +234,7 @@ const Withdraw = () => {
           onRequestClose={() => setModalVisible(false)}
         >
           <View className="flex-1 justify-center items-center bg-[#1b1b1ba0] bg-opacity-50">
-            <View className="bg-white-normal rounded-lg p-5 shadow-lg w-[85%] h-[400px]">
+            <View className="bg-white-normal rounded-lg p-5 w-[85%] h-[400px]">
               <Text className="text-base font-bold mb-2 text-center font-axiformaRegular">
                 Select a Bank
               </Text>
