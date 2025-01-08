@@ -14,7 +14,7 @@ import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 import { StatusBar } from "expo-status-bar";
-import { Skeleton } from "moti/skeleton"; // Import Moti Skeleton
+import { Skeleton } from "moti/skeleton";
 
 const Story = () => {
   const token = useToken();
@@ -23,7 +23,7 @@ const Story = () => {
   const { id } = params;
   const [showViews, setShowViews] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const [loading, setLoading] = useState(true);
 
   const getStory = async () => {
     try {
@@ -38,12 +38,11 @@ const Story = () => {
           },
         }
       );
-      console.log(response.data);
       setStory(response.data.payload);
     } catch (error) {
       console.log("Error fetching story:", error);
     } finally {
-      setLoading(false); // Set loading to false once data is fetched
+      setLoading(false);
     }
   };
 
@@ -62,7 +61,7 @@ const Story = () => {
 
   return (
     <SafeAreaView className="h-full bg-[#F8F9FB] pt-10">
-      <ScrollView className="px-4 pt-2">
+      <ScrollView className="px-4 pt-6">
         <AntDesign
           name="left"
           size={20}
@@ -72,6 +71,11 @@ const Story = () => {
           }}
         />
 
+        {!loading && (
+          <Text className="capitalize font-axiformaMedium mt-6 px-2 text-gray-600">
+            {`${story?.user?.userName} story`}{" "}
+          </Text>
+        )}
         {loading ? (
           // Skeleton loader when the story is loading
           <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-sm">

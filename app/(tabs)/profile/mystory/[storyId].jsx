@@ -5,8 +5,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  ActivityIndicator,
-  Platform, // Import ActivityIndicator
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -15,8 +14,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
-// import { formatDistanceToNow } from "date-fns";
-import { Spinner } from "../../../../components/Spinner";
+import { formatDistanceToNow } from "date-fns";
+import { Skeleton } from "moti/skeleton";
 
 const MyStory = () => {
   const router = useRouter();
@@ -30,10 +29,9 @@ const MyStory = () => {
 
   useEffect(() => {
     const getStory = async () => {
-      setLoading(true);
       try {
         const response = await axios.get(
-          `https://vybesapi.onrender.com/v1/story`,
+          "https://vybesapi.onrender.com/v1/story/get-story",
           {
             params: {
               storyId: storyId,
@@ -56,12 +54,12 @@ const MyStory = () => {
     }
   }, [storyId, token]);
 
-  // const formatPostedTime = (createdAt) => {
-  //   const parsedDate = new Date(createdAt);
-  //   return isNaN(parsedDate)
-  //     ? "Invalid date"
-  //     : formatDistanceToNow(parsedDate, { addSuffix: true });
-  // };
+  const formatPostedTime = (createdAt) => {
+    const parsedDate = new Date(createdAt);
+    return isNaN(parsedDate)
+      ? "Invalid date"
+      : formatDistanceToNow(parsedDate, { addSuffix: true });
+  };
 
   return (
     <SafeAreaView
@@ -83,16 +81,12 @@ const MyStory = () => {
           <Feather name="settings" size={24} color="#546881" />
         </View>
 
-        {/* Show Loading Spinner */}
         {loading ? (
-          <View className="flex-1 justify-center items-center h-[50vh]">
-            <Spinner />
-            <Text className="text-[#3D4C5E] mt-4 font-axiformaRegular">
-              Loading story...
-            </Text>
+          <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-sm">
+            <Skeleton height={480} width="100%" radius={12} colorMode="light" />
           </View>
-        ) : story ? (
-          <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-md">
+        ) : (
+          <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-sm">
             <View className="absolute top-4 flex-row items-center justify-between z-20 w-full px-4 bg-transparent">
               <TouchableOpacity
                 className="flex-row items-center space-x-2"
@@ -100,7 +94,8 @@ const MyStory = () => {
               >
                 <AntDesign name="heart" size={18} color="#FF9574" />
                 <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                  {story.likes?.length > 0 ? story.likes.length : 0} Likes
+                  {"  "} {story?.likes.length > 0 ? story?.likes.length : 0}{" "}
+                  Likes
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -109,54 +104,46 @@ const MyStory = () => {
               >
                 <Feather name="eye" size={18} color="#546881" />
                 <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                  {story.views?.length > 0 ? story.views.length : 0} Views
+                  {"  "}
+                  {story?.views.length > 0 ? story?.views.length : 0} Views
                 </Text>
               </TouchableOpacity>
             </View>
-
             <Image
-              source={{ uri: story.media }}
+              source={{ uri: story?.media }}
               className="w-full h-full rounded-lg"
               resizeMode="cover"
             />
 
             <View className="absolute bottom-4 left-4 bg-[#7a4ce59a] rounded-md px-4 py-4">
               <Text className="text-white-normal font-axiformaRegular text-[14px]">
-                Posted
+                Posted {formatPostedTime(story?.createdAt)}
               </Text>
             </View>
           </View>
-        ) : (
-          <Text className="text-center text-[#3D4C5E] mt-12">
-            No story available
-          </Text>
         )}
       </ScrollView>
 
       {showViews && (
         <>
-          {/* Dark Overlay */}
           <TouchableOpacity
             className="absolute top-0 left-0 w-full h-full bg-[#1b1b1b60] opacity-50"
             onPress={() => setShowViews(false)}
           />
 
-          {/* Modal Content */}
           <View className="bg-purple-darker w-full rounded-tl-[40px] rounded-tr-[40px] absolute bottom-0 h-[60%] px-4 z-10">
-            {/* Profile Image */}
             <Image
               source={{ uri: story?.media }}
               className="w-[100px] h-[100px] rounded-lg self-center mt-10"
               resizeMode="cover"
             />
 
-            {/* Views Section */}
             <View className="flex-row items-center justify-between mt-6 border-b border-white-normal pb-2">
               <Text className="font-axiformaRegular text-white-normal">
                 Account Views
               </Text>
               <TouchableOpacity className="bg-[#DBEBFF] flex-row items-center rounded-lg px-4 py-4">
-                <Feather name="eye" size={22} color="#8BC0FE" />
+                <Feather name="eye" size={22} color="#fff" />
                 <Text className="font-axiformaRegular ml-4 text-[#314359]">
                   {story?.views.length > 0 ? story.views.length : 0} Views
                 </Text>
@@ -164,14 +151,14 @@ const MyStory = () => {
             </View>
 
             <ScrollView className="mt-4">
-              {story?.viewers?.map((viewer, index) => (
+              {story?.viewers.map((viewer, index) => (
                 <View
                   key={index}
                   className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
                 >
                   <View className="flex-row items-center">
                     <Image
-                      source={{ uri: viewer.profilePicture }}
+                      source={{ uri: viewer?.profilePicture }}
                       className="w-[40px] h-[40px] rounded-full"
                     />
                     <Text className="font-axiformaRegular text-white-normal ml-4">
@@ -196,22 +183,18 @@ const MyStory = () => {
 
       {showLikes && (
         <>
-          {/* Dark Overlay */}
           <TouchableOpacity
             className="absolute top-0 left-0 w-full h-full bg-[#1b1b1b60] opacity-50"
             onPress={() => setShowLikes(false)}
           />
 
-          {/* Modal Content */}
           <View className="bg-purple-darker w-full rounded-tl-[40px] rounded-tr-[40px] absolute bottom-0 h-[60%] px-4 z-10">
-            {/* Profile Image */}
             <Image
               source={{ uri: story?.imageUrl }}
               className="w-[100px] h-[100px] rounded-lg self-center mt-10"
               resizeMode="cover"
             />
 
-            {/* Likes Section */}
             <View className="flex-row items-center justify-between mt-6 border-b border-white-normal pb-2">
               <Text className="font-axiformaRegular text-white-normal">
                 Account Likes
@@ -219,24 +202,24 @@ const MyStory = () => {
               <TouchableOpacity className="bg-[#FFDED4] flex-row items-center rounded-lg px-4 py-4">
                 <Feather name="heart" size={18} color="red" />
                 <Text className="font-axiformaRegular ml-4 text-[#314359]">
-                  {story?.likes.length > 0 ? story.likes.length : 0} Likes
+                  {story?.likes.length > 0 ? story?.likes.length : 0} Likes
                 </Text>
               </TouchableOpacity>
             </View>
 
             <ScrollView className="mt-4">
-              {story?.viewers?.map((viewer, index) => (
+              {story?.viewers.map((viewer, index) => (
                 <View
                   key={index}
                   className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
                 >
                   <View className="flex-row items-center">
                     <Image
-                      source={{ uri: viewer.profilePicture }}
+                      source={{ uri: viewer?.profilePicture }}
                       className="w-[40px] h-[40px] rounded-full"
                     />
                     <Text className="font-axiformaRegular text-white-normal ml- 4">
-                      @{viewer.username}
+                      @{viewer?.username}
                     </Text>
                   </View>
                 </View>
