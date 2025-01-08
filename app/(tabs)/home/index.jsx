@@ -106,7 +106,7 @@ const Home = () => {
             </TouchableOpacity>
             <View
               className={`rounded-3xl flex-row items-center justify-between w-[68%] px-4 bg-white-normal ${
-                Platform.OS === "ios" ? "py-3" : "py-1"
+                Platform.OS === "ios" ? "py-3" : "py-2"
               }`}
             >
               <Feather

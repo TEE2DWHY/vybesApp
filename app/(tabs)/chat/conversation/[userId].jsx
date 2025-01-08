@@ -333,7 +333,10 @@ const Conversation = () => {
                   color="#546881"
                   onPress={() => router.push("/chat")}
                 />
-                <View className="flex-row items-center ml-2 flex-1">
+                <TouchableOpacity
+                  className="flex-row items-center ml-2 flex-1"
+                  onPress={() => router.push(`/home/user/${contact?._id}`)}
+                >
                   <Image
                     source={{
                       uri: contact.image,
@@ -352,7 +355,7 @@ const Conversation = () => {
                       </View>
                     )}
                   </View>
-                </View>
+                </TouchableOpacity>
               </View>
 
               <View className="flex-row gap-4 items-center">

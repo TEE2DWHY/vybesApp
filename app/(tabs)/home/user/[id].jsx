@@ -27,6 +27,7 @@ import { handleCall } from "../../../../utils/handleCall";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatDistanceToNow } from "date-fns";
+import { Skeleton } from "moti/skeleton";
 
 const UserProfile = () => {
   const params = useLocalSearchParams();
@@ -198,12 +199,11 @@ const UserProfile = () => {
     }
   };
 
-  // Function to handle the positioning of the tooltip
   const handleTooltipPosition = (event) => {
     const { locationX, locationY } = event.nativeEvent;
     setTooltipPosition({
-      top: locationY - 50, // Position the tooltip slightly above the image
-      left: locationX - 50, // Position the tooltip slightly to the left
+      top: locationY - 50,
+      left: locationX - 50,
     });
   };
 
@@ -220,74 +220,121 @@ const UserProfile = () => {
           <View className="bg-white-normal rounded-2xl p-4 my-10 border-2 border-[#DEEDFF] shadow-md">
             <View className="flex-row items-center justify-center border border-gray-100 p-2 rounded-2xl">
               <Text className="text-purple-normal font-axiformaRegular text-sm capitalize">
-                @{payload?.user?.userName}
+                {!isLoading && `@${payload?.user?.userName}`}
               </Text>
-              <View className="bg-[#D9F3F1] rounded-full py-1 px-4 ml-4 border-[#6BADA9] border flex-row items-center">
-                <Text className="text-[#2F4C4A] mr-1 font-axiformaMedium capitalize">
-                  {payload?.user?.accountType}
-                </Text>
-                <Ionicons
-                  name="checkmark-done-circle-outline"
-                  size={24}
-                  color="#6F9ACB"
+              {isLoading ? (
+                <View className="self-center">
+                  <Skeleton
+                    colorMode="light"
+                    height={20}
+                    width={160}
+                    radius="square"
+                    className="mt-[10px]"
+                  />
+                </View>
+              ) : (
+                <View className="bg-[#D9F3F1] rounded-full py-1 px-4 ml-4 border-[#6BADA9] border flex-row items-center">
+                  <Text className="text-[#2F4C4A] mr-1 font-axiformaMedium capitalize">
+                    {payload?.user?.accountType}
+                  </Text>
+                  <Ionicons
+                    name="checkmark-done-circle-outline"
+                    size={24}
+                    color="#6F9ACB"
+                  />
+                </View>
+              )}
+            </View>
+            {isLoading ? (
+              <View className="self-center mt-4">
+                <Skeleton
+                  colorMode="light"
+                  height={120}
+                  width={120}
+                  radius={"round"}
+                  className="mb-4"
                 />
               </View>
-            </View>
-            <View className="relative self-center flex-row items-center justify-center w-[120px] h-[120px]">
-              <Image
-                source={{
-                  uri: payload?.user?.image,
-                }}
-                className="w-full h-full rounded-full self-center mt-8 object-center border-[#F0E3FC] border-4"
-                resizeMode="cover"
-              />
-              <Animated.View
-                style={{
-                  backgroundColor,
-                  borderRadius: 9999,
-                  width: 15,
-                  height: 15,
-                  position: "absolute",
-                  bottom: 0,
-                  right: 8,
-                  zIndex: 9999,
-                }}
-              />
-            </View>
+            ) : (
+              <View className="relative self-center flex-row items-center justify-center w-[120px] h-[120px]">
+                <Image
+                  source={{
+                    uri: payload?.user?.image,
+                  }}
+                  className="w-full h-full rounded-full self-center mt-8 object-center border-[#F0E3FC] border-4"
+                  resizeMode="cover"
+                />
+                <Animated.View
+                  style={{
+                    backgroundColor,
+                    borderRadius: 9999,
+                    width: 15,
+                    height: 15,
+                    position: "absolute",
+                    bottom: 0,
+                    right: 8,
+                    zIndex: 9999,
+                  }}
+                />
+              </View>
+            )}
 
-            <View className="flex-row items-center justify-center border border-[#EEF6FF] mt-6 p-2 rounded-2xl">
-              <Text className="text-[#3D4C5E] font-axiformaRegular capitalize text-sm text-center">
-                {payload?.user?.bio}
-              </Text>
-            </View>
-            <ScrollView
-              className="mt-6 border-b border-[#DBEBFF] pb-4"
-              contentContainerStyle={{
-                flexDirection: "row", // Align content horizontally
-                justifyContent: "center", // Horizontally center the content
-                alignItems: "center", // Vertically center the content
-                gap: 16, // Add some space between items (optional)
-                paddingHorizontal: 16, // Add some horizontal padding to avoid the content sticking to the edges
-              }}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            >
-              <View className="bg-[#B1C3FF] text-[#3E4459] rounded-md p-3">
-                <Text className="font-axiformaRegular text-sm">
-                  20 miles away
+            {isLoading ? (
+              <View className="self-center mt-4">
+                <Skeleton
+                  colorMode="light"
+                  height={20}
+                  width={220}
+                  radius="square"
+                  className="mb-4"
+                />
+              </View>
+            ) : (
+              <View className="flex-row items-center justify-center border border-[#EEF6FF] mt-6 p-2 rounded-2xl">
+                <Text className="text-[#3D4C5E] font-axiformaRegular capitalize text-sm text-center">
+                  {payload?.user?.bio}
                 </Text>
               </View>
-              <View className="bg-[#F3E5E7] rounded-md p-3 border-[#4C3C3E]">
-                <Text className="font-axiformaRegular text-[#4C3C3E] text-sm">
-                  80% Match
-                </Text>
+            )}
+            {isLoading ? (
+              <View className="self-center mt-6">
+                <Skeleton
+                  colorMode="light"
+                  height={20}
+                  width={180}
+                  radius="square"
+                />
               </View>
-              <View className="bg-[#FFB053] p-3 rounded-md">
-                <Text className="font-axiformaRegular text-[#593E1D] text-sm">
-                  4.8 Rating
-                </Text>
-              </View>
-            </ScrollView>
+            ) : (
+              <ScrollView
+                className="mt-6 border-b border-[#DBEBFF] pb-4"
+                contentContainerStyle={{
+                  flexDirection: "row", // Align content horizontally
+                  justifyContent: "center", // Horizontally center the content
+                  alignItems: "center", // Vertically center the content
+                  gap: 16, // Add some space between items (optional)
+                  paddingHorizontal: 16, // Add some horizontal padding to avoid the content sticking to the edges
+                }}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              >
+                <View className="bg-[#B1C3FF] text-[#3E4459] rounded-md p-3">
+                  <Text className="font-axiformaRegular text-sm">
+                    20 miles away
+                  </Text>
+                </View>
+                <View className="bg-[#F3E5E7] rounded-md p-3 border-[#4C3C3E]">
+                  <Text className="font-axiformaRegular text-[#4C3C3E] text-sm">
+                    80% Match
+                  </Text>
+                </View>
+                <View className="bg-[#FFB053] p-3 rounded-md">
+                  <Text className="font-axiformaRegular text-[#593E1D] text-sm">
+                    4.8 Rating
+                  </Text>
+                </View>
+              </ScrollView>
+            )}
           </View>
 
           <View className="flex-row justify-between mt-4 mb-2">
@@ -338,7 +385,19 @@ const UserProfile = () => {
             ) : (
               storiesData.map((story, index) => {
                 const isLocked = !isSubscribed && index >= 2;
-                return (
+                return loading ? (
+                  [...Array(2)].map((_, index) => (
+                    <View key={index} className="w-[49%] mb-4">
+                      <Skeleton
+                        height={240}
+                        width="100%"
+                        radius={8}
+                        className="mb-2"
+                        colorMode="light"
+                      />
+                    </View>
+                  ))
+                ) : (
                   <TouchableOpacity
                     key={story._id}
                     disabled={isLocked}

@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import { router, useLocalSearchParams } from "expo-router";
 import ShareModal from "../components/modal/ShareModal";
 import axios from "axios";
+import { Skeleton } from "moti/skeleton";
 
 const Event = () => {
   const params = useLocalSearchParams();
@@ -46,6 +47,8 @@ const Event = () => {
           "Error fetching event:",
           error.response?.data.message || error.message
         );
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -90,26 +93,40 @@ const Event = () => {
 
         {/* Event Image */}
         <View className="relative w-[90%] h-[280px] self-center mb-4">
-          <TouchableOpacity
-            className="absolute left-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
-            onPress={() => console.log("Scroll Left")}
-          >
-            <AntDesign name="left" size={14} color="#fff" />
-          </TouchableOpacity>
-          <View className="w-full h-full rounded-[20px] overflow-hidden">
-            <Image
-              source={{ uri: ticket?.image }}
-              resizeMode="cover"
-              className="h-full w-full"
+          {!loading && (
+            <TouchableOpacity
+              className="absolute left-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
+              onPress={() => console.log("Scroll Left")}
+            >
+              <AntDesign name="left" size={14} color="#fff" />
+            </TouchableOpacity>
+          )}
+          {loading ? (
+            <Skeleton
+              height={240}
+              width="95%"
+              radius={12}
+              className="self-center"
+              colorMode="light"
             />
-          </View>
+          ) : (
+            <View className="w-full h-full rounded-[20px] overflow-hidden">
+              <Image
+                source={{ uri: ticket?.image }}
+                resizeMode="cover"
+                className="h-full w-full"
+              />
+            </View>
+          )}
 
-          <TouchableOpacity
-            className="absolute right-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
-            onPress={() => console.log("Scroll Right")}
-          >
-            <AntDesign name="right" size={14} color="#fff" />
-          </TouchableOpacity>
+          {!loading && (
+            <TouchableOpacity
+              className="absolute right-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
+              onPress={() => console.log("Scroll Right")}
+            >
+              <AntDesign name="right" size={14} color="#fff" />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Event Description */}

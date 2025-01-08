@@ -24,7 +24,7 @@ const Empty = () => {
             </Text>
           </View>
         )}
-        <View className="bg-white-normal border-white-normal self-center border h-[40vh] w-[100%] rounded-[12px] items-center mt-40">
+        <View className="bg-white-normal border-white-normal self-center border h-fit w-[96%] rounded-[12px] items-center mt-[50%] pb-6">
           <TouchableOpacity
             className="self-end mt-4 pr-10  flex-row items-center"
             onPress={handleIsCopied}

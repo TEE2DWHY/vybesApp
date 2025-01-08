@@ -51,7 +51,7 @@ const Chat = () => {
 
     if (token) {
       getMyContacts();
-      socket.current = connectSocket(user?._id); // Initialize socket connection
+      socket.current = connectSocket(user?._id);
 
       socket.current.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
@@ -103,15 +103,20 @@ const Chat = () => {
 
     return (
       <View className="flex-row items-center justify-between my-2 border-b border-b-gray-200 pb-2">
-        <TouchableOpacity
-          className="flex-row items-center gap-4"
-          onPress={() => router.push(`/chat/conversation/${contact._id}`)}
-        >
-          <Image
-            source={{ uri: contact.image }}
-            className="w-12 h-12 rounded-full"
-          />
-          <View className="flex-1">
+        <View className="flex-row items-center gap-4">
+          <TouchableOpacity
+            onPress={() => router.push(`/home/user/${contact?._id}`)}
+          >
+            <Image
+              source={{ uri: contact.image }}
+              className="w-12 h-12 rounded-full"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-1"
+            onPress={() => router.push(`/chat/conversation/${contact._id}`)}
+          >
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center gap-2">
                 <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
@@ -169,8 +174,8 @@ const Chat = () => {
                 </Text>
               )}
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };

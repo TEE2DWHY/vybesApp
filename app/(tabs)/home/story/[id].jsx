@@ -60,7 +60,7 @@ const Story = () => {
   };
 
   return (
-    <SafeAreaView className="h-full bg-[#F8F9FB] pt-10">
+    <SafeAreaView className="h-full bg-[#F8F9FB] pt-10 pb-6">
       <ScrollView className="px-4 pt-6">
         <AntDesign
           name="left"
