@@ -23,6 +23,7 @@ const Account = () => {
   const [editModal, setEditModal] = useState(false);
   const [showShareProfile, setShareProfileModal] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState({
     fullName: user?.fullName || "",
     userName: user?.userName || "",
@@ -117,93 +118,217 @@ const Account = () => {
         <View className="p-4 mt-2 rounded-lg border-[#fff] border bg-white-normal ">
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2 mt-3">
             <Text className="text-[#546881] font-axiformaRegular">Name:</Text>
-            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
-              {user?.fullName}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
+                {user?.fullName}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               UserName:
             </Text>
-            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
-              {" "}
-              @{user?.userName}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
+                {" "}
+                @{user?.userName}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Date Of Birth:
             </Text>
-            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
-              {user?.dateOfBirth}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
+                {user?.dateOfBirth}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Account Type:
             </Text>
-            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
-              {user?.accountType}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
+                {user?.accountType}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Password:
             </Text>
-            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
-              {"*****"}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
+                {"*****"}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Wallet Balance:
             </Text>
-            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
-              {user?.walletBalance}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
+                {user?.walletBalance}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Gifted Coins:
             </Text>
-            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
-              {user?.giftedCoins || 0}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
+                {user?.giftedCoins || 0}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Subscribers:
             </Text>
-            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
-              {user?.subscribers || 0}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
+                {user?.subscribers || 0}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">E-Mail:</Text>
-            <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
-              {`${user?.email?.slice(0, 5)}...@${user?.email?.split("@")[1]}`}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium text-[#1D242D] text-[14px]">
+                {`${user?.email?.slice(0, 5)}...@${user?.email?.split("@")[1]}`}
+              </Text>
+            )}
           </View>
           <View className="flex-row justify-between mb-4 border-b-[#E9E9EB] border-b-[1px] pb-2">
             <Text className="text-[#546881] font-axiformaRegular">
               Phone No:
             </Text>
-            <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
-              {user?.phoneNumber}
-            </Text>
+            {loading ? (
+              <Skeleton
+                colorMode="light"
+                height={12}
+                width={80}
+                radius={"round"}
+                className="mb-4"
+              />
+            ) : (
+              <Text className="font-axiformaMedium  text-[#1D242D] text-[14px]">
+                {user?.phoneNumber}
+              </Text>
+            )}
           </View>
         </View>
       </View>
 
-      <Text className="font-axiformaBlack mt-8 text-lg capitalize">
-        {user?.fullName}
-      </Text>
-
-      <View className="mt-4">
-        <Text className="font-axiformaBook text-sm text-[#546881] mb-3">
-          {user?.bio}
+      {loading ? (
+        <View className="mt-6">
+          <Skeleton
+            colorMode="light"
+            height={12}
+            width={120}
+            radius={"round"}
+            className="mb-4"
+          />
+        </View>
+      ) : (
+        <Text className="font-axiformaBlack mt-8 text-lg capitalize">
+          {user?.fullName}
         </Text>
-        <View className="border py-8 px-4 mt-2 rounded-lg flex-row justify-between">
+      )}
+
+      <View className="mt-1 pb-6">
+        {loading ? (
+          <View className="mt-6">
+            <Skeleton
+              colorMode="light"
+              height={12}
+              width={180}
+              radius={"round"}
+              className="mb-4"
+            />
+          </View>
+        ) : (
+          <Text className="font-axiformaBook text-sm text-[#546881] mb-3">
+            {user?.bio}
+          </Text>
+        )}
+        <View className="border py-8 px-4 mt-4 rounded-lg flex-row justify-between">
           <View className="w-1/2 pr-2">
             <Text className="text-center font-axiformaBlack text-[#546881] mb-3">
               Following
