@@ -72,17 +72,15 @@ const Story = () => {
         />
 
         {!loading && (
-          <Text className="capitalize font-axiformaMedium mt-6 px-2 text-gray-600">
-            {`${story?.user?.userName} story`}{" "}
+          <Text className="capitalize font-axiformaMedium mt-6 px-2 text-gray-600 text-lg">
+            {`${story?.user?.userName}'s  story`}{" "}
           </Text>
         )}
         {loading ? (
-          // Skeleton loader when the story is loading
           <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-sm">
             <Skeleton height={480} width="100%" radius={12} colorMode="light" />
           </View>
         ) : (
-          // Actual content once story is loaded
           <View className="relative w-full h-[480px] mt-6 rounded-lg bg-white shadow-sm">
             <View className="absolute top-4 flex-row items-center justify-between z-20 w-full px-4 bg-transparent">
               <TouchableOpacity
@@ -148,24 +146,29 @@ const Story = () => {
             </View>
 
             <ScrollView className="mt-4">
-              {story?.viewers.map((viewer, index) => (
-                <View
-                  key={index}
-                  className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
-                >
-                  <View className="flex-row items-center">
-                    <Image
-                      source={{ uri: viewer?.profilePicture }}
-                      className="w-[40px] h-[40px] rounded-full"
-                    />
-                    <Text className="font-axiformaRegular text-white-normal ml-4">
-                      @{viewer.username}
-                    </Text>
+              {story?.viewers && story.viewers.length > 0 ? (
+                story.viewers.map((viewer, index) => (
+                  <View
+                    key={index}
+                    className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
+                  >
+                    <View className="flex-row items-center">
+                      <Image
+                        source={{ uri: viewer?.profilePicture }}
+                        className="w-[40px] h-[40px] rounded-full"
+                      />
+                      <Text className="font-axiformaRegular text-white-normal ml-4">
+                        @{viewer.username}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              ))}
+                ))
+              ) : (
+                <Text className="text-white-normal font-axiformaRegular text-center pt-4">
+                  No viewers yet.
+                </Text>
+              )}
             </ScrollView>
-
             <TouchableOpacity
               className="bg-white-normal rounded-lg py-4 mt-4 mb-4"
               onPress={() => setShowViews(false)}
@@ -187,7 +190,7 @@ const Story = () => {
 
           <View className="bg-purple-darker w-full rounded-tl-[40px] rounded-tr-[40px] absolute bottom-0 h-[60%] px-4 z-10">
             <Image
-              source={{ uri: story?.imageUrl }}
+              source={{ uri: story?.media }} // Use the correct media URL
               className="w-[100px] h-[100px] rounded-lg self-center mt-10"
               resizeMode="cover"
             />
@@ -205,22 +208,28 @@ const Story = () => {
             </View>
 
             <ScrollView className="mt-4">
-              {story?.viewers.map((viewer, index) => (
-                <View
-                  key={index}
-                  className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
-                >
-                  <View className="flex-row items-center">
-                    <Image
-                      source={{ uri: viewer?.profilePicture }}
-                      className="w-[40px] h-[40px] rounded-full"
-                    />
-                    <Text className="font-axiformaRegular text-white-normal ml- 4">
-                      @{viewer?.username}
-                    </Text>
+              {story?.likes.length > 0 ? (
+                story.likes.map((like, index) => (
+                  <View
+                    key={index}
+                    className="flex-row items-center justify-between pt-4 pb-2 border-b border-white-normal"
+                  >
+                    <View className="flex-row items-center">
+                      <Image
+                        source={{ uri: like?.profilePicture }} // Assuming you have profilePicture in likes
+                        className="w-[40px] h-[40px] rounded-full"
+                      />
+                      <Text className="font-axiformaRegular text-white-normal ml-4">
+                        @{like?.username} // Assuming you have username in likes
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              ))}
+                ))
+              ) : (
+                <Text className="text-white-normal font-axiformaRegular text-center pt-4">
+                  No likes yet.
+                </Text>
+              )}
             </ScrollView>
 
             <TouchableOpacity
