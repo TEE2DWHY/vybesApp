@@ -33,7 +33,7 @@ const Ticket = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      setLoading(true); // Set loading to true before fetching data
+      setLoading(true);
       try {
         const response = await axios.get(
           "https://vybesapi.onrender.com/v1/event/all-events"
@@ -49,7 +49,7 @@ const Ticket = () => {
       } catch (error) {
         console.error(error.response?.data.message || error.message);
       } finally {
-        setLoading(false); // Set loading to false after fetching data
+        setLoading(false);
       }
     };
     fetchEvents();
@@ -89,7 +89,6 @@ const Ticket = () => {
           </Text>
         </View>
 
-        {/* Horizontal Scroll Tabs */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -116,7 +115,6 @@ const Ticket = () => {
           </View>
         </ScrollView>
 
-        {/* First Event Image */}
         {loading ? (
           <View className="self-center my-4 ml-4">
             <Skeleton
@@ -158,7 +156,6 @@ const Ticket = () => {
           </TouchableOpacity>
         )}
 
-        {/* Filter By Date */}
         <View className="self-end flex-row items-center px-4 gap-2 pr-4 mt-4">
           <Text className="font-axiformaRegular text-sm">
             Filter by Date Range
@@ -168,10 +165,8 @@ const Ticket = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Event Images */}
         <View className="flex-row items-center justify-between flex-wrap w-full px-4 my-4">
           {loading ? (
-            // Show skeleton loaders for event images while loading
             <View className="flex-row flex-wrap justify-between mt-6 rounded-lg p-3 mb-10">
               {[...Array(4)].map((_, index) => (
                 <View key={index} className="w-[47%] mb-4">

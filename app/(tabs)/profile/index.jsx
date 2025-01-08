@@ -97,7 +97,7 @@ const Profile = () => {
             },
           }
         );
-        console.log(response.data);
+        // console.log(response.data);
         Alert.alert("Success", response?.data.message);
         setUser(response.data.payload.user);
       } catch (error) {

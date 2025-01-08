@@ -46,7 +46,8 @@ const Transfer = () => {
   const token = useToken();
   const params = useLocalSearchParams();
   const { id } = params;
-  // console.log(user);
+
+  console.log(id);
 
   const {
     payload,
@@ -268,11 +269,14 @@ const Transfer = () => {
           <Text className="text-gray-700 font-medium mb-2 font-axiformaRegular">
             Account Handle
           </Text>
-          <View className="flex-row justify-between items-center p-4 rounded-lg border border-gray-200">
-            <View className="flex-row items-center">
+          <View
+            className="flex-row justify-between items-center p-4 rounded-lg border border-gray-200"
+            style={{ width: "100%" }}
+          >
+            <View className="flex-row items-center flex-1">
               <AntDesign name="user" size={24} color="#47586E" />
               <TextInput
-                className="ml-2 text-gray-800 text-base font-medium font-axiformaRegular mt-[-2px] capitalize"
+                className="ml-2 text-gray-800 text-base font-medium font-axiformaRegular flex-1 mt-[-10px]"
                 placeholder="Enter recipient username here"
                 value={accountHandle}
                 onChangeText={(text) => {

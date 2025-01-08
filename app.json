@@ -8,16 +8,12 @@
     "icon": "./assets/images/vybe.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "experiments": {
-      "reactServerFunctions": true
-    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#fff"
     },
     "ios": {
-      "newArchEnabled": true,
       "supportsTablet": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "We need to use Face ID to secure your account."
@@ -25,7 +21,6 @@
       "bundleIdentifier": "com.tee2dwhy.vybesapp"
     },
     "android": {
-      "newArchEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/vybe.png",
         "backgroundColor": "#fff"
