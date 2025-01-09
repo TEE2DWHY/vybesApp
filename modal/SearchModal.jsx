@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useToken } from "../hooks/useToken";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
 
 const SearchModal = ({
   closeModal,
@@ -67,7 +68,13 @@ const SearchModal = ({
   };
 
   const renderUserDetails = () => (
-    <View className="flex-row items-center justify-between mb-4 pb-2">
+    <TouchableOpacity
+      className="flex-row items-center justify-between mb-4 pb-2"
+      onPress={() => {
+        closeModal();
+        router.push(`/home/user/${searchedUser?._id}`);
+      }}
+    >
       <View className="flex-row items-center">
         <Image
           source={{ uri: searchedUser.image }}
@@ -94,7 +101,7 @@ const SearchModal = ({
           {searchedUser.accountType}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -152,7 +159,13 @@ const SearchModal = ({
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
-                <View className="flex-row items-center justify-between mb-4 border-b border-[#DEEDFF] pb-2">
+                <TouchableOpacity
+                  className="flex-row items-center justify-between mb-4 border-b border-[#DEEDFF] pb-2"
+                  onPress={() => {
+                    closeModal();
+                    router.push(`/home/user/${item?._id}`);
+                  }}
+                >
                   <View className="flex-row items-center">
                     <Image
                       source={{ uri: item?.image }}
@@ -179,7 +192,7 @@ const SearchModal = ({
                       {item.accountType}
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               )}
             />
           )}

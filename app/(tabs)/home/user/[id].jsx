@@ -145,6 +145,12 @@ const UserProfile = () => {
 
   // Function to handle Biometric Authentication
   const handleBiometricAuth = async () => {
+    if (!isSubscribed) {
+      return Alert.alert(
+        "Note",
+        `Subscribe to ${payload?.user?.userName}'s to access this feature.`
+      );
+    }
     try {
       const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
 
@@ -404,10 +410,10 @@ const UserProfile = () => {
                     className="w-[49%] mb-4"
                     onPress={(event) => {
                       if (index === 0 && showTooltip) {
-                        setShowTooltip(false); // Hide the tooltip when the first story is clicked
+                        setShowTooltip(false);
                       }
-                      handleTooltipPosition(event); // Get position for the tooltip
-                      !isLocked && router.push(`/home/story/${story._id}`);
+                      handleTooltipPosition(event);
+                      !isLocked && router.push(`/profile/mystory/${story._id}`);
                     }}
                   >
                     <Image

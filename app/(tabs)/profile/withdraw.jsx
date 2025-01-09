@@ -197,7 +197,7 @@ const Withdraw = () => {
           </View>
 
           <View className="mt-6 px-6">
-            <View className="flex-row items-center px-4  bg-white border border-gray-300 rounded-lg py-4 h-fit">
+            <View className="flex-row items-center px-4  bg-white border border-gray-300 rounded-lg py-4 h-fit ">
               <TextInput
                 placeholder="Enter amount"
                 keyboardType="numeric"
