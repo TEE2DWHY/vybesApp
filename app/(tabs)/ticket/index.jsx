@@ -22,6 +22,7 @@ const Ticket = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [firstEvent, setFirstEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showFilter, setShowFilter] = useState(false); // State for toggling filter view
 
   const tabs = [
     "All Events",
@@ -54,6 +55,11 @@ const Ticket = () => {
     };
     fetchEvents();
   }, []);
+
+  const handleFilter = (range) => {
+    // Implement your filter logic here based on the range
+    console.log("Filtering events by:", range);
+  };
 
   return (
     <SafeAreaView className="pt-12">
@@ -160,10 +166,71 @@ const Ticket = () => {
           <Text className="font-axiformaRegular text-sm">
             Filter by Date Range
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowFilter(!showFilter)}>
             <Feather name="sliders" size={18} color={"#7A91F9"} />
           </TouchableOpacity>
         </View>
+
+        {showFilter && (
+          <View className="relative z-50  mr-2 mt-1">
+            <View className="bg-white-normal w-[140px] gap-3 items-center justify-center self-end absolute rounded-md p-4 shadow">
+              <TouchableOpacity
+                onPress={() => handleFilter("Today")}
+                className="border-b border-1 border-b-gray-400 w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">Today</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleFilter("This Week")}
+                className="border-b border-1 border-b-gray-400  w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">
+                  This Week
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleFilter("This Month")}
+                className="border-b border-1 border-b-gray-400  w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">
+                  This Month
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleFilter("Last Month")}
+                className="border-b border-1 border-b-gray-400  w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">
+                  Last Month
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleFilter("Last 7 Days")}
+                className="border-b border-1 border-b-gray-400  w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">
+                  Last 7 Days
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleFilter("This Year")}
+                className="border-b border-1 border-b-gray-400  w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">
+                  This Year
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleFilter("Custom Range")}
+                className="border-b border-1 border-b-gray-400  w-full"
+              >
+                <Text className="font-axiformaRegular pb-1 text-sm">
+                  Custom Range
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         <View className="flex-row items-center justify-between flex-wrap w-full px-4 my-4">
           {loading ? (
