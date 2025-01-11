@@ -356,7 +356,7 @@ const UserProfile = () => {
                   className={`text-base font-axiformaBlack pb-2 text-[#3D4C5E]`}
                   onPress={() => setActiveTab("My Stories")}
                 >
-                  My Stories
+                  User Stories
                 </Text>
               </View>
               <TouchableOpacity
@@ -373,7 +373,7 @@ const UserProfile = () => {
                 <Text
                   className={`text-base font-axiformaBlack pb-2 text-[#3D4C5E]`}
                 >
-                  My Media
+                  User Media
                 </Text>
               </TouchableOpacity>
             </View>
@@ -413,7 +413,7 @@ const UserProfile = () => {
                         setShowTooltip(false);
                       }
                       handleTooltipPosition(event);
-                      !isLocked && router.push(`/profile/mystory/${story._id}`);
+                      !isLocked && router.push(`/home/story/${story._id}`);
                     }}
                   >
                     <Image

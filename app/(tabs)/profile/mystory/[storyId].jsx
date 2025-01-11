@@ -72,7 +72,7 @@ const MyStory = () => {
           name="left"
           size={22}
           color="#3D4C5E"
-          onPress={() => router.back()}
+          onPress={() => router.push("/profile")}
         />
         <View className="flex-row items-center justify-between mt-4 py-4">
           <Text className="font-axiformaBlack text-[20px] text-[#3D4C5E]">

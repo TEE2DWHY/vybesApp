@@ -6,6 +6,7 @@ import {
   Image,
   Modal,
   Dimensions,
+  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -16,9 +17,13 @@ import EditProfileModal from "./EditProfileModal";
 import ShareProfile from "../../../../modal/ShareProfile";
 import ShareQr from "../../../../modal/ShareQr";
 import { Skeleton } from "moti/skeleton";
+import axios from "axios";
+import { useToken } from "../../../../hooks/useToken";
 
 const Account = () => {
   const { user, loading, setLoading } = useAccount();
+  const token = useToken();
+  const [showDeleteModal, setShowDeleteModal] = useState(true);
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [showShareProfile, setShareProfileModal] = useState(false);
@@ -46,8 +51,61 @@ const Account = () => {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
 
+  const deleteAccount = async () => {
+    try {
+      const response = await axios.delete(
+        "https://vybesapi.onrender.com/v1/users/delete-account",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response?.data);
+      await clear();
+      router.push("/");
+    } catch (error) {
+      console.log(error?.message);
+    }
+  };
+
   return (
     <>
+      <Modal
+        visible={showDeleteModal}
+        transparent={true}
+        className="opacity-20"
+        animationType="fade"
+      >
+        <TouchableOpacity
+          className="items-center justify-center bg-[#1b1b1ba0] bg-opacity-50 h-full"
+          onPress={() => setShowDeleteModal(false)}
+        >
+          <View className="absolute top-[45%] rounded-xl py-8 px-4  bg-white-normal items-center w-[75%] shadow-slate-400">
+            <Text className="text-gray-700 font-axiformaMedium text-center w-4/5 capitalize leading-6 mb-2 text-lg">
+              Are you sure you want to delete your account?
+            </Text>
+            <View className="flex-row gap-12 mt-2 mb-3">
+              <TouchableOpacity
+                className="rounded-md bg-blue-500  py-3 px-6"
+                onPress={() => setShowDeleteModal(false)}
+              >
+                <Text className="font-axiformaRegular text-white-normal">
+                  No
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="rounded-md bg-red-500 py-3 px-6"
+                onPress={() => deleteAccount()}
+              >
+                <Text className="font-axiformaRegular text-white-normal">
+                  Yes
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
       <View className="items-center mt-4">
         <Text className="capitalize font-axiformaBlack text-xl my-3">
           @{user?.userName}
@@ -440,10 +498,7 @@ const Account = () => {
           </TouchableOpacity>
           <TouchableOpacity
             className="flex-1 items-center py-3 ml-2 border border-[#FFDBDB] rounded-lg"
-            onPress={async () => {
-              await clear();
-              router.push("/");
-            }}
+            onPress={() => setShowDeleteModal(true)}
           >
             <Text className="text-[#FF7474] font-axiformaRegular">
               Delete Account
