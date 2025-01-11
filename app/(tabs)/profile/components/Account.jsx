@@ -22,7 +22,7 @@ import { useToken } from "../../../../hooks/useToken";
 const Account = () => {
   const { user, loading, setLoading } = useAccount();
   const token = useToken();
-  const [showDeleteModal, setShowDeleteModal] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [showShareProfile, setShareProfileModal] = useState(false);
