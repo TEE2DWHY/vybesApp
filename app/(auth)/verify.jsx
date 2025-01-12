@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   ScrollView,
+  ActivityIndicator, // Import ActivityIndicator for the spinner
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -21,11 +22,12 @@ import { formatTime } from "../../utils/formatTime";
 
 const Verify = () => {
   const [verificationCode, setVerificationCode] = useState(Array(6).fill(""));
-  const [timer, setTimer] = useState(600); // Set timer to 10 minutes (600 seconds)
+  const [timer, setTimer] = useState(600);
   const [buttonText, setButtonText] = useState("Verify");
   const inputsRef = useRef([]);
   const [email, setEmail] = useState("");
-  const [isInputDisabled, setInputDisabled] = useState(false); // Track if inputs should be disabled
+  const [isInputDisabled, setInputDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State for loading spinner
 
   useEffect(() => {
     (async () => {
@@ -52,8 +54,8 @@ const Verify = () => {
         await authInstance.post("/send-verification-code", { email });
         setTimer(600); // Reset timer
         setButtonText("Verify");
-        setVerificationCode(Array(6).fill("")); // Clear the code fields
-        setInputDisabled(false); // Enable inputs for new code entry
+        setVerificationCode(Array(6).fill(""));
+        setInputDisabled(false);
       } catch (error) {
         Alert.alert(
           "Error",
@@ -63,12 +65,14 @@ const Verify = () => {
     } else if (verificationCode.includes("")) {
       return Alert.alert("Please provide the complete verification code.");
     } else {
+      setIsLoading(true); // Show spinner before API call
       const registrationToken = verificationCode.join("");
       try {
         const response = await authInstance.post("/verify-account", {
           email: email,
           registrationToken: registrationToken,
         });
+        setIsLoading(false); // Hide spinner after successful API call
         Alert.alert("Success!", "Account Verification is Successful", [
           {
             text: "Proceed to Login",
@@ -78,7 +82,8 @@ const Verify = () => {
           },
         ]);
       } catch (error) {
-        console.log(error);
+        setIsLoading(false); // Hide spinner after error
+        console.log(error.response?.data.message);
         Alert.alert("Error", error?.response?.data?.message);
       }
     }
@@ -107,7 +112,7 @@ const Verify = () => {
 
   return (
     <>
-      <SafeAreaView className="h-full bg-white-normal">
+      <SafeAreaView className="h-full bg-white-normal pt-6">
         <ScrollView
           containerStyles={{ backgroundColor: "#fff", height: "100%" }}
         >
@@ -137,7 +142,7 @@ const Verify = () => {
                 {`${email.split("@")[0].slice(0, 3)}...@${email.split("@")[1]}`}
               </Text>
             </View>
-            <View className="flex-row justify-center space-x-2 my-8">
+            <View className="flex-row justify-center gap-4 my-8">
               {[...Array(6)].map((_, index) => (
                 <TextInput
                   key={index}
@@ -148,21 +153,25 @@ const Verify = () => {
                   value={verificationCode[index]}
                   onChangeText={(value) => handleChangeText(value, index)}
                   onKeyPress={(e) => handleKeyPress(e, index)}
-                  editable={!isInputDisabled} // Disable input if timer expired
+                  editable={!isInputDisabled}
                 />
               ))}
             </View>
-            <Text className="text-left text-sm text-gray-600 px-">
+            <Text className="text-left text-sm text-gray-600 font-axiformaMedium">
               Resend Code {formatTime(timer)}
             </Text>
             <TouchableOpacity
               className="self-center bg-purple-dark rounded-full py-4 px-20 mt-8"
               onPress={handleVerify}
-              disabled={isInputDisabled} // Disable button if timer expired
+              disabled={isInputDisabled || isLoading}
             >
-              <Text className="text-white-normal text-base text-center font-axiformaBlack">
-                {buttonText}
-              </Text>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text className="text-white-normal text-base text-center font-axiformaMedium">
+                  {buttonText}
+                </Text>
+              )}
             </TouchableOpacity>
             <Image
               source={verifyImage}

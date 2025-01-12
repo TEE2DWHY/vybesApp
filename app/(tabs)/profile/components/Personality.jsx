@@ -167,7 +167,7 @@ const Personality = ({
                 <TextInput
                   placeholder="John Doe"
                   className="border-b border-gray-300 py-2 text-base font-axiformaRegular"
-                  value={formData.fullName.toLowerCase()}
+                  value={formData?.fullName.toLowerCase()}
                   onChangeText={(value) => handleInputChange("fullName", value)}
                   editable={!user?.fullName}
                 />

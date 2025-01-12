@@ -66,6 +66,8 @@ const Account = ({ switchTab }) => {
       router.push("/");
     } catch (error) {
       console.log(error?.message);
+    } finally {
+      setShowDeleteModal(false);
     }
   };
 
@@ -77,8 +79,6 @@ const Account = ({ switchTab }) => {
       setShowSetUpModal(false);
     };
   }, [user]);
-
-  console.log(user);
 
   return (
     <>
@@ -93,9 +93,10 @@ const Account = ({ switchTab }) => {
           className="items-center justify-center bg-[#1b1b1ba0] bg-opacity-50 h-full"
           // onPress={() => setShowSetUpModal(false)}
         >
-          <View className="absolute top-[45%] rounded-xl py-8 px-4  bg-white-normal items-center w-[75%] shadow-slate-400">
-            <Text className="text-gray-700 font-axiformaMedium text-center w-[90%] capitalize leading-6 mb-2 text-base">
-              Please Click On the Profile Tab To Set Up Your Account Completely.
+          <View className="absolute top-[45%] rounded-xl py-8 px-4  bg-white-normal items-center w-[85%] shadow-slate-400">
+            <Text className="text-gray-700 font-axiformaMedium text-center w-[80%] capitalize leading-6 mb-2 text-base">
+              Please Head Over To the Personality Tab To Set Up Your Account
+              Completely.
             </Text>
             <View className="flex-row gap-12 mt-2 mb-3">
               {/* <TouchableOpacity
