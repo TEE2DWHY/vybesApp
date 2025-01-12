@@ -77,7 +77,7 @@ const Bookmarks = () => {
           ))}
         </View>
       ) : bookmarks.length === 0 ? (
-        <View className="w-full items-center">
+        <View className="w-full items-center mt-12 capitalize">
           <Text className="text-[#3D4C5E] font-axiformaMedium text-sm">
             No bookmarked post here
           </Text>

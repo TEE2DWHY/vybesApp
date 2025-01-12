@@ -13,6 +13,7 @@ import bottomVector from "../assets/images/home-vector2.png";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import { getItem } from "../utils/AsyncStorage";
+import { Spinner } from "../components/Spinner";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,9 @@ const App = () => {
   if (loading) {
     return (
       <SafeAreaView className="bg-white h-full flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#9941EE" />
+        <View className="flex-1 justify-center items-center h-[48vh]">
+          <Spinner />
+        </View>
       </SafeAreaView>
     );
   }

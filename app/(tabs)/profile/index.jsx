@@ -88,7 +88,7 @@ const Profile = () => {
         }
 
         const response = await axios.patch(
-          "https://vybesapi.onrender.com/v1/user/update-details",
+          "http://localhost:8000/v1/user/update-details",
           dataToSend,
           {
             headers: {
@@ -206,7 +206,7 @@ const Profile = () => {
                   </Text>
                 </View>
                 <Text className="font-axiformaBlack text-sm text-white-normal ml-4">
-                  {user?.walletBalance} Vybes Coin
+                  {!user?.walletBalance ? 0 : user?.walletBalance} Vybes Coin
                 </Text>
               </TouchableOpacity>
             </View>
@@ -416,7 +416,9 @@ const Profile = () => {
             />
           )}
 
-          {activeTab === "Account" && <Account />}
+          {activeTab === "Account" && (
+            <Account switchTab={() => setActiveTab("Personality")} />
+          )}
           {activeTab === "Activities" && <Activities />}
           {activeTab === "Privacy" && <Privacy />}
           {activeTab === "Transactions" && <Transactions />}

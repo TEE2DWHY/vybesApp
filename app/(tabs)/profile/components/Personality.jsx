@@ -379,7 +379,7 @@ const Personality = ({
                       size={24}
                       color="gray"
                       onPress={showDatePicker}
-                      disabled={formData.dateOfBirth === "" ? false : true}
+                      // disabled={formData.dateOfBirth === "" ? false : true}
                     />
                   </View>
 

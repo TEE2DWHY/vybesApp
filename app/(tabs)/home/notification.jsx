@@ -5,7 +5,6 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
@@ -183,10 +182,10 @@ const Notification = () => {
               className="w-[120px] h-[120px]"
               resizeMode="contain"
             />
-            <Text className="font-axiformaBlack text-xl capitalize">
+            <Text className="font-axiformaMedium text-xl capitalize text-gray-700">
               No notifications yet
             </Text>
-            <Text className="text-purple-normal text-center mt-2 font-axiformaRegular leading-4 mb-2">
+            <Text className="text-purple-normal text-center mt-2 font-axiformaRegular leading-6 mb-2">
               Your notifications will appear here once you’ve received them.
             </Text>
           </View>
