@@ -81,17 +81,26 @@ const Home = () => {
     setRefreshing(false);
   };
 
-  const renderItem = ({ item }) => (
-    <UserDetails
-      img={item.image}
-      accountType={item.accountType}
-      firstName={item?.fullName.split(" ")[0]}
-      age={currentYear - Number(item.dateOfBirth?.split("-")[0])}
-      state={item.location}
-      country={"Nigeria"}
-      userId={item._id}
-    />
-  );
+  const renderItem = ({ item }) => {
+    // Don't render user if no image exists
+    if (!item.image) {
+      return null;
+    }
+
+    return (
+      <UserDetails
+        img={item.image}
+        accountType={item.accountType}
+        firstName={item?.fullName.split(" ")[0]}
+        age={currentYear - Number(item.dateOfBirth?.split("-")[0])}
+        state={item.location}
+        country={"Nigeria"}
+        userId={item._id}
+      />
+    );
+  };
+
+  const filteredUsers = allUsers?.users?.filter((user) => user.image); // Filter users without image
 
   return (
     <SafeAreaView className="h-full bg-gray-200 pt-8">
@@ -146,7 +155,7 @@ const Home = () => {
         </View>
       ) : (
         <FlatList
-          data={allUsers?.users}
+          data={filteredUsers}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingHorizontal: 20 }}
@@ -158,7 +167,7 @@ const Home = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          className="pb-2"
+          className="pb-2 h-full"
         />
       )}
 

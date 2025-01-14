@@ -1,4 +1,4 @@
-import React, { useState, useEffect, StrictMode } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   SafeAreaView,
@@ -11,11 +11,10 @@ import iphone from "../../assets/images/iphone.png";
 import iphone2 from "../../assets/images/iphone2.png";
 import iphone3 from "../../assets/images/iphone3.png";
 import multipleArrows from "../../assets/images/multipleArrows.png";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { setItem } from "../../utils/AsyncStorage";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const Welcome = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -134,11 +133,7 @@ const Welcome = () => {
                 <TouchableOpacity
                   onPress={() => setActiveIndex(activeIndex + 1)}
                 >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    size={24}
-                    color="white"
-                  />
+                  <AntDesign name="arrowright" size={24} color="#fff" />
                 </TouchableOpacity>
               </View>
             </>
@@ -153,10 +148,10 @@ const Welcome = () => {
                 <Text className="text-white-normal font-axiformaBlack">
                   Now, Let’s Get Started
                 </Text>
-                <FontAwesomeIcon
-                  icon={faArrowRight}
+                <AntDesign
+                  name="arrowright"
                   size={18}
-                  color="white"
+                  color="#fff"
                   style={{ marginLeft: 8, marginTop: -3 }}
                 />
               </TouchableOpacity>

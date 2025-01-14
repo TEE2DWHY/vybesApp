@@ -8,6 +8,7 @@ import {
   TextInput,
   Image,
   Platform,
+  Alert,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -19,10 +20,11 @@ import { Skeleton } from "moti/skeleton";
 const Ticket = () => {
   const [activeTab, setActiveTab] = useState("All Events");
   const [events, setEvents] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
   const [firstEvent, setFirstEvent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showFilter, setShowFilter] = useState(false); // State for toggling filter view
+  const [showFilter, setShowFilter] = useState(false);
+  const [noEventsMessage, setNoEventsMessage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const tabs = [
     "All Events",
@@ -32,39 +34,73 @@ const Ticket = () => {
     "In House Party",
   ];
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          "https://vybesapi.onrender.com/v1/event/all-events"
-        );
-        setEvents(response.data.payload);
+  const fetchEvents = async (eventType = "", location = "") => {
+    setLoading(true);
+    setNoEventsMessage("");
+    try {
+      let url = "http://localhost:8000/v1/event/all-events"; // Default URL
 
-        if (response.data.payload.length > 0) {
-          const randomIndex = Math.floor(
-            Math.random() * response.data.payload.length
-          );
-          setFirstEvent(response.data.payload[randomIndex]);
-        }
-      } catch (error) {
-        console.error(error.response?.data.message || error.message);
-      } finally {
-        setLoading(false);
+      // Adjust the URL for event type or location-based search
+      if (eventType) {
+        url = `http://localhost:8000/v1/event/get-event-by-event-type?eventType=${eventType}`;
+      } else if (location) {
+        url = `http://localhost:8000/v1/event/search-by-location?location=${location}`;
       }
-    };
+
+      const response = await axios.get(url);
+      const eventData = Array.isArray(response.data.payload)
+        ? response.data.payload
+        : [];
+
+      setEvents(eventData);
+
+      if (eventData.length > 0) {
+        const randomIndex = Math.floor(Math.random() * eventData.length);
+        setFirstEvent(eventData[randomIndex]);
+      } else {
+        setNoEventsMessage(`${eventType} Events Not Found.`);
+      }
+    } catch (error) {
+      if (
+        error.response?.data.message === "No events found in this location."
+      ) {
+        return Alert.alert("Error", error.response?.data.message);
+      }
+      console.error(error.response?.data.message || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchEvents();
   }, []);
 
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    setNoEventsMessage("");
+    if (tab === "All Events") {
+      fetchEvents();
+    } else {
+      fetchEvents(tab);
+    }
+  };
+
   const handleFilter = (range) => {
-    // Implement your filter logic here based on the range
     console.log("Filtering events by:", range);
+  };
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      fetchEvents("", searchQuery);
+    } else {
+      fetchEvents();
+    }
   };
 
   return (
     <SafeAreaView className="pt-12">
       <ScrollView>
-        {/* Header */}
         <View className="flex-row items-center justify-between px-4">
           <View
             className={`rounded-3xl border border-[#DFC4FA] px-8 ${
@@ -74,18 +110,21 @@ const Ticket = () => {
             <View className="flex-row items-center gap-2">
               <EvilIcons name="location" size={22} color="#DFC4FA" />
               <TextInput
+                value={searchQuery}
+                onChangeText={setSearchQuery}
                 placeholder="Search By Location"
-                className="font-axiformaRegular text-sm w-4/5"
+                className="font-axiformaRegular text-sm w-4/5 mt-[-4px]"
               />
             </View>
-            <Feather name="search" size={20} color="#3D4C5E" />
+            <TouchableOpacity onPress={handleSearch}>
+              <Feather name="search" size={20} color="#3D4C5E" />
+            </TouchableOpacity>
           </View>
           <TouchableOpacity className="bg-[#7A91F9] rounded-md p-1">
             <Feather name="sliders" size={20} style={{ color: "#fff" }} />
           </TouchableOpacity>
         </View>
 
-        {/* Welcome Container */}
         <View className="w-[90%] p-4 bg-purple-darker rounded-[20px] self-center my-8">
           <Text className="capitalize text-2xl text-white-normal font-axiformaBlackItalic leading-[38.4px]">
             welcome to the event section of vybes
@@ -107,7 +146,7 @@ const Ticket = () => {
                 className={`${
                   activeTab === tab ? "bg-[#7A91F9]" : "bg-gray-200"
                 } border border-[#EBEFFE] p-4 rounded-md`}
-                onPress={() => setActiveTab(tab)}
+                onPress={() => handleTabClick(tab)} // Call handleTabClick on tab click
               >
                 <Text
                   className={`capitalize font-axiformaRegular text-[#3D4C5E] ${
@@ -132,44 +171,56 @@ const Ticket = () => {
             />
           </View>
         ) : (
-          <TouchableOpacity
-            className="w-[90%] h-[240px] rounded-2xl self-center my-4 relative"
-            onPress={() => {
-              if (firstEvent) {
-                router.push(`/ticket/event/${firstEvent._id}`);
-              }
-            }}
-          >
-            {firstEvent && (
-              <Image
-                source={{ uri: firstEvent.image }}
-                resizeMode="cover"
-                className="w-full h-full rounded-2xl"
-              />
+          <>
+            {noEventsMessage ? (
+              <View className="self-center my-4 px-4">
+                <Text className="text-base font-axiformaMedium text-center  mt-8 text-red-500">
+                  {noEventsMessage}
+                </Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                className="w-[90%] h-[240px] rounded-2xl self-center my-4 relative"
+                onPress={() => {
+                  if (firstEvent) {
+                    router.push(`/ticket/event/${firstEvent._id}`);
+                  }
+                }}
+              >
+                {firstEvent && (
+                  <Image
+                    source={{ uri: firstEvent.image }}
+                    resizeMode="cover"
+                    className="w-full h-full rounded-2xl"
+                  />
+                )}
+                <TouchableOpacity
+                  className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50"
+                  onPress={() => {
+                    if (firstEvent) {
+                      router.push(`/ticket/event/${firstEvent._id}`);
+                    }
+                  }}
+                >
+                  <Text className="text-white-normal font-axiformaRegular">
+                    Buy Ticket
+                  </Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
             )}
-            <TouchableOpacity
-              className="absolute p-4 rounded-md bg-purple-normal bottom-4 right-2 border border-white-normal z-50"
-              onPress={() => {
-                if (firstEvent) {
-                  router.push(`/ticket/event/${firstEvent._id}`);
-                }
-              }}
-            >
-              <Text className="text-white-normal font-axiformaRegular">
-                Buy Ticket
-              </Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
+          </>
         )}
 
-        <View className="self-end flex-row items-center px-4 gap-2 pr-4 mt-4">
-          <Text className="font-axiformaRegular text-sm">
-            Filter by Date Range
-          </Text>
-          <TouchableOpacity onPress={() => setShowFilter(!showFilter)}>
-            <Feather name="sliders" size={18} color={"#7A91F9"} />
-          </TouchableOpacity>
-        </View>
+        {!noEventsMessage && (
+          <View className="self-end flex-row items-center px-4 gap-2 pr-4 mt-4">
+            <Text className="font-axiformaRegular text-sm">
+              Filter by Date Range
+            </Text>
+            <TouchableOpacity onPress={() => setShowFilter(!showFilter)}>
+              <Feather name="sliders" size={18} color={"#7A91F9"} />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {showFilter && (
           <View className="relative z-50  mr-2 mt-1">

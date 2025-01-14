@@ -17,7 +17,7 @@ const UserDetails = ({
 
   return (
     <TouchableOpacity
-      className="bg-white rounded-lg overflow-hidden mb-4"
+      className="bg-white rounded-lg overflow-hidden mb-2"
       style={{ width: "47%" }}
       onPress={() => router.push(`/home/user/${userId}`)}
     >

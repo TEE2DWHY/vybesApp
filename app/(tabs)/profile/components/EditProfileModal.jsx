@@ -117,7 +117,11 @@ const EditProfileModal = ({
                 Wallet Balance:
               </Text>
               <TextInput
-                value={userData?.walletBalance.toString()}
+                value={
+                  userData?.walletBalance === null
+                    ? 0
+                    : userData?.walletBalance.toString()
+                }
                 onChangeText={(text) =>
                   handleInputChange("walletBalance", text)
                 }

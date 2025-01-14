@@ -11,7 +11,12 @@
   "expo": {
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "listUnknownPackages": false
+        "listUnknownPackages": false,
+        "exclude": [
+          "@fortawesome/fontawesome-svg-core",
+          "@fortawesome/free-solid-svg-icons",
+          "@fortawesome/react-native-fontawesome"
+        ]
       }
     }
   },
@@ -27,27 +32,27 @@
     "@react-navigation/stack": "^7.1.1",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
-    "expo": "^52.0.23",
-    "expo-av": "~15.0.1",
-    "expo-checkbox": "~4.0.0",
-    "expo-dev-client": "~5.0.8",
-    "expo-document-picker": "~13.0.1",
+    "expo": "~52.0.25",
+    "expo-av": "~15.0.2",
+    "expo-checkbox": "~4.0.1",
+    "expo-dev-client": "~5.0.9",
+    "expo-document-picker": "~13.0.2",
     "expo-file-system": "~18.0.6",
-    "expo-image-picker": "~16.0.3",
-    "expo-linear-gradient": "~14.0.1",
-    "expo-linking": "~7.0.3",
-    "expo-local-authentication": "~15.0.1",
-    "expo-notifications": "~0.29.11",
+    "expo-image-picker": "~16.0.4",
+    "expo-linear-gradient": "~14.0.2",
+    "expo-linking": "~7.0.4",
+    "expo-local-authentication": "~15.0.2",
+    "expo-notifications": "~0.29.12",
     "expo-radio-button": "^1.0.8",
-    "expo-router": "~4.0.15",
-    "expo-status-bar": "~2.0.0",
-    "expo-system-ui": "~4.0.6",
+    "expo-router": "~4.0.16",
+    "expo-status-bar": "~2.0.1",
+    "expo-system-ui": "~4.0.7",
     "moti": "^0.29.0",
     "nativewind": "^4.1.23",
     "paystack-react-native": "^0.2.1",
     "react": "18.3.1",
     "react-date-range": "^2.0.1",
-    "react-native": "0.76.5",
+    "react-native": "0.76.6",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-image-picker": "^7.1.2",
     "react-native-paystack-webview": "^4.3.1",

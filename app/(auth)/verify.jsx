@@ -7,11 +7,9 @@ import {
   Image,
   Alert,
   ScrollView,
-  ActivityIndicator, // Import ActivityIndicator for the spinner
+  ActivityIndicator,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import verifyImage from "../../assets/images/verify-img.png";
 import topVerify from "../../assets/images/top-verify.png";
 import { StatusBar } from "expo-status-bar";
@@ -19,6 +17,7 @@ import { router } from "expo-router";
 import { getItem } from "../../utils/AsyncStorage";
 import { authInstance } from "../../config/axios";
 import { formatTime } from "../../utils/formatTime";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const Verify = () => {
   const [verificationCode, setVerificationCode] = useState(Array(6).fill(""));
@@ -119,11 +118,7 @@ const Verify = () => {
           <View className="flex-row items-center mt-4 mb-6 ">
             <TouchableOpacity onPress={() => router.push("/sign-up")}>
               <View className="ml-4">
-                <FontAwesomeIcon
-                  icon={faChevronLeft}
-                  size={24}
-                  color={"gray"}
-                />
+                <AntDesign name="left" size={24} color="gray" />
               </View>
             </TouchableOpacity>
             <Image
