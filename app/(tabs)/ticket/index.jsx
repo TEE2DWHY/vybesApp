@@ -38,13 +38,12 @@ const Ticket = () => {
     setLoading(true);
     setNoEventsMessage("");
     try {
-      let url = "http://localhost:8000/v1/event/all-events"; // Default URL
+      let url = "https://vybesapi.onrender.com/v1/event/all-events";
 
-      // Adjust the URL for event type or location-based search
       if (eventType) {
-        url = `http://localhost:8000/v1/event/get-event-by-event-type?eventType=${eventType}`;
+        url = `https://vybesapi.onrender.com/v1/event/get-event-by-event-type?eventType=${eventType}`;
       } else if (location) {
-        url = `http://localhost:8000/v1/event/search-by-location?location=${location}`;
+        url = `https://vybesapi.onrender.com/v1/event/search-by-location?location=${location}`;
       }
 
       const response = await axios.get(url);
