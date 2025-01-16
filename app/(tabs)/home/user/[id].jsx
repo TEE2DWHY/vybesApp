@@ -594,10 +594,13 @@ const UserProfile = () => {
                 Get exclusive access to chat, calls, and instant matching with{" "}
                 <Text className="capitalize">{payload?.user?.userName}</Text>{" "}
                 for{" "}
-                <Text className="text-[#7A91F9]">
+                <Text className="text-[#7A91F9] font-axiformaMedium">
                   {payload?.user?.premiumRate} Vybes Coins
                 </Text>
                 .
+              </Text>
+              <Text className="text-red-500 text-sm font-axiformaRegular text-center italic">
+                *Subscription is valid for one month
               </Text>
               <Image
                 source={locked}

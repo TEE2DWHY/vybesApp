@@ -112,7 +112,7 @@ const Ticket = () => {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholder="Search By Location"
-                className="font-axiformaRegular text-sm w-4/5 mt-[-4px]"
+                className="font-axiformaRegular text-sm w-4/5"
               />
             </View>
             <TouchableOpacity onPress={handleSearch}>

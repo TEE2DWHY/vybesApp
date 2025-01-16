@@ -62,7 +62,10 @@ const Verify = () => {
         );
       }
     } else if (verificationCode.includes("")) {
-      return Alert.alert("Please provide the complete verification code.");
+      return Alert.alert(
+        "Note",
+        "Please provide the complete verification code."
+      );
     } else {
       setIsLoading(true); // Show spinner before API call
       const registrationToken = verificationCode.join("");

@@ -47,8 +47,6 @@ const Transfer = () => {
   const params = useLocalSearchParams();
   const { id } = params;
 
-  console.log(id);
-
   const {
     payload,
     isLoading,

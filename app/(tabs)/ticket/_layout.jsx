@@ -7,6 +7,7 @@ const TicketLayout = () => {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="event/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="buyticket" options={{ headerShown: false }} />
       </Stack>
     </>
   );

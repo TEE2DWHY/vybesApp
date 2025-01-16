@@ -84,7 +84,10 @@ const SignUp = () => {
       );
     } catch (error) {
       console.log(error);
-      Alert.alert(error.response?.data?.message || "An error occurred");
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "An error occurred"
+      );
     } finally {
       setIsLoading(false);
     }

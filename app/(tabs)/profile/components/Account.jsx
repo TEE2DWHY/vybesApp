@@ -99,14 +99,14 @@ const Account = ({ switchTab }) => {
               Completely.
             </Text>
             <View className="flex-row gap-12 mt-2 mb-3">
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 className="rounded-md bg-red-500 py-3 px-6"
                 onPress={() => setShowSetUpModal(false)}
               >
                 <Text className="font-axiformaRegular text-white-normal">
                   Cancel
                 </Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <TouchableOpacity
                 className="rounded-md bg-blue-500  py-3 px-6"
                 onPress={switchTab}

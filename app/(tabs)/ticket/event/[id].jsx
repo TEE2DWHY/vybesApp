@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   Modal,
   Animated,
+  Alert,
 } from "react-native";
-// import ticketFour from "../../../../assets/images/ticket-4.png";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -55,6 +55,8 @@ const Event = () => {
     fetchEvents();
   }, [id]);
 
+  console.log(ticket);
+
   const toggleModal = () => {
     setShowModal(!showModal);
     Animated.timing(slideAnim, {
@@ -62,6 +64,16 @@ const Event = () => {
       duration: 300,
       useNativeDriver: true,
     }).start();
+  };
+
+  // Function to check if selected ticket exists in the tickets array
+  const checkTicketAvailability = (ticketType) => {
+    return tickets.some((ticketItem) => {
+      return (
+        ticketItem.type &&
+        ticketItem?.type.toLowerCase() === ticketType.toLowerCase()
+      );
+    });
   };
 
   return (
@@ -235,7 +247,24 @@ const Event = () => {
         {/* Buy Ticket Button */}
         <View className="px-6 mb-10 w-2/5 self-center my-6">
           <TouchableOpacity
-            onPress={() => router.push("/profile/ticketPayment")}
+            onPress={() => {
+              if (!selectedTicket) {
+                return Alert.alert("Note", "Please select a ticket type");
+              }
+
+              // Check if the selected ticket is available
+              if (!checkTicketAvailability(selectedTicket)) {
+                return Alert.alert(
+                  "Ticket Not Available",
+                  `${selectedTicket} not available for this event.`
+                );
+              }
+
+              // Proceed to buy ticket
+              router.push(
+                `ticket/buyticket?id=${id}&ticketType=${selectedTicket}`
+              );
+            }}
             className="bg-[#8B5CF6] py-4 rounded-full"
           >
             <Text className="text-white-normal text-center font-axiformaRegular">
