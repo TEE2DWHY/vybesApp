@@ -21,6 +21,7 @@ import { Paystack } from "react-native-paystack-webview";
 import { useAccount } from "../../../hooks/useAccount";
 import { useToken } from "../../../hooks/useToken";
 import axios from "axios";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const BuyTicket = () => {
   const publicKey = process.env.EXPO_PUBLIC_PAYSTACK_API_PUBLIC_KEY;
@@ -76,7 +77,7 @@ const BuyTicket = () => {
     const getTicketPrice = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/event/get-ticket-price/${id}/${ticketType}`
+          `https://vybesapi.onrender.com/v1/event/get-ticket-price/${id}/${ticketType}`
         );
         console.log(response.data);
         setTicketPrice(Number(response.data?.message?.price));
@@ -379,6 +380,23 @@ const BuyTicket = () => {
               ))}
             </View>
           </>
+        )}
+
+        {(selectedMethod === "Quickteller" || selectedMethod === "USSD") && (
+          <ScrollView>
+            <View className="my-20 flex-row items-center justify-center gap-2">
+              <View>
+                <MaterialCommunityIcons
+                  name="parachute"
+                  size={24}
+                  color="#a241ee"
+                />
+              </View>
+              <Text className="text-[#2B3357] text-lg font-axiformaRegular">
+                {`${selectedMethod} Is Coming Soon...`}
+              </Text>
+            </View>
+          </ScrollView>
         )}
       </ScrollView>
       <StatusBar style="dark" backgroundColor="#fff" />
