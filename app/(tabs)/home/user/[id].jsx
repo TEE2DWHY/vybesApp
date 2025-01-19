@@ -41,6 +41,7 @@ const UserProfile = () => {
   const [showTooltip, setShowTooltip] = useState(true);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const [storyId, setStoryId] = useState("");
+  const [isContact, setIsContact] = useState(false);
 
   const {
     payload,
@@ -212,6 +213,36 @@ const UserProfile = () => {
       left: locationX - 50,
     });
   };
+
+  useEffect(() => {
+    if (token && payload?.user) {
+      (async () => {
+        try {
+          const response = await axios.get(
+            "https://vybesapi.onrender.com/v1/contact/get-all-friends",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(JSON.stringify(response.data, null, 2));
+          const contact = response?.data?.payload.map(
+            (contacts) => contacts._id
+          );
+          console.log(contact);
+          console.log("userId", payload?.user?._id);
+          const isUserAContact = contact.some(
+            (id) => id === payload?.user?._id
+          );
+          setIsContact(isUserAContact);
+        } catch (error) {
+          console.log(error);
+          Alert.alert("Error", error?.response?.data?.message);
+        }
+      })();
+    }
+  }, [token, payload?.user]);
 
   return (
     <SafeAreaView className="mt-10">
@@ -494,7 +525,13 @@ const UserProfile = () => {
                       `Subscribe to ${payload?.user?.userName}'s to access this feature.`
                     );
                   }
-                  // router.push()
+                  if (!isContact) {
+                    return Alert.alert(
+                      "Note",
+                      "You need to be friends to chat."
+                    );
+                  }
+                  router.push(`/chat/conversation/${payload?.user?._id}`);
                 }}
               >
                 <Entypo name="chat" size={24} color="#fff" />

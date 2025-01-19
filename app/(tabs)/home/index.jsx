@@ -110,10 +110,10 @@ const Home = () => {
   };
 
   const handleApplyFilter = async (filterCriteria) => {
-    setIsFiltering(true); // Show the spinner while filtering
+    setIsFiltering(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/v1/user/filter-users`,
+        `https://vybesapi.onrender.com/v1/user/filter-users`,
         {
           params: {
             accountType: filterCriteria.accountType.join(","),
