@@ -16,6 +16,11 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["vybesapp"]
+          }
+        ],
         "NSFaceIDUsageDescription": "We need to use Face ID to secure your account."
       },
       "bundleIdentifier": "com.tee2dwhy.vybesapp"
@@ -25,6 +30,20 @@
         "foregroundImage": "./assets/images/vybe.png",
         "backgroundColor": "#fff"
       },
+      // "intentFilters": [
+      //   {
+      //     "action": "VIEW",
+      //     "autoVerify": true,
+      //     "data": [
+      //       {
+      //         "scheme": "https",
+      //         "host": "*.onrender.com",
+      //         "pathPrefix": "/records"
+      //       }
+      //     ],
+      //     "category": ["BROWSABLE", "DEFAULT"]
+      //   }
+      // ],
       "permissions": [
         "INTERNET",
         "android.permission.USE_BIOMETRIC",

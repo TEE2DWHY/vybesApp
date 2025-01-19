@@ -9,10 +9,9 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import axios from "axios";
-import { getItem } from "../utils/AsyncStorage";
 import { useToken } from "../hooks/useToken";
 
-const FilterModal = ({ onClose }) => {
+const FilterModal = ({ onClose, setFilteredUsersData, onApplyFilter }) => {
   const token = useToken();
   const [filterCriteria, setFilterCriteria] = useState({
     accountType: [],
@@ -161,7 +160,7 @@ const FilterModal = ({ onClose }) => {
 
     try {
       const response = await axios.get(
-        `https://vybesapi.onrender.com/v1/user/filter-users`,
+        `http://localhost:8000/v1/user/filter-users`,
         {
           params: queryParams,
           headers: {
@@ -170,8 +169,11 @@ const FilterModal = ({ onClose }) => {
         }
       );
 
-      Alert.alert("Result", response.data.message);
-      console.log(response.data);
+      Alert.alert("Users Filtered", response.data.message);
+      // console.log(JSON.stringify(response.data?.payload?.users, null, 2)); //The null, 2 parameters will pretty-print the JSON data with indentation for better readability.
+      setFilteredUsersData(response.data?.payload?.users);
+      onClose();
+      onApplyFilter(filterCriteria);
     } catch (error) {
       console.error(error.response.data.message);
       Alert.alert("Error", error.response.data.message);
@@ -187,12 +189,12 @@ const FilterModal = ({ onClose }) => {
           activeOpacity={1}
         />
         <View className="absolute bottom-0 left-0 right-0 z-10 bg-purple-darker rounded-t-[40px] h-fit py-10">
-          <View className="flex-row items-center justify-between px-5">
+          <View className="flex-row items-center justify-between px-5 mb-">
             <Text className="font-axiformaBlack text-white-normal">
               Filter Profiles
             </Text>
             <TouchableOpacity onPress={onClose}>
-              <Feather name="sliders" size={24} style={{ color: "#fff" }} />
+              <Feather name="sliders" size={20} style={{ color: "#fff" }} />
             </TouchableOpacity>
           </View>
           <ScrollView className="px-5 mt-4">

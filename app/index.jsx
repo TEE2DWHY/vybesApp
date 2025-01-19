@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
   SafeAreaView,
   ScrollView,
   Text,
   View,
+  Linking,
+  Image,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native"; // For navigation
 import logo from "../assets/images/logo.jpg";
 import topVector from "../assets/images/home-vector.png";
 import bottomVector from "../assets/images/home-vector2.png";
@@ -17,15 +18,32 @@ import { Spinner } from "../components/Spinner";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
+  // const navigation = useNavigation();
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
+    // const handleDeepLink = async (url) => {
+    //   const regex = /vybesapp:\/\/home\/user\/([a-f0-9]{24})/; // Regex to match the user profile deep link
+    //   const match = url.match(regex);
+
+    //   if (match && match[1]) {
+    //     const userId = match[1];
+    //     navigation.navigate("Profile", { userId });
+    //   } else {
+    //     // If the app is not installed, open the Play Store link
+    //     Linking.openURL(
+    //       "https://play.google.com/store/apps/details?id=com.tee2dwhy.vybesapp"
+    //     ).catch((err) => console.error("Failed to open Play Store:", err));
+    //   }
+    // };
+
+    const handleAppLaunch = async () => {
       const isAppLaunched = await getItem("isAppLaunched");
       const isLoggedIn = await getItem("isLoggedIn");
 
       if (isAppLaunched && !isLoggedIn) {
         return router.replace("/sign-in");
       }
+
       if (isLoggedIn) {
         return router.replace("/home");
       } else {
@@ -37,7 +55,23 @@ const App = () => {
       }
     };
 
-    checkLoginStatus().finally(() => setLoading(false));
+    handleAppLaunch().finally(() => setLoading(false));
+
+    // // Listen for deep links
+    // const deepLinkListener = Linking.addEventListener("url", (event) => {
+    //   handleDeepLink(event.url);
+    // });
+
+    // // Handle deep links if the app is opened via one
+    // Linking.getInitialURL().then((url) => {
+    //   if (url) {
+    //     handleDeepLink(url);
+    //   }
+    // });
+
+    // return () => {
+    //   deepLinkListener.remove();
+    // };
   }, []);
 
   if (loading) {

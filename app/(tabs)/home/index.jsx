@@ -30,6 +30,8 @@ const Home = () => {
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const token = useToken();
   const [currentYear, setCurrentYear] = useState("");
+  const [filteredUsersData, setFilteredUsersData] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -77,12 +79,12 @@ const Home = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await getAllUsers();
+    setFilteredUsersData(allUsers?.users || []);
     await fetchNotifications();
     setRefreshing(false);
   };
 
   const renderItem = ({ item }) => {
-    // Don't render user if no image exists
     if (!item.image) {
       return null;
     }
@@ -100,7 +102,37 @@ const Home = () => {
     );
   };
 
-  const filteredUsers = allUsers?.users?.filter((user) => user.image); // Filter users without image
+  const filteredUsers = allUsers?.users?.filter((user) => user.image);
+
+  const handleFilterUsers = (filteredData) => {
+    setIsFiltering(false);
+    setFilteredUsersData(filteredData);
+  };
+
+  const handleApplyFilter = async (filterCriteria) => {
+    setIsFiltering(true); // Show the spinner while filtering
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/user/filter-users`,
+        {
+          params: {
+            accountType: filterCriteria.accountType.join(","),
+            gender: filterCriteria.gender,
+            availability: filterCriteria.availability,
+            distance: filterCriteria.distance,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update the filtered users
+      handleFilterUsers(response.data?.payload?.users || []);
+    } catch (error) {
+      console.error("Error fetching filtered users:", error);
+      setIsFiltering(false); // Stop the spinner in case of error
+    }
+  };
 
   return (
     <SafeAreaView className="h-full bg-gray-200 pt-8">
@@ -149,13 +181,15 @@ const Home = () => {
         </Text>
       </View>
 
-      {isUsersLoading ? (
+      {isUsersLoading || isFiltering ? (
         <View className="flex-1 justify-center items-center">
           <Spinner />
         </View>
       ) : (
         <FlatList
-          data={filteredUsers}
+          data={
+            filteredUsersData?.length > 0 ? filteredUsersData : filteredUsers
+          }
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingHorizontal: 20 }}
@@ -172,7 +206,11 @@ const Home = () => {
       )}
 
       {showFilterModal && (
-        <FilterModal onClose={() => setShowFilterModal(false)} />
+        <FilterModal
+          onClose={() => setShowFilterModal(false)}
+          setFilteredUsersData={setFilteredUsersData}
+          onApplyFilter={handleApplyFilter}
+        />
       )}
       {showSearchModal && (
         <SearchModal
