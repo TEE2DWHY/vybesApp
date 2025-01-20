@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { connectSocket, disconnectSocket } from "../../../config/socket";
 import { useToken } from "../../../hooks/useToken";
@@ -19,17 +20,29 @@ import Empty from "./components/Empty";
 import HeaderComponent from "./components/HeaderComponent";
 import { router } from "expo-router";
 import { format, parseISO, isToday } from "date-fns";
+import { setItem, getItem } from "../../../utils/AsyncStorage";
 
 const Chat = () => {
   const token = useToken();
   const { user } = useAccount();
   const [contacts, setContacts] = useState([]);
+  const [pinnedChat, setPinnedChat] = useState(null);
   const [showChatModal, setShowChatModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef(null);
 
+  // Retrieve pinned chat from AsyncStorage when the app loads
   useEffect(() => {
+    const getPinnedChat = async () => {
+      const savedPinnedChat = await getItem("pinnedChat");
+      if (savedPinnedChat) {
+        setPinnedChat(savedPinnedChat); // Set the saved pinned chat
+      }
+    };
+
+    getPinnedChat();
+
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
@@ -41,7 +54,6 @@ const Chat = () => {
           }
         );
         setContacts(response.data.payload);
-        // console.log(response.data?.payload);
       } catch (error) {
         console.log(error);
       } finally {
@@ -58,7 +70,6 @@ const Chat = () => {
       });
 
       socket.current.on("getMessage", (message) => {
-        // Update contacts with the new message
         setContacts((prevContacts) => {
           return prevContacts.map((contact) => {
             if (
@@ -77,19 +88,67 @@ const Chat = () => {
       });
     }
 
-    // Cleanup socket connection on component unmount
     return () => {
-      disconnectSocket(); // Properly disconnect socket when the component is unmounted
+      disconnectSocket();
     };
-  }, [token]); // Make sure the useEffect reruns when token or user changes
+  }, [token]);
+
+  // Save pinned chat to AsyncStorage whenever it changes
+  useEffect(() => {
+    if (pinnedChat) {
+      setItem("pinnedChat", pinnedChat); // Use your setItem function to save pinned chat
+    }
+  }, [pinnedChat]);
 
   const formatTime = (timeString) => {
     if (!timeString) {
-      return ""; // Return an empty string or a fallback value if timeString is invalid
+      return "";
     }
 
     const date = parseISO(timeString);
     return isToday(date) ? format(date, "HH:mm") : format(date, "EEE, HH:mm");
+  };
+
+  const handleLongPress = (contact) => {
+    const isCurrentlyPinned =
+      pinnedChat && pinnedChat.contact._id === contact.contact._id;
+
+    Alert.alert(
+      "Chat Options",
+      isCurrentlyPinned
+        ? "What would you like to do?"
+        : "What would you like to do?",
+      [
+        {
+          text: isCurrentlyPinned ? "Unpin Chat" : "Pin Chat",
+          onPress: () => (isCurrentlyPinned ? unpinChat() : pinChat(contact)),
+        },
+        {
+          text: "Delete Chat",
+          onPress: () => deleteChat(contact),
+        },
+        { text: "Cancel", style: "cancel" },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const pinChat = (contact) => {
+    // Set the pinned chat
+    setPinnedChat(contact);
+  };
+
+  const unpinChat = () => {
+    setPinnedChat(null); // Unpin the currently pinned chat
+  };
+
+  const deleteChat = (contact) => {
+    setContacts((prevContacts) =>
+      prevContacts.filter((c) => c.contact._id !== contact.contact._id)
+    );
+    if (pinnedChat && pinnedChat.contact._id === contact.contact._id) {
+      setPinnedChat(null); // Unpin if the deleted chat was pinned
+    }
   };
 
   const renderItem = ({ item }) => {
@@ -101,84 +160,63 @@ const Chat = () => {
       ? formatTime(item.time)
       : `Say hi to ${contact?.userName}`;
 
+    const isPinned = pinnedChat && pinnedChat.contact._id === contact._id;
+
     return (
-      <View className="flex-row items-center justify-between my-2 border-b border-b-gray-200 pb-2">
-        <View className="flex-row items-center gap-4">
-          <TouchableOpacity
-            onPress={() => router.push(`/home/user/${contact?._id}`)}
-          >
+      <TouchableOpacity
+        onLongPress={() => handleLongPress(item)}
+        onPress={() => router.push(`/chat/conversation/${contact._id}`)}
+      >
+        <View className="flex-row items-center justify-between my-2 border-b border-b-gray-200 pb-2">
+          <View className="flex-row items-center gap-4">
             <Image
               source={{ uri: contact.image }}
               className="w-12 h-12 rounded-full"
             />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="flex-1"
-            onPress={() => router.push(`/chat/conversation/${contact._id}`)}
-          >
-            <View className="flex-row items-center justify-between">
-              <View className="flex-row items-center gap-2">
-                <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
-                  {contact.userName}
-                </Text>
-                <View
-                  className={`${
-                    contact.accountType === "vyber"
-                      ? "bg-[#7A91F9]"
-                      : "bg-[#AAD9C3]"
-                  } px-2 py-1 rounded-md`}
-                >
-                  <Text
-                    className={`text-white font-axiformaRegular text-xs capitalize ${
-                      contact.accountType === "vyber"
-                        ? "text-[#224d7f]"
-                        : "text-[#6BADA9]"
-                    }`}
-                  >
-                    {contact.accountType}
+            <View className="flex-1">
+              <View className="flex-row items-center justify-between text-purple-normal">
+                <View className="flex-row items-center gap-2">
+                  <Text className="text-[#495795] font-axiformaBlack text-base capitalize">
+                    {contact.userName}
                   </Text>
+                  {isPinned && (
+                    <MaterialCommunityIcons
+                      name="pin"
+                      size={17}
+                      color="#a241ee;"
+                    />
+                  )}
+                  {isOnline && (
+                    <View className="bg-green-500 w-2 h-2 rounded-full" />
+                  )}
                 </View>
-                {isOnline && (
-                  <View className="bg-green-500 w-2 h-2 rounded-full" />
-                )}
+                <Text className="text-[#546881] font-axiformaRegular text-sm">
+                  {formattedTime}
+                </Text>
               </View>
-              <Text className={`text-[#546881] font-axiformaRegular text-sm`}>
-                {formattedTime}
-              </Text>
-            </View>
-            <View className="flex-row items-center gap-2 w-[90%]">
-              {lastMessage ? (
-                <>
-                  {lastMessage.status === "read" ? (
-                    <MaterialCommunityIcons
-                      name="check-all"
-                      size={16}
-                      color="#A7C5EB"
-                    />
-                  ) : lastMessage.status === "delivered" ? (
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={16}
-                      color="#F6C244"
-                    />
-                  ) : null}
+              <View className="flex-row items-center gap-2 w-[90%]">
+                {lastMessage ? (
                   <Text className="text-[#909DAD] font-axiformaRegular text-sm flex-1">
                     {lastMessage.text || lastMessage}
                   </Text>
-                </>
-              ) : (
-                // Display default message when lastMessage is null
-                <Text className="text-[#909DAD] font-axiformaRegular text-sm">
-                  Start a conversation with {contact.userName}
-                </Text>
-              )}
+                ) : (
+                  <Text className="text-[#909DAD] font-axiformaRegular text-sm">
+                    Start a conversation with {contact.userName}
+                  </Text>
+                )}
+              </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
+
+  const filteredContacts = pinnedChat
+    ? contacts.filter(
+        (contact) => contact.contact._id !== pinnedChat.contact._id
+      ) // Exclude pinned contact from the list
+    : contacts;
 
   return (
     <>
@@ -190,9 +228,16 @@ const Chat = () => {
         ) : (
           <FlatList
             className="mb-14"
-            data={contacts}
+            data={[pinnedChat, ...filteredContacts].filter(Boolean)} // Add pinned chat first
             renderItem={renderItem}
-            keyExtractor={(item) => item.contact?._id}
+            keyExtractor={(item, index) => {
+              if (item.contact?._id) {
+                return item.contact._id; // If it's a contact, use the contact's ID
+              } else {
+                // If it's the pinned chat, append a unique prefix
+                return `pinned-${item.contact._id}`;
+              }
+            }}
             ListHeaderComponent={() => (
               <HeaderComponent
                 showChatModal={() => setShowChatModal(!showChatModal)}

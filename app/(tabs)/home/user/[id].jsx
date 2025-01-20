@@ -226,12 +226,12 @@ const UserProfile = () => {
               },
             }
           );
-          console.log(JSON.stringify(response.data, null, 2));
+          // console.log(JSON.stringify(response.data, null, 2));
           const contact = response?.data?.payload.map(
             (contacts) => contacts._id
           );
           console.log(contact);
-          console.log("userId", payload?.user?._id);
+          // console.log("userId", payload?.user?._id);
           const isUserAContact = contact.some(
             (id) => id === payload?.user?._id
           );

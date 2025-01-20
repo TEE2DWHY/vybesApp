@@ -81,7 +81,7 @@ const Transactions = () => {
             className="flex-row justify-between mb-8 border-b pb-1 border-[#EEF6FF]"
           >
             <View className="gap-4">
-              <Text className="font-axiformaBlack text-[#3D4C5E]">{type}</Text>
+              <Text className="font-axiformaMedium text-[#3D4C5E]">{type}</Text>
               {(type === "Transferred Coins" || type === "Received Coins") && (
                 <TouchableOpacity
                   onPress={() =>

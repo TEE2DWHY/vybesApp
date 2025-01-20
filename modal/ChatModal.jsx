@@ -18,7 +18,7 @@ const ChatModal = () => {
       <View className="flex-row gap-4 items-center py-4 px-4 border-b border-[#F2F4F6]">
         <Entypo name="pin" size={20} color="#A3ADBB" />
         <Text className="text-[#3D4C5E] font-axiformaRegular text-base">
-          Pin Chat
+          Delete Chats
         </Text>
       </View>
       <View className="flex-row gap-4 items-center py-4 px-4 border-b border-[#F2F4F6]">

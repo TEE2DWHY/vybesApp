@@ -12,6 +12,7 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -359,8 +360,25 @@ const Conversation = () => {
               </View>
 
               <View className="flex-row gap-4 items-center">
-                <AntDesign name="videocamera" size={24} color="#7A91F9" />
-                <Ionicons name="call-outline" size={24} color="#7A91F9" />
+                <AntDesign
+                  name="videocamera"
+                  size={24}
+                  color="#7A91F9"
+                  onPress={() =>
+                    Alert.alert("Coming Soon...", "This feature is coming soon")
+                  }
+                />
+                <Ionicons
+                  name="call-outline"
+                  size={24}
+                  color="#7A91F9"
+                  onPress={() => {
+                    Alert.alert(
+                      "Coming Soon...",
+                      "This feature is coming soon"
+                    );
+                  }}
+                />
                 <Entypo
                   name="dots-three-vertical"
                   size={24}
