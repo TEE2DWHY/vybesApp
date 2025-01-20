@@ -21,6 +21,7 @@ import { Paystack } from "react-native-paystack-webview";
 import { useAccount } from "../../../hooks/useAccount";
 import { useToken } from "../../../hooks/useToken";
 import axios from "axios";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Deposit = () => {
   const publicKey = process.env.EXPO_PUBLIC_PAYSTACK_API_PUBLIC_KEY;
@@ -109,7 +110,6 @@ const Deposit = () => {
             "Success",
             "Deposit Successful and Vybe Coins credited! Redirecting..."
           );
-          // console.log(backendResponse.data);
           await refetchUser();
           setTimeout(() => {
             router.push(
@@ -258,7 +258,7 @@ const Deposit = () => {
                     className="bg-blue-normal py-2 rounded-lg mb-4 "
                     onPress={handleProceed}
                   >
-                    <Text className="text-white-normal font-semibold text-base font-axiformaRegular text-center">
+                    <Text className="text-white-normal font-axiformaMedium text-base text-center">
                       Proceed
                     </Text>
                   </TouchableOpacity>
@@ -266,7 +266,7 @@ const Deposit = () => {
                     onPress={() => setShowConfirmationModal(false)}
                     className="bg-red-400 py-2 rounded-lg"
                   >
-                    <Text className="text-white-normal font-semibold text-base font-axiformaRegular text-center">
+                    <Text className="text-white-normal font-axiformaMedium text-base  text-center">
                       Cancel
                     </Text>
                   </TouchableOpacity>
@@ -421,6 +421,23 @@ const Deposit = () => {
               ))}
             </View>
           </>
+        )}
+
+        {(selectedMethod === "Quickteller" || selectedMethod === "USSD") && (
+          <ScrollView>
+            <View className="my-20 flex-row items-center justify-center gap-2">
+              <View>
+                <MaterialCommunityIcons
+                  name="parachute"
+                  size={24}
+                  color="#a241ee"
+                />
+              </View>
+              <Text className="text-[#2B3357] text-lg font-axiformaRegular">
+                {`${selectedMethod} Is Coming Soon...`}
+              </Text>
+            </View>
+          </ScrollView>
         )}
       </ScrollView>
       <StatusBar style="dark" backgroundColor="#fff" />
