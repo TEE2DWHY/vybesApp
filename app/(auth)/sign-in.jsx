@@ -101,7 +101,7 @@ const SignIn = () => {
                 Time
               </Text>
               <View className="mt-5 px-5">
-                <Text className="text-base font-axiformaBlack mb-2">
+                <Text className="text-base font-axiformaMedium mb-2">
                   Your Vybes & Date E-Mail
                 </Text>
                 <TextInput
@@ -114,7 +114,7 @@ const SignIn = () => {
                   autoComplete="email"
                   autoCapitalize="none"
                 />
-                <Text className="text-base font-axiformaBlack mb-2">
+                <Text className="text-base font-axiformaMedium mb-2">
                   Your Vybes & Date Password
                 </Text>
                 <View className="border-b border-purple-300 py-2 mb-4 flex-row items-center">

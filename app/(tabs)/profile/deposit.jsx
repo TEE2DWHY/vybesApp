@@ -63,7 +63,7 @@ const Deposit = () => {
       return setError("Please Enter A Valid Amount");
     }
     if (numericValue < 1000) {
-      return Alert.alert("Note", "Minimum Deposit Amount is 1000 Naira");
+      return Alert.alert("Error", "Minimum Deposit is 1000 Naira");
     }
     const availableBalance = user?.walletBalance / 0.005;
     if (numericValue > availableBalance) {

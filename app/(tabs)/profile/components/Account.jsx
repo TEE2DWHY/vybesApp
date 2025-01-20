@@ -72,7 +72,7 @@ const Account = ({ switchTab }) => {
   };
 
   useEffect(() => {
-    if (!user?.accountType || !user?.phoneNumber || user?.height == null) {
+    if (user?.newUser) {
       setShowSetUpModal(true);
     }
     return () => {
