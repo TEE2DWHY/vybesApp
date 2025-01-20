@@ -1,91 +1,79 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   ScrollView,
-  Image,
   TouchableOpacity,
   Platform,
 } from "react-native";
+import axios from "axios";
+import { useToken } from "../../../../hooks/useToken";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Entypo from "@expo/vector-icons/Entypo";
+import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import ActivitiesModal from "../../../../modal/ActivitiesModal";
-
-const activities = [
-  {
-    id: 1,
-    username: "Anita_jay1",
-    type: "Vyber",
-    activity: "wants to be friends with you",
-    icon: "bell-alt",
-    iconType: "Fontisto",
-    profileImage: "https://randomuser.me/api/portraits/women/1.jpg",
-  },
-  {
-    id: 2,
-    username: "Ade12",
-    type: "Baddie",
-    activity: "wants you to grant access to view your stories and profile",
-    icon: "diamond-stone",
-    iconType: "MaterialCommunityIcons",
-    profileImage: "https://randomuser.me/api/portraits/women/2.jpg",
-  },
-  {
-    id: 3,
-    username: "Jayden1245",
-    type: "Vyber",
-    activity: "liked your story",
-    icon: "heart",
-    iconType: "Entypo",
-    profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-  },
-  {
-    id: 4,
-    username: "Demi_lade",
-    type: "Vyber",
-    activity: "checked some of your stories",
-    icon: "bell-alt",
-    iconType: "Fontisto",
-    profileImage: "https://randomuser.me/api/portraits/women/3.jpg",
-  },
-  {
-    id: 5,
-    username: "Phil_elr",
-    type: "Baddie",
-    activity: "sent you some images",
-    icon: "image",
-    iconType: "MaterialIcons",
-    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
-  },
-  {
-    id: 6,
-    username: "Pelum_567",
-    type: "Vyber",
-    activity: "sent some coins to your wallet",
-    icon: "coins",
-    iconType: "FontAwesome5",
-    profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-  },
-  {
-    id: 7,
-    username: "Confirmed Transaction",
-    activity: "You received 450 vybe coin from @pelumi_567",
-    icon: "coins",
-    iconType: "FontAwesome5",
-    profileImage: "https://randomuser.me/api/portraits/lego/1.jpg",
-  },
-];
-
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 const Activities = () => {
+  const token = useToken();
+  const [activities, setActivities] = useState([]);
   const [showActivitiesModal, setShowActivitiesModal] = useState(false);
+  const [filterType, setFilterType] = useState("");
+
+  // Fetch all notifications
+  useEffect(() => {
+    const fetchAllNotifications = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/v1/notification/notifications`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setActivities(response.data?.payload || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (token) {
+      fetchAllNotifications();
+    }
+  }, [token]);
+
+  // Fetch recent notifications based on filter type
+  useEffect(() => {
+    const fetchRecentNotifications = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/v1/notification/recent-notifications`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { type: filterType },
+          }
+        );
+        setActivities(response.data?.payload || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (token && filterType) {
+      fetchRecentNotifications();
+    }
+  }, [filterType, token]); // Add filterType and token as dependencies
+
+  // Handle filter type selection from the modal
+  const handleSelectType = (type) => {
+    setFilterType(type); // Set the selected filter type
+    setShowActivitiesModal(false); // Close the modal after selection
+  };
+
   return (
     <ScrollView className="mt-8 mb-14">
-      <View className="flex-row justify-between item-center mb-4">
-        <Text className="text-base font-axiformaBlack text-[#2E3E5C]">
+      <View className="flex-row justify-between items-center mb-4">
+        <Text className="text-base font-axiformaMedium text-[#2E3E5C]">
           Recent Activities
         </Text>
         <TouchableOpacity
@@ -102,72 +90,93 @@ const Activities = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Activities Modal */}
+      {showActivitiesModal && (
+        <ActivitiesModal onSelectType={handleSelectType} />
+      )}
+
+      {/* Display Activities */}
       <ScrollView
-        className={`border border-[#dedee0] rounded-md  ${
-          Platform.OS === "ios" ? "h-[454px]" : ""
+        className={`border border-[#dedee0] rounded-lg  ${
+          Platform.OS === "ios" ? "h-[280px]" : "h-[300px]"
         } overflow-y-scroll bg-white-light`}
         showsVerticalScrollIndicator={false}
       >
-        {showActivitiesModal && <ActivitiesModal />}
-        {activities.map((activity) => (
-          <View
-            key={activity.id}
-            className="flex-row items-center  px-3 py-4 bg-white rounded-lg"
-          >
-            <Image
-              source={{ uri: activity.profileImage }}
-              className="h-12 w-12 rounded-full mr-3"
-            />
-            <View className="flex-1">
-              <View className="flex-row gap-4">
-                <Text className="text-sm font-axiformaBlack text-[#2E3E5C]">
-                  {activity.username}
-                </Text>
-                {activity.type && (
-                  <Text
-                    className={`${
-                      activity.type === "Baddie"
-                        ? "text-sm font-axiformaRegular bg-[#D9F3F1] px-1 text-[#6BADA9]"
-                        : "text-sm font-axiformaRegular bg-[#DBEBFF] px-1 text-[#6F9ACB]"
-                    }`}
-                  >
-                    {activity.type}
-                  </Text>
+        {Array.isArray(activities) && activities.length === 0 ? (
+          <View className="items-center justify-center h-[250px]">
+            <Feather name="activity" size={24} color="purple" />
+            <Text className="text-center text-gray-500 py-4 capitalize font-axiformaMedium">
+              {filterType
+                ? `No activities found yet for ${filterType}.`
+                : `No activities found yet.`}
+            </Text>
+          </View>
+        ) : (
+          activities.map((activity) => (
+            <View
+              key={activity._id}
+              className="flex-row items-center px-3 py-4 bg-white rounded-lg border-b border-gray-300"
+            >
+              <View className="flex justify-center items-center bg-purple-normal h-8 w-8 rounded-full mr-3">
+                {activity.type === "friendRequest" ? (
+                  <AntDesign name="plus" size={16} color="#fff" />
+                ) : activity.type === "transaction" ? (
+                  <FontAwesome name="send-o" size={16} color="#fff" />
+                ) : (
+                  ""
                 )}
               </View>
+              <View className="flex-1">
+                <View className="flex-row gap-4">
+                  <Text className="text-sm text-[#2E3E5C] font-axiformaMedium">
+                    {activity.title}
+                  </Text>
+                  {activity.type && (
+                    <Text
+                      className={`capitalize rounded-md ${
+                        activity.type === "Baddie"
+                          ? "text-sm font-axiformaRegular bg-[#D9F3F1] px-1 text-[#6BADA9]"
+                          : "text-sm font-axiformaRegular bg-[#DBEBFF] px-1 text-[#6F9ACB]"
+                      }`}
+                    >
+                      {activity.type === "friendRequest"
+                        ? "Friend Request"
+                        : activity.type}
+                    </Text>
+                  )}
+                </View>
 
-              <Text className="text-xs font-axiformaRegular text-[#546881] mt-3 capitalize">
-                {activity.activity}
-              </Text>
+                <Text className="text-xs font-axiformaRegular text-[#546881] mt-3 capitalize">
+                  {activity.activity || activity.message}
+                </Text>
+              </View>
+
+              <View className="flex-row items-center">
+                {/* Icons based on activity type */}
+                {activity.iconType === "Fontisto" && (
+                  <Fontisto name={activity.icon} size={20} color="#FFB053" />
+                )}
+                {activity.iconType === "MaterialCommunityIcons" && (
+                  <MaterialCommunityIcons
+                    name={activity.icon}
+                    size={20}
+                    color="#BF843E"
+                  />
+                )}
+                {activity.iconType === "Entypo" && (
+                  <Entypo name={activity.icon} size={20} color="#FF9574" />
+                )}
+                {activity.iconType === "FontAwesome5" && (
+                  <FontAwesome5
+                    name={activity.icon}
+                    size={20}
+                    color="#9941EE"
+                  />
+                )}
+              </View>
             </View>
-
-            <View className="flex-row items-center">
-              {activity.iconType === "Fontisto" && (
-                <Fontisto name={activity.icon} size={20} color="#FFB053" />
-              )}
-
-              {activity.iconType === "MaterialCommunityIcons" && (
-                <MaterialCommunityIcons
-                  name={activity.icon}
-                  size={20}
-                  color="#BF843E"
-                />
-              )}
-
-              {activity.iconType === "Entypo" && (
-                <Entypo name={activity.icon} size={20} color="#FF9574" />
-              )}
-
-              {activity.iconType === "MaterialIcons" && (
-                <MaterialIcons name={activity.icon} size={20} color="#7095BF" />
-              )}
-
-              {activity.iconType === "FontAwesome5" && (
-                <FontAwesome5 name={activity.icon} size={20} color="#9941EE" />
-              )}
-            </View>
-          </View>
-        ))}
+          ))
+        )}
       </ScrollView>
     </ScrollView>
   );

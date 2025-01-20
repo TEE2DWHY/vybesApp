@@ -1,19 +1,25 @@
-import { Text, View } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Fontisto from "@expo/vector-icons/Fontisto";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
-const ActivitiesModal = () => {
+const ActivitiesModal = ({ onSelectType }) => {
   return (
-    <View className="z-50 w-[200px] rounded-lg bg-white p-4 shadow-2xl border border-[#eeecec] absolute bg-white-normal right-0">
-      <View className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200">
-        <Fontisto name={"bell-alt"} size={22} color="#FFB053" />
+    <View className="z-50 w-[200px] rounded-lg bg-white p-4 border border-[#eeecec] absolute bg-white-normal right-0 top-12">
+      <TouchableOpacity
+        className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200"
+        onPress={() => onSelectType("friendRequest")}
+      >
+        <AntDesign name="plus" size={22} color="#FFB053" />
         <Text className="text-[#546881] font-axiformaRegular text-base">
-          Notification
+          Friend Request
         </Text>
-      </View>
-      <View className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200">
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200"
+        onPress={() => onSelectType("story")}
+      >
         <MaterialCommunityIcons
           name={"diamond-stone"}
           size={22}
@@ -22,25 +28,34 @@ const ActivitiesModal = () => {
         <Text className="text-[#546881] font-axiformaRegular text-base">
           Stories
         </Text>
-      </View>
-      <View className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200">
+      </TouchableOpacity>
+      <View
+        className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200"
+        onPress={() => onSelectType("like")}
+      >
         <Entypo name={"heart"} size={22} color="#FF9574" />
         <Text className="text-[#546881] font-axiformaRegular text-base">
           Likes
         </Text>
       </View>
-      <View className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200">
+      <TouchableOpacity
+        className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200"
+        onPress={() => onSelectType("bookmarks")}
+      >
         <FontAwesome5 name={"image"} size={22} color="#4A7CFF" />
         <Text className="text-[#546881] font-axiformaRegular text-base">
-          Image
+          Bookmarks
         </Text>
-      </View>
-      <View className="flex-row items-center gap-2 py-2 border-b border-gray-200">
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="flex-row items-center gap-2 py-2 border-b border-gray-200"
+        onPress={() => onSelectType("transaction")}
+      >
         <FontAwesome5 name={"file-invoice-dollar"} size={22} color="#7A44C2" />
         <Text className="text-[#546881] font-axiformaRegular text-base">
           Transactions
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

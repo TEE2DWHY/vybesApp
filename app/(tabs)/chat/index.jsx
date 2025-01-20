@@ -182,8 +182,8 @@ const Chat = () => {
                   {isPinned && (
                     <MaterialCommunityIcons
                       name="pin"
-                      size={17}
-                      color="#a241ee;"
+                      size={19}
+                      color="#1f35fa"
                     />
                   )}
                   {isOnline && (
