@@ -56,12 +56,19 @@ const Deposit = () => {
   };
 
   const handleAddMoneyNow = () => {
-    if (value === "" || value === 0) {
+    const cleanedValue = value.replace(/,/g, "");
+    const numericValue = Number(cleanedValue);
+    if (isNaN(numericValue) || numericValue === 0) {
       return setError("Please Enter A Valid Amount");
     }
-    if (Number(value) < 1000) {
+    if (numericValue < 1000) {
       return Alert.alert("Note", "Minimum Deposit Amount is 1000 Naira");
     }
+    const availableBalance = user?.walletBalance / 0.005;
+    if (numericValue > availableBalance) {
+      return Alert.alert("Error", "Insufficient Balance");
+    }
+
     setShowConfirmationModal(true);
   };
 
@@ -98,7 +105,10 @@ const Deposit = () => {
         );
 
         if (backendResponse.status === 200) {
-          alert("Deposit Successful and Vybe Coins credited! Redirecting...");
+          Alert.alert(
+            "Success",
+            "Deposit Successful and Vybe Coins credited! Redirecting..."
+          );
           // console.log(backendResponse.data);
           await refetchUser();
           setTimeout(() => {
@@ -107,14 +117,14 @@ const Deposit = () => {
             );
           }, 3000);
         } else {
-          alert("Deposit failed, please try again.");
+          Alert.alert("Error", "Deposit failed, please try again.");
         }
       } else {
-        alert("Payment failed, please try again.");
+        Alert.alert("Alert", "Payment failed, please try again.");
       }
     } catch (error) {
       console.error("Error during Paystack success:", error);
-      alert("Error occurred while processing payment.");
+      Alert.alert("Error", "Error occurred while processing payment.");
     }
   };
 
@@ -240,9 +250,9 @@ const Deposit = () => {
               onRequestClose={() => setShowConfirmationModal(false)}
             >
               <View className="flex-1 justify-center items-center bg-[#1b1b1b67] bg-opacity-50">
-                <View className="bg-white-normal p-4 rounded-lg w-[90%] border-2 border-gray-50 py-4 px-4">
-                  <Text className="text-gray-700 font-medium text-base mb-4 font-axiformaRegular">
-                    You are about to send {value} Naira to Vybes App.
+                <View className="bg-white-normal rounded-lg w-[90%] border-2 border-gray-50 py-4 px-4">
+                  <Text className="text-gray-700 font-axiformaMedium text-base mb-4 capitalize mt-2 text-center">
+                    You are about deposit {value} Naira to your Vybes Account.
                   </Text>
                   <TouchableOpacity
                     className="bg-blue-normal py-2 rounded-lg mb-4 "
@@ -276,10 +286,19 @@ const Deposit = () => {
                 activityIndicatorColor="#006BFF"
                 onSuccess={handlePaystackSuccess}
                 onCancel={() => {
-                  alert("Payment Cancelled");
+                  Alert.alert("Error", "User Canclled Payment.");
                   setShowPaystackModal(false);
                 }}
                 autoStart={true}
+                channels={[
+                  "bank_transfer",
+                  "bank",
+                  "card",
+                  "ussd",
+                  "apple_pay",
+                  "mobile_money",
+                  "eft",
+                ]}
                 onClose={() => setShowPaystackModal(false)}
               />
             )}
