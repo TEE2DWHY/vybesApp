@@ -23,7 +23,7 @@ const AddStory = () => {
   const decodedUri = decodeURIComponent(uri);
   const [caption, setCaption] = useState("");
   const [whoCanView, setWhOCanView] = useState(false);
-  const [viewer, setViewer] = useState("");
+  const [viewer, setViewer] = useState("vybersAndBaddie");
   const [isStorySent, setIsStorySent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaType, setMediaType] = useState("");

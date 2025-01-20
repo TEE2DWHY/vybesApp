@@ -27,7 +27,7 @@ const Activities = () => {
     const fetchAllNotifications = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/notification/notifications`,
+          `https://vybesapi.onrender.com/v1/notification/notifications`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -48,7 +48,7 @@ const Activities = () => {
     const fetchRecentNotifications = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/v1/notification/recent-notifications`,
+          `https://vybesapi.onrender.com/v1/notification/recent-notifications`,
           {
             headers: { Authorization: `Bearer ${token}` },
             params: { type: filterType },
@@ -98,14 +98,14 @@ const Activities = () => {
       {/* Display Activities */}
       <ScrollView
         className={`border border-[#dedee0] rounded-lg  ${
-          Platform.OS === "ios" ? "h-[280px]" : "h-[300px]"
+          Platform.OS === "ios" ? "h-[300px]" : "h-[300px]"
         } overflow-y-scroll bg-white-light`}
         showsVerticalScrollIndicator={false}
       >
         {Array.isArray(activities) && activities.length === 0 ? (
           <View className="items-center justify-center h-[250px]">
-            <Feather name="activity" size={24} color="purple" />
-            <Text className="text-center text-gray-500 py-4 capitalize font-axiformaMedium">
+            <Feather name="activity" size={24} color="#7e22ce" />
+            <Text className="text-center text-gray-500 py-4 capitalize font-axiformaRegular">
               {filterType
                 ? `No activities found yet for ${filterType}.`
                 : `No activities found yet.`}
@@ -119,7 +119,7 @@ const Activities = () => {
             >
               <View className="flex justify-center items-center bg-purple-normal h-8 w-8 rounded-full mr-3">
                 {activity.type === "friendRequest" ? (
-                  <AntDesign name="plus" size={16} color="#fff" />
+                  <AntDesign name="adduser" size={16} color="#fff" />
                 ) : activity.type === "transaction" ? (
                   <FontAwesome name="send-o" size={16} color="#fff" />
                 ) : (

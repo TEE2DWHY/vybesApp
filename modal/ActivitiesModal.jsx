@@ -29,7 +29,7 @@ const ActivitiesModal = ({ onSelectType }) => {
           Stories
         </Text>
       </TouchableOpacity>
-      <View
+      <TouchableOpacity
         className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200"
         onPress={() => onSelectType("like")}
       >
@@ -37,7 +37,7 @@ const ActivitiesModal = ({ onSelectType }) => {
         <Text className="text-[#546881] font-axiformaRegular text-base">
           Likes
         </Text>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity
         className="flex-row items-center gap-2 py-2 mb-2 border-b border-gray-200"
         onPress={() => onSelectType("bookmarks")}
