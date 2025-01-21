@@ -27,7 +27,6 @@ const BuyTicket = () => {
   const publicKey = process.env.EXPO_PUBLIC_PAYSTACK_API_PUBLIC_KEY;
   const [selectedMethod, setSelectedMethod] = useState("Bank Transfer");
   const paymentMethods = ["Bank Transfer", "Card", "Quickteller", "USSD"];
-  const [value, setValue] = useState("");
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showPaystackModal, setShowPaystackModal] = useState(false);
   const [error, setError] = useState("");
@@ -53,17 +52,11 @@ const BuyTicket = () => {
     return formatter.format(value);
   };
 
-  const handleChange = (text) => {
-    const cleanedText = text.replace(/[^0-9.]/g, "");
-    setValue(formatNumberWithCommas(cleanedText));
-  };
-
   const handleAddMoneyNow = () => {
-    if (value === "" || value === 0) {
-      return setError("Please Enter A Valid Amount");
-    }
-    if (Number(value) < 1000) {
-      return Alert.alert("Note", "Minimum Deposit Amount is 1000 Naira");
+    const price = Number(ticketPrice);
+    const availableBalance = user?.walletBalance / 0.005;
+    if (price > availableBalance) {
+      return Alert.alert("Error", "Insufficient Balance");
     }
     setShowConfirmationModal(true);
   };
@@ -79,7 +72,6 @@ const BuyTicket = () => {
         const response = await axios.get(
           `https://vybesapi.onrender.com/v1/event/get-ticket-price/${id}/${ticketType}`
         );
-        console.log(response.data);
         setTicketPrice(Number(response.data?.message?.price));
       } catch (error) {
         console.log(error?.response.data.message);
@@ -89,8 +81,32 @@ const BuyTicket = () => {
       getTicketPrice();
     }
   }, [token]);
-  console.log(ticketPrice);
 
+  const handlePaystackSuccess = async (response) => {
+    try {
+      const { status, data } = response;
+      const transactionRef = data?.transactionRef;
+      const reference = transactionRef?.reference;
+      if (status === "success" && reference) {
+        const response = await axios.post(
+          `https://vybesapi.onrender.com/v1/event/generate-ticket/${id}`,
+          { fullName: user?.fullName },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error(
+        "Error during Paystack success:",
+        error?.response.data.message
+      );
+      Alert.alert("Error", "Error occurred while processing payment.");
+    }
+  };
   return (
     <SafeAreaView className="flex-1 mt-6">
       <ScrollView className="mt-4">
@@ -179,7 +195,7 @@ const BuyTicket = () => {
               className={`mt-10 mb-2 bg-purple-500 py-4 rounded-3xl items-center mx-4 w-[90%] self-center ${
                 !ticketPrice && "opacity-30"
               }`}
-              // onPress={handleAddMoneyNow}
+              onPress={handleAddMoneyNow}
             >
               <Text className="text-white-normal font-semibold text-base font-axiformaRegular">
                 Pay Now
@@ -220,7 +236,7 @@ const BuyTicket = () => {
               <View className="flex-1 justify-center items-center bg-[#1b1b1b67] bg-opacity-50">
                 <View className="bg-white-normal p-4 rounded-lg w-[90%] border-2 border-gray-50 py-4 px-4">
                   <Text className="text-gray-700 font-medium text-base mb-4 font-axiformaRegular">
-                    You are about to send {value} Naira to Vybes App.
+                    You are about to purchase a ticket from Vybes App.
                   </Text>
                   <TouchableOpacity
                     className="bg-blue-normal py-2 rounded-lg mb-4 "
@@ -247,24 +263,33 @@ const BuyTicket = () => {
               <Paystack
                 showPayButton={false}
                 paystackKey={publicKey}
-                amount={parseFloat(value.replace(/,/g, ""))}
+                amount={ticketPrice}
                 billingEmail={user?.email}
                 billingMobile={user?.phoneNumber}
                 billingName={user?.fullName}
                 activityIndicatorColor="#006BFF"
                 onSuccess={handlePaystackSuccess}
                 onCancel={() => {
-                  alert("Payment Cancelled");
+                  Alert.alert("Error", "User Canclled Payment.");
                   setShowPaystackModal(false);
                 }}
                 autoStart={true}
+                channels={[
+                  "bank_transfer",
+                  "bank",
+                  "card",
+                  "ussd",
+                  "apple_pay",
+                  "mobile_money",
+                  "eft",
+                ]}
                 onClose={() => setShowPaystackModal(false)}
               />
             )}
           </>
         )}
 
-        {selectedMethod === "Card" && (
+        {/* {selectedMethod === "Card" && (
           <>
             <Image
               source={paymentOptions}
@@ -380,9 +405,11 @@ const BuyTicket = () => {
               ))}
             </View>
           </>
-        )}
+        )} */}
 
-        {(selectedMethod === "Quickteller" || selectedMethod === "USSD") && (
+        {(selectedMethod === "Card" ||
+          selectedMethod === "Quickteller" ||
+          selectedMethod === "USSD") && (
           <ScrollView>
             <View className="my-20 flex-row items-center justify-center gap-2">
               <View>
@@ -392,8 +419,8 @@ const BuyTicket = () => {
                   color="#a241ee"
                 />
               </View>
-              <Text className="text-[#2B3357] text-lg font-axiformaRegular">
-                {`${selectedMethod} Is Coming Soon...`}
+              <Text className="text-[#2B3357] text-base font-axiformaRegular">
+                {`${selectedMethod} Payment Is Coming Soon...`}
               </Text>
             </View>
           </ScrollView>

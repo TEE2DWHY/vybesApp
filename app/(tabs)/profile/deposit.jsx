@@ -305,7 +305,7 @@ const Deposit = () => {
           </>
         )}
 
-        {selectedMethod === "Card" && (
+        {/* {selectedMethod === "Card" && (
           <>
             <Image
               source={paymentOptions}
@@ -421,9 +421,11 @@ const Deposit = () => {
               ))}
             </View>
           </>
-        )}
+        )} */}
 
-        {(selectedMethod === "Quickteller" || selectedMethod === "USSD") && (
+        {(selectedMethod === "Card" ||
+          selectedMethod === "Quickteller" ||
+          selectedMethod === "Stripe") && (
           <ScrollView>
             <View className="my-20 flex-row items-center justify-center gap-2">
               <View>
@@ -433,8 +435,8 @@ const Deposit = () => {
                   color="#a241ee"
                 />
               </View>
-              <Text className="text-[#2B3357] text-lg font-axiformaRegular">
-                {`${selectedMethod} Is Coming Soon...`}
+              <Text className="text-[#2B3357] text-base font-axiformaRegular">
+                {`${selectedMethod} Payment Is Coming Soon...`}
               </Text>
             </View>
           </ScrollView>
