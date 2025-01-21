@@ -46,7 +46,7 @@ const Chat = () => {
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
+          "http://localhost:8000/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,

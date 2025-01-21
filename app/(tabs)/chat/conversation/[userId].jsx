@@ -27,8 +27,9 @@ import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import { formatMessageTime } from "../../../../utils/formatMessageTime";
-import { format, isToday } from "date-fns";
+import { format } from "date-fns";
 import * as Notifications from "expo-notifications";
+import { Audio } from "expo-av";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -59,6 +60,15 @@ const Conversation = () => {
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
   const messagesScrollViewRef = useRef();
+  const [recording, setRecording] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordings, setRecordings] = useState([]);
+  const [recordingDuration, setRecordingDuration] = useState(0); // Track recording duration
+  const recordingIntervalRef = useRef(null); // Reference for the interval
+  const [sound, setSound] = useState(); // State to manage audio playback
+  const [playingMessageId, setPlayingMessageId] = useState(null); // Track which message is currently playing
+  const [playbackPosition, setPlaybackPosition] = useState(0); // Track current playback position
+  const [isPlaying, setIsPlaying] = useState(false); // Track if audio is playing
 
   useEffect(() => {
     messagesScrollViewRef.current?.scrollToEnd({ animated: true });
@@ -318,6 +328,160 @@ const Conversation = () => {
     }
   };
 
+  async function startRecording() {
+    try {
+      const perm = await Audio.requestPermissionsAsync();
+      if (perm.status === "granted") {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+        );
+        setRecording(recording);
+        setIsRecording(true);
+        setRecordingDuration(0); // Reset duration
+        recordingIntervalRef.current = setInterval(() => {
+          setRecordingDuration((prev) => prev + 1); // Increment duration every second
+        }, 1000);
+      }
+    } catch (err) {
+      console.error("Failed to start recording:", err);
+    }
+  }
+
+  async function stopRecording() {
+    setIsRecording(false);
+    clearInterval(recordingIntervalRef.current); // Clear the interval
+    await recording.stopAndUnloadAsync();
+    const uri = recording.getURI();
+    setRecording(null);
+    setRecordingDuration(0); // Reset duration
+    return uri; // Return the URI of the recording
+  }
+
+  const sendVoiceRecording = async () => {
+    const uri = await stopRecording();
+    console.log(uri);
+    if (!uri) {
+      console.log("No recording available to send.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/v1/messages/send-message",
+        {
+          chatId: chatId,
+          receiverId: userId,
+          audio: uri,
+          duration: recordingDuration, // Send the duration of the audio
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const newMessage = {
+        ...response.data.payload,
+        senderId: user._id,
+      };
+      setMessages((prev) => [...prev, newMessage]);
+      messagesScrollViewRef.current?.scrollToEnd({ animated: true });
+      socket.emit("sendMessage", { ...newMessage, recipientId: userId });
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  };
+
+  const formatDuration = (duration) => {
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
+  const playAudio = async (uri) => {
+    if (sound) {
+      // If sound is already loaded, just resume playback
+      await sound.playFromPositionAsync(playbackPosition * 1000); // Convert seconds to milliseconds
+      setIsPlaying(true);
+    } else {
+      // If sound is not loaded, create a new sound instance
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri });
+      setSound(newSound);
+      await newSound.playFromPositionAsync(playbackPosition * 1000); // Start from the last position
+      setIsPlaying(true);
+
+      // Update playback position
+      newSound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isPlaying) {
+          setPlaybackPosition(status.positionMillis / 1000); // Convert milliseconds to seconds
+        } else {
+          setIsPlaying(false); // Set playing state to false when paused or stopped
+        }
+
+        // Stop audio when it reaches the end
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+          setPlayingMessageId(null);
+          setPlaybackPosition(0); // Reset playback position
+          newSound.unloadAsync(); // Unload the sound
+          setSound(null); // Reset sound state
+        }
+      });
+    }
+  };
+
+  const pauseAudio = async () => {
+    if (sound) {
+      await sound.pauseAsync();
+      setIsPlaying(false); // Set playing state to false
+      // Get the current playback position
+      const status = await sound.getStatusAsync();
+      setPlaybackPosition(status.positionMillis / 1000); // Convert milliseconds to seconds
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (sound) {
+        sound.unloadAsync(); // Unload the sound when the component unmounts
+      }
+    };
+  }, [sound]);
+
+  const handleImageSelect = async () => {
+    try {
+      const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status.granted) {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+
+        if (!result.canceled) {
+          const newMessage = {
+            id: messages.length + 1,
+            sender: "me",
+            image: result.assets[0].uri,
+            time: getCurrentTime(),
+            status: "sent",
+          };
+          setMessages([...messages, newMessage]);
+        }
+      } else {
+        console.log("Permission denied");
+      }
+    } catch (error) {
+      console.log("ImagePicker Error:", error);
+    }
+  };
+
   return (
     <>
       <KeyboardAvoidingView
@@ -436,44 +600,90 @@ const Conversation = () => {
                               : "justify-start"
                           }`}
                         >
-                          <View
-                            className={`p-3 rounded-lg ${
-                              msg.text
-                                ? msg.senderId === user?._id
-                                  ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
-                                  : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
-                                : "bg-transparent"
-                            }`}
-                          >
-                            {msg.image ? (
-                              <Image
-                                source={{ uri: msg.image }}
-                                className="w-[280px] h-[160px]"
-                                resizeMode="cover"
-                              />
-                            ) : (
-                              <Text
-                                className={`${
-                                  msg.senderId === user?._id
-                                    ? "text-[#fff]"
-                                    : "text-[#3D4C5E]"
-                                } font-axiformaRegular`}
-                              >
-                                {msg.text}
-                              </Text>
-                            )}
-                            <View className="flex-row items-center justify-end">
+                          {msg.audio ? ( // Check if the message is an audio message
+                            <View
+                              className={`p-3 rounded-lg ${
+                                msg.audio
+                                  ? msg.senderId === user?._id
+                                    ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
+                                    : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
+                                  : "bg-transparent"
+                              }`}
+                            >
+                              <View className="flex-row items-center">
+                                <Ionicons
+                                  name={
+                                    playingMessageId === msg._id
+                                      ? "pause"
+                                      : "play"
+                                  } // Change icon based on playing state
+                                  size={24}
+                                  color="#fff"
+                                  onPress={() => {
+                                    if (playingMessageId === msg._id) {
+                                      pauseAudio(); // Pause audio if currently playing
+                                      setPlayingMessageId(null); // Reset playing message ID
+                                    } else {
+                                      playAudio(msg.audio); // Play audio
+                                      setPlayingMessageId(msg._id); // Set the currently playing message ID
+                                    }
+                                  }}
+                                />
+                                <Text className="text-white-normal ml-2">
+                                  {formatDuration(msg.duration)}
+                                </Text>
+                              </View>
+
                               <Text
                                 className={`${
                                   msg.senderId === user._id
                                     ? "text-[#fff]"
                                     : "text-gray-500"
-                                } text-xs mr-2 font-axiformaRegular mt-2`}
+                                } text-xs ml-2 font-axiformaRegular mt-2`}
                               >
                                 {formatMessageTime(msg.createdAt)}
                               </Text>
                             </View>
-                          </View>
+                          ) : (
+                            <View
+                              className={`p-3 rounded-lg ${
+                                msg.text
+                                  ? msg.senderId === user?._id
+                                    ? "bg-[#5C6DBB] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[4px] rounded-bl-[40px] pt-6 px-4"
+                                    : "bg-[#D6DDFD] rounded-tr-[40px] rounded-tl-[40px] rounded-br-[40px] rounded-bl-[4px] pt-6 px-4"
+                                  : "bg-transparent"
+                              }`}
+                            >
+                              {msg.image ? (
+                                <Image
+                                  source={{ uri: msg.image }}
+                                  className="w-[280px] h-[160px]"
+                                  resizeMode="cover"
+                                />
+                              ) : (
+                                <Text
+                                  className={`${
+                                    msg.senderId === user?._id
+                                      ? "text-[#fff]"
+                                      : "text-[#3D4C5E]"
+                                  } font-axiformaRegular`}
+                                >
+                                  {msg.text}
+                                </Text>
+                              )}
+                              <View className="flex-row items-center justify-end">
+                                <Text
+                                  className={`${
+                                    msg.senderId === user._id
+                                      ? "text-[#fff]"
+                                      : "text-gray-500"
+                                  } text-xs mr-2 font-axiformaRegular mt-2`}
+                                >
+                                  {formatMessageTime(msg.createdAt)}
+                                </Text>
+                              </View>
+                            </View>
+                          )}
                         </View>
                         {msg.senderId === user._id && (
                           <View className="self-end">
@@ -538,149 +748,49 @@ const Conversation = () => {
               } rounded-md self-center mx-4`}
             >
               <View className="flex-row items-center gap-4 flex-1">
-                <Entypo
-                  name="attachment"
-                  size={22}
-                  color="#5C6DBB"
-                  onPress={() => setShowAttachmentModal(true)}
-                />
-                <TextInput
-                  className="text-[#3D4C5E] font-axiformaRegular flex-1"
-                  placeholder="Type a Message..."
-                  multiline={true}
-                  textAlignVertical="top"
-                  value={message}
-                  onChangeText={handleTyping}
-                />
-              </View>
-
-              <View className="absolute bottom-0 left-0 right-0 flex-col items-center w-[93%] self-center mb-2 mx-4">
-                <Modal
-                  visible={showAttachmentModal}
-                  transparent={true}
-                  animationType="slide"
-                  onRequestClose={() => setShowAttachmentModal(false)}
-                >
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => setShowAttachmentModal(false)}
-                    className="flex-1 justify-end items-center bg-[#1b1b1ba0] bg-opacity-50"
-                  >
-                    <TouchableOpacity
-                      activeOpacity={1}
-                      onPress={() => console.log("Pressed")}
-                      className="w-[90%] bg-white-normal p-6 rounded-lg items-center"
-                    >
-                      <View className="flex-row items-center justify-between w-[90%] mb-2">
-                        <View className="flex-col items-center mb-4">
-                          <TouchableOpacity
-                            className="justify-center items-center w-12 h-12 rounded-full bg-[#FBF7F7] border border-[#F3E5E7]"
-                            onPress={() => handleAttachmentSelect("Audio")}
-                          >
-                            <Ionicons
-                              name="headset"
-                              size={30}
-                              color="#D8ACB2"
-                            />
-                          </TouchableOpacity>
-                          <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
-                            Audio
-                          </Text>
-                        </View>
-
-                        <View className="flex-col items-center mb-4">
-                          <TouchableOpacity
-                            className="px-4 py-2 rounded-full justify-center items-center bg-[#FDEFEA] border border-[#FACDBE]"
-                            onPress={() => handleAttachmentSelect("Camera")}
-                          >
-                            <AntDesign
-                              name="camera"
-                              size={30}
-                              color="#EE5D2D"
-                            />
-                          </TouchableOpacity>
-                          <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
-                            Camera
-                          </Text>
-                        </View>
-
-                        <View className="flex-col items-center mb-4">
-                          <TouchableOpacity
-                            className="px-4 py-2 rounded-full justify-center items-center bg-[#F2F4FE] border border-[#D6DDFD]"
-                            onPress={() => handleAttachmentSelect("Document")}
-                          >
-                            <Ionicons
-                              name="document"
-                              size={30}
-                              color="#7A91F9"
-                            />
-                          </TouchableOpacity>
-                          <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
-                            Document
-                          </Text>
-                        </View>
-                      </View>
-                      <View className="flex-row items-center justify-between w-[90%]">
-                        <View className="flex-col items-center mb-4">
-                          <TouchableOpacity
-                            className="px-4 py-2 rounded-full justify-center items-center  bg-[#FFF7EE] border border-[#FFE7CA]"
-                            onPress={() =>
-                              handleImageSelect(
-                                ImagePicker,
-                                messages,
-                                setMessages
-                              )
-                            }
-                          >
-                            <Ionicons name="image" size={30} color="#FFB053" />
-                          </TouchableOpacity>
-                          <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
-                            Gallery
-                          </Text>
-                        </View>
-                        <View className="flex-col items-center mb-4">
-                          <TouchableOpacity
-                            className="px-4 py-2 rounded-full justify-center items-center  bg-[#B1C3FF] border border-[#F7F9FF]"
-                            onPress={() => handleAttachmentSelect("Gallery")}
-                          >
-                            <Ionicons
-                              name="location"
-                              size={30}
-                              color="#FF8674"
-                            />
-                          </TouchableOpacity>
-                          <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
-                            Location
-                          </Text>
-                        </View>
-                        <View className="flex-col items-center mb-4">
-                          <TouchableOpacity
-                            className="px-4 py-2 rounded-full justify-center items-center  bg-[#FFF3F1] border border-[#FFD9D4]"
-                            onPress={() =>
-                              handleAttachmentSelect("VoiceRecord")
-                            }
-                          >
-                            <Ionicons name="mic" size={30} color="#FF8674" />
-                          </TouchableOpacity>
-                          <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
-                            Voice Record
-                          </Text>
-                        </View>
-                      </View>
+                {isRecording ? (
+                  <>
+                    {/* Show recording duration while recording */}
+                    <Text className="text-[#3D4C5E] font-axiformaRegular">
+                      Recording... {formatDuration(recordingDuration)}
+                    </Text>
+                    <TouchableOpacity onPress={stopRecording}>
+                      <Ionicons name="stop" size={24} color="#a241ee" />
                     </TouchableOpacity>
-                  </TouchableOpacity>
-                </Modal>
+                  </>
+                ) : (
+                  <>
+                    <Entypo
+                      name="attachment"
+                      size={22}
+                      color="#5C6DBB"
+                      onPress={() => setShowAttachmentModal(true)}
+                    />
+                    <TextInput
+                      className="text-[#3D4C5E] font-axiformaRegular flex-1"
+                      placeholder="Type a Message..."
+                      multiline={true}
+                      textAlignVertical="top"
+                      value={message}
+                      onChangeText={handleTyping}
+                    />
+                  </>
+                )}
               </View>
 
               <View className="flex-row items-center gap-4 ml-2">
-                {message.length === 0 ? (
+                {isRecording ? (
+                  <TouchableOpacity onPress={sendVoiceRecording}>
+                    <Ionicons name="send" size={24} color="#9941EE" />
+                  </TouchableOpacity>
+                ) : message.length === 0 ? (
                   <>
                     <AntDesign name="camera" size={24} color="#B2BBC6" />
                     <MaterialIcons
                       name="keyboard-voice"
                       size={24}
                       color="#9941EE"
-                      onPress={() => console.log("Record voice")}
+                      onPress={startRecording}
                     />
                   </>
                 ) : (
@@ -689,6 +799,105 @@ const Conversation = () => {
                   </TouchableOpacity>
                 )}
               </View>
+            </View>
+            <View className="absolute bottom-0 left-0 right-0 flex-col items-center w-[93%] self-center mb-2 mx-4">
+              <Modal
+                visible={showAttachmentModal}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setShowAttachmentModal(false)}
+              >
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => setShowAttachmentModal(false)}
+                  className="flex-1 justify-end items-center bg-[#1b1b1ba0] bg-opacity-50"
+                >
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => console.log("Pressed")}
+                    className="w-[90%] bg-white-normal p-6 rounded-lg items-center"
+                  >
+                    <View className="flex-row items-center justify-between w-[90%] mb-2">
+                      <View className="flex-col items-center mb-4">
+                        <TouchableOpacity
+                          className="justify-center items-center w-12 h-12 rounded-full bg-[#FBF7F7] border border-[#F3E5E7]"
+                          onPress={() => handleAttachmentSelect("Audio")}
+                        >
+                          <Ionicons name="headset" size={30} color="#D8ACB2" />
+                        </TouchableOpacity>
+                        <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
+                          Audio
+                        </Text>
+                      </View>
+
+                      <View className="flex-col items-center mb-4">
+                        <TouchableOpacity
+                          className="px-4 py-2 rounded-full justify-center items-center bg-[#FDEFEA] border border-[#FACDBE]"
+                          onPress={() => handleAttachmentSelect("Camera")}
+                        >
+                          <AntDesign name="camera" size={30} color="#EE5D2D" />
+                        </TouchableOpacity>
+                        <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
+                          Camera
+                        </Text>
+                      </View>
+
+                      <View className="flex-col items-center mb-4">
+                        <TouchableOpacity
+                          className="px-4 py-2 rounded-full justify-center items-center bg-[#F2F4FE] border border-[#D6DDFD]"
+                          onPress={() => handleAttachmentSelect("Document")}
+                        >
+                          <Ionicons name="document" size={30} color="#7A91F9" />
+                        </TouchableOpacity>
+                        <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
+                          Document
+                        </Text>
+                      </View>
+                    </View>
+                    <View className="flex-row items-center justify-between w-[90%]">
+                      <View className="flex-col items-center mb-4">
+                        <TouchableOpacity
+                          className="px-4 py-2 rounded-full justify-center items-center  bg-[#FFF7EE] border border-[#FFE7CA]"
+                          onPress={() =>
+                            handleImageSelect(
+                              ImagePicker,
+                              messages,
+                              setMessages
+                            )
+                          }
+                        >
+                          <Ionicons name="image" size={30} color="#FFB053" />
+                        </TouchableOpacity>
+                        <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
+                          Gallery
+                        </Text>
+                      </View>
+                      <View className="flex-col items-center mb-4">
+                        <TouchableOpacity
+                          className="px-4 py-2 rounded-full justify-center items-center  bg-[#B1C3FF] border border-[#F7F9FF]"
+                          onPress={() => handleAttachmentSelect("Gallery")}
+                        >
+                          <Ionicons name="location" size={30} color="#FF8674" />
+                        </TouchableOpacity>
+                        <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
+                          Location
+                        </Text>
+                      </View>
+                      <View className="flex-col items-center mb-4">
+                        <TouchableOpacity
+                          className="px-4 py-2 rounded-full justify-center items-center  bg-[#FFF3F1] border border-[#FFD9D4]"
+                          onPress={() => handleAttachmentSelect("VoiceRecord")}
+                        >
+                          <Ionicons name="mic" size={30} color="#FF8674" />
+                        </TouchableOpacity>
+                        <Text className="text-center mt-2 font-axiformaRegular text-[#3D4C5E]">
+                          Voice Record
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              </Modal>
             </View>
           </SafeAreaView>
         </TouchableWithoutFeedback>
