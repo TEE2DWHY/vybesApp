@@ -21,6 +21,7 @@ import HeaderComponent from "./components/HeaderComponent";
 import { router } from "expo-router";
 import { format, parseISO, isToday } from "date-fns";
 import { setItem, getItem } from "../../../utils/AsyncStorage";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Chat = () => {
   const token = useToken();
@@ -46,7 +47,7 @@ const Chat = () => {
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/v1/contact/contacts/confirmed",
+          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -78,7 +79,10 @@ const Chat = () => {
             ) {
               return {
                 ...contact,
-                lastMessage: message.text,
+                lastMessage: {
+                  text: message.text || "Audio message",
+                  audio: message.audio || null,
+                },
                 time: message.createdAt,
               };
             }
@@ -93,10 +97,11 @@ const Chat = () => {
     };
   }, [token]);
 
-  // Save pinned chat to AsyncStorage whenever it changes
   useEffect(() => {
     if (pinnedChat) {
       setItem("pinnedChat", pinnedChat); // Use your setItem function to save pinned chat
+    } else {
+      setItem("pinnedChat", null);
     }
   }, [pinnedChat]);
 
@@ -134,12 +139,12 @@ const Chat = () => {
   };
 
   const pinChat = (contact) => {
-    // Set the pinned chat
     setPinnedChat(contact);
   };
 
   const unpinChat = () => {
-    setPinnedChat(null); // Unpin the currently pinned chat
+    setPinnedChat(null);
+    setItem("pinnedChat", null);
   };
 
   const deleteChat = (contact) => {
@@ -148,10 +153,12 @@ const Chat = () => {
     );
     if (pinnedChat && pinnedChat.contact._id === contact.contact._id) {
       setPinnedChat(null); // Unpin if the deleted chat was pinned
+      setItem("pinnedChat", null); // Remove from AsyncStorage
     }
   };
 
   const renderItem = ({ item }) => {
+    console.log(item);
     const currentUserIsContact = item.contact._id === user?._id;
     const contact = currentUserIsContact ? item.user : item.contact;
     const lastMessage = item.lastMessage;
@@ -196,8 +203,21 @@ const Chat = () => {
               </View>
               <View className="flex-row items-center gap-2 w-[90%]">
                 {lastMessage ? (
-                  <Text className="text-[#909DAD] font-axiformaRegular text-sm flex-1">
-                    {lastMessage.text || lastMessage}
+                  <Text className="text-[#909DAD] font-axiformaRegular text-sm flex-1 capitalize">
+                    {lastMessage.startsWith("file") ? (
+                      <View className="flex-row items-center justify-center gap-2">
+                        <Ionicons
+                          name="musical-notes-outline"
+                          size={18}
+                          color="#a241ee"
+                        />
+                        <Text className="font-axiformaMedium text-gray-400 capitalize text-sm">
+                          audio message
+                        </Text>
+                      </View>
+                    ) : (
+                      lastMessage
+                    )}
                   </Text>
                 ) : (
                   <Text className="text-[#909DAD] font-axiformaRegular text-sm">

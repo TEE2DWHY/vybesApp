@@ -55,8 +55,6 @@ const Event = () => {
     fetchEvents();
   }, [id]);
 
-  console.log(ticket);
-
   const toggleModal = () => {
     setShowModal(!showModal);
     Animated.timing(slideAnim, {
@@ -187,7 +185,6 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => {
                 setSelectedTicket("Regular");
-                console.log("Selected Ticket:", "Regular");
               }}
               className={`px-4 py-4 rounded-lg ${
                 selectedTicket === "Regular" ? "bg-[#3C615F]" : "bg-[#E5E7EB]"
@@ -207,7 +204,6 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => {
                 setSelectedTicket("Vip");
-                console.log("Selected Ticket:", "Vip");
               }}
               className={`px-4 py-4 rounded-lg ${
                 selectedTicket === "Vip" ? "bg-[#7A91F9]" : "bg-[#E5E7EB]"
@@ -227,7 +223,6 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => {
                 setSelectedTicket("Vvip");
-                console.log("Selected Ticket:", "Vvip");
               }}
               className={`px-4 py-4 rounded-lg ${
                 selectedTicket === "Vvip" ? "bg-[#F97316]" : "bg-[#E5E7EB]"
@@ -262,7 +257,7 @@ const Event = () => {
 
               // Proceed to buy ticket
               router.push(
-                `ticket/buyticket?id=${id}&ticketType=${selectedTicket}`
+                `ticket/buyticket?id=${id}&ticketType=${selectedTicket}&ticketImage=${ticket?.image}`
               );
             }}
             className="bg-[#8B5CF6] py-4 rounded-full"

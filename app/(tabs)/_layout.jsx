@@ -23,7 +23,7 @@ const TabIcon = ({ icon, name, focused }) => {
         className={focused ? "font-axiformaMedium" : "font-axiformaRegular"}
         style={{
           color: focused ? "#9941EE" : "#B2BBC6",
-          fontSize: Platform.OS === "ios" ? 9 : 11,
+          fontSize: Platform.OS === "ios" ? 9 : 9.5,
         }}
       >
         {name}

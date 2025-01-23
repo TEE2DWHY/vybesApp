@@ -14,7 +14,6 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
 import { formatNumberWithCommas } from "../../../utils/formatNumber";
 import { router, useLocalSearchParams } from "expo-router";
-import paymentOptions from "../../../assets/images/paymentOptions.png";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Paystack } from "react-native-paystack-webview";
@@ -22,6 +21,7 @@ import { useAccount } from "../../../hooks/useAccount";
 import { useToken } from "../../../hooks/useToken";
 import axios from "axios";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import paid from "../../../assets/images/paid.png";
 
 const BuyTicket = () => {
   const publicKey = process.env.EXPO_PUBLIC_PAYSTACK_API_PUBLIC_KEY;
@@ -32,8 +32,9 @@ const BuyTicket = () => {
   const [error, setError] = useState("");
   const { user, refetchUser } = useAccount();
   const token = useToken();
-  const { id, ticketType } = useLocalSearchParams();
+  const { id, ticketType, ticketImage } = useLocalSearchParams();
   const [ticketPrice, setTicketPrice] = useState(0);
+  const [isTicketBought, setIsTicketBought] = useState(false);
 
   const [cardsData, setCardsData] = useState({
     cardOne: "",
@@ -98,6 +99,7 @@ const BuyTicket = () => {
           }
         );
         console.log(response.data);
+        setIsTicketBought(true);
       }
     } catch (error) {
       console.error(
@@ -425,6 +427,44 @@ const BuyTicket = () => {
             </View>
           </ScrollView>
         )}
+        <Modal
+          visible={isTicketBought}
+          transparent={true}
+          className="opacity-20"
+          animationType="fade"
+        >
+          <TouchableOpacity
+            className="items-center justify-center bg-[#1b1b1ba0] bg-opacity-50 h-full"
+            onPress={() => setIsTicketBought(false)}
+          >
+            <View className="absolute rounded-xl py-8  bg-white-normal items-center w-[90%] h-fit shadow-slate-400">
+              <Image
+                source={paid}
+                resizeMode="cover"
+                className="rounded-full w-[100px] h-[100px]"
+              />
+              <Text className="text-[#7A91F9] text-2xl font-axiformaBlack text-center w-[80%] capitalize leading-6 mb-2">
+                Payment Confirmed
+              </Text>
+              <Text className="capitalize text-[#546881] font-axiformaRegular text-[14px] text-center my-4 w-[60%] leading-6">
+                you have successfuly payed for your ticket.
+              </Text>
+              <Image
+                source={{ uri: ticketImage }}
+                resizeMode="cover"
+                className="rounded-lg w-[80%] h-[190px]"
+              />
+              <TouchableOpacity
+                className="bg-purple-normal py-3 px-6 rounded-full mt-6"
+                // onPress={switchTab}
+              >
+                <Text className="font-axiformaRegular text-white-normal text-lg">
+                  Download Reciept
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </ScrollView>
       <StatusBar style="dark" backgroundColor="#fff" />
     </SafeAreaView>

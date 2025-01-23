@@ -30,6 +30,13 @@ import { formatMessageTime } from "../../../../utils/formatMessageTime";
 import { format } from "date-fns";
 import * as Notifications from "expo-notifications";
 import { Audio } from "expo-av";
+import {
+  CameraView,
+  CameraType,
+  useCameraPermissions,
+  Camera,
+} from "expo-camera";
+import CameraComponent from "../components/CameraComponent";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -62,13 +69,31 @@ const Conversation = () => {
   const messagesScrollViewRef = useRef();
   const [recording, setRecording] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [recordings, setRecordings] = useState([]);
-  const [recordingDuration, setRecordingDuration] = useState(0); // Track recording duration
-  const recordingIntervalRef = useRef(null); // Reference for the interval
-  const [sound, setSound] = useState(); // State to manage audio playback
-  const [playingMessageId, setPlayingMessageId] = useState(null); // Track which message is currently playing
-  const [playbackPosition, setPlaybackPosition] = useState(0); // Track current playback position
-  const [isPlaying, setIsPlaying] = useState(false); // Track if audio is playing
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const recordingIntervalRef = useRef(null);
+  const [sound, setSound] = useState();
+  const [playingMessageId, setPlayingMessageId] = useState(null);
+  const [playbackPosition, setPlaybackPosition] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+
+  const handleCameraOpen = () => {
+    setShowCamera(true);
+  };
+
+  const handlePictureTaken = async (uri) => {
+    // Send the picture as a message
+    const newMessage = {
+      id: messages.length + 1,
+      sender: "me",
+      image: uri,
+      time: getCurrentTime(),
+      status: "sent",
+    };
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    // Optionally, you can send the image to your server here
+  };
 
   useEffect(() => {
     messagesScrollViewRef.current?.scrollToEnd({ animated: true });
@@ -341,7 +366,7 @@ const Conversation = () => {
         );
         setRecording(recording);
         setIsRecording(true);
-        setRecordingDuration(0); // Reset duration
+        setRecordingDuration(0);
         recordingIntervalRef.current = setInterval(() => {
           setRecordingDuration((prev) => prev + 1); // Increment duration every second
         }, 1000);
@@ -371,12 +396,12 @@ const Conversation = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/v1/messages/send-message",
+        "https://vybesapi.onrender.com/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
           audio: uri,
-          duration: recordingDuration, // Send the duration of the audio
+          duration: recordingDuration,
         },
         {
           headers: {
@@ -785,7 +810,12 @@ const Conversation = () => {
                   </TouchableOpacity>
                 ) : message.length === 0 ? (
                   <>
-                    <AntDesign name="camera" size={24} color="#B2BBC6" />
+                    <AntDesign
+                      name="camera"
+                      size={24}
+                      color="#B2BBC6"
+                      onPress={handleCameraOpen}
+                    />
                     <MaterialIcons
                       name="keyboard-voice"
                       size={24}
@@ -899,6 +929,13 @@ const Conversation = () => {
                 </TouchableOpacity>
               </Modal>
             </View>
+            {/* Camera Component */}
+            {showCamera && (
+              <CameraComponent
+                onPictureTaken={handlePictureTaken}
+                onClose={() => setShowCamera(false)}
+              />
+            )}
           </SafeAreaView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
