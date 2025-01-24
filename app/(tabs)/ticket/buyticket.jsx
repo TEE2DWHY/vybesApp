@@ -32,7 +32,8 @@ const BuyTicket = () => {
   const [error, setError] = useState("");
   const { user, refetchUser } = useAccount();
   const token = useToken();
-  const { id, ticketType, ticketImage } = useLocalSearchParams();
+  const { id, ticketType, ticketImage, ticketName, location } =
+    useLocalSearchParams();
   const [ticketPrice, setTicketPrice] = useState(0);
   const [isTicketBought, setIsTicketBought] = useState(false);
 
@@ -91,7 +92,12 @@ const BuyTicket = () => {
       if (status === "success" && reference) {
         const response = await axios.post(
           `https://vybesapi.onrender.com/v1/event/generate-ticket/${id}`,
-          { fullName: user?.fullName },
+          {
+            fullName: user?.fullName,
+            email: user?.email,
+            ticketName: ticketName,
+            location: location,
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,

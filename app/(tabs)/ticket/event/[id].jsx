@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Image,
   SafeAreaView,
@@ -20,22 +20,35 @@ import axios from "axios";
 import { Skeleton } from "moti/skeleton";
 
 const Event = () => {
-  const params = useLocalSearchParams();
-  const { id } = params;
-  const [ticket, setTicket] = useState();
+  const { id } = useLocalSearchParams();
+  const [ticket, setTicket] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [allEvents, setAllEvents] = useState([]);
   const slideAnim = useState(new Animated.Value(300))[0];
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!id) {
-        console.log("No ID provided");
-        return;
-      }
+  // Fetch all events once when the component mounts
+  const getAllTickets = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `https://vybesapi.onrender.com/v1/event/all-events`
+      );
+      setAllEvents(response.data?.payload || []);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
+  useEffect(() => {
+    getAllTickets();
+  }, [getAllTickets]);
+
+  useEffect(() => {
+    if (!id) return;
+    const fetchEvent = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `https://vybesapi.onrender.com/v1/event/get-event/${id}`
@@ -43,16 +56,15 @@ const Event = () => {
         setTicket(response.data.payload);
         setTickets(response.data.payload.tickets);
       } catch (error) {
-        console.log(
+        console.error(
           "Error fetching event:",
-          error.response?.data.message || error.message
+          error.response?.data?.message || error.message
         );
       } finally {
         setLoading(false);
       }
     };
-
-    fetchEvents();
+    fetchEvent();
   }, [id]);
 
   const toggleModal = () => {
@@ -64,15 +76,37 @@ const Event = () => {
     }).start();
   };
 
-  // Function to check if selected ticket exists in the tickets array
   const checkTicketAvailability = (ticketType) => {
-    return tickets.some((ticketItem) => {
-      return (
-        ticketItem.type &&
-        ticketItem?.type.toLowerCase() === ticketType.toLowerCase()
-      );
-    });
+    return tickets.some(
+      (ticketItem) => ticketItem.type.toLowerCase() === ticketType.toLowerCase()
+    );
   };
+
+  const updateEvent = (direction) => {
+    const currentEventIndex = allEvents.findIndex(
+      (event) => event._id === ticket._id
+    );
+    if (currentEventIndex < 0) return;
+
+    const nextIndex = currentEventIndex + direction;
+    if (nextIndex < 0 || nextIndex >= allEvents.length) return;
+
+    const newEvent = allEvents[nextIndex];
+    setTicket(newEvent);
+    setTickets(newEvent.tickets);
+    setSelectedTicket("");
+    setLoading(true);
+    setLoading(false);
+  };
+
+  const handleNext = () => updateEvent(1);
+  const handlePrevious = () => updateEvent(-1);
+
+  const currentEventIndex = allEvents.findIndex(
+    (event) => event._id === ticket?._id
+  );
+  const isLastEvent = currentEventIndex === allEvents.length - 1;
+  const isFirstEvent = currentEventIndex === 0;
 
   return (
     <SafeAreaView className="pt-10">
@@ -105,8 +139,11 @@ const Event = () => {
         <View className="relative w-[90%] h-[280px] self-center mb-4">
           {!loading && (
             <TouchableOpacity
-              className="absolute left-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
-              onPress={() => console.log("Scroll Left")}
+              className={`absolute left-[-15px] z-50 top-[50%] p-2 rounded-full ${
+                isFirstEvent ? "bg-gray-400" : "bg-[#7A91F9]"
+              }`}
+              onPress={handlePrevious}
+              disabled={isFirstEvent}
             >
               <AntDesign name="left" size={14} color="#fff" />
             </TouchableOpacity>
@@ -131,8 +168,11 @@ const Event = () => {
 
           {!loading && (
             <TouchableOpacity
-              className="absolute right-[-15px] z-50 top-[50%]  bg-[#7A91F9] rounded-full p-2"
-              onPress={() => console.log("Scroll Right")}
+              className={`absolute right-[-15px] z-50 top-[50%] p-2 rounded-full ${
+                isLastEvent ? "bg-gray-400" : "bg-[#7A91F9]"
+              }`}
+              onPress={handleNext}
+              disabled={isLastEvent}
             >
               <AntDesign name="right" size={14} color="#fff" />
             </TouchableOpacity>
@@ -157,7 +197,6 @@ const Event = () => {
           <Text className="font-axiformaRegular text-[#3D4C5E] text-lg mb-4">
             Available Ticket
           </Text>
-
           {tickets.map((ticketItem, index) => (
             <View
               key={index}
@@ -182,60 +221,33 @@ const Event = () => {
           </Text>
 
           <View className="flex-row justify-between mb-4">
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedTicket("Regular");
-              }}
-              className={`px-4 py-4 rounded-lg ${
-                selectedTicket === "Regular" ? "bg-[#3C615F]" : "bg-[#E5E7EB]"
-              }`}
-            >
-              <Text
-                className={`font-axiformaRegular ${
-                  selectedTicket === "Regular"
-                    ? "text-white-normal"
-                    : "text-black-dark"
+            {["Regular", "Vip", "Vvip"].map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => setSelectedTicket(type)}
+                className={`px-4 py-4 rounded-lg ${
+                  selectedTicket === type
+                    ? `bg-[#${
+                        type === "Regular"
+                          ? "3C615F"
+                          : type === "Vip"
+                          ? "7A91F9"
+                          : "F97316"
+                      }]`
+                    : "bg-[#E5E7EB]"
                 }`}
               >
-                Regular
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedTicket("Vip");
-              }}
-              className={`px-4 py-4 rounded-lg ${
-                selectedTicket === "Vip" ? "bg-[#7A91F9]" : "bg-[#E5E7EB]"
-              }`}
-            >
-              <Text
-                className={`font-axiformaRegular ${
-                  selectedTicket === "Vip"
-                    ? "text-white-normal"
-                    : "text-black-dark"
-                }`}
-              >
-                Vip
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedTicket("Vvip");
-              }}
-              className={`px-4 py-4 rounded-lg ${
-                selectedTicket === "Vvip" ? "bg-[#F97316]" : "bg-[#E5E7EB]"
-              }`}
-            >
-              <Text
-                className={`font-axiformaRegular ${
-                  selectedTicket === "Vvip" ? "text-white" : "text-black-dark"
-                }`}
-              >
-                Vvip
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  className={`font-axiformaRegular ${
+                    selectedTicket === type
+                      ? "text-white-normal"
+                      : "text-black-dark"
+                  }`}
+                >
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
@@ -243,21 +255,16 @@ const Event = () => {
         <View className="px-6 mb-10 w-2/5 self-center my-6">
           <TouchableOpacity
             onPress={() => {
-              if (!selectedTicket) {
+              if (!selectedTicket)
                 return Alert.alert("Note", "Please select a ticket type");
-              }
-
-              // Check if the selected ticket is available
               if (!checkTicketAvailability(selectedTicket)) {
                 return Alert.alert(
                   "Ticket Not Available",
-                  `${selectedTicket} not available for this event.`
+                  `${selectedTicket} ticket type is not available for this event.`
                 );
               }
-
-              // Proceed to buy ticket
               router.push(
-                `ticket/buyticket?id=${id}&ticketType=${selectedTicket}&ticketImage=${ticket?.image}`
+                `ticket/buyticket?id=${id}&ticketType=${selectedTicket}&ticketImage=${ticket?.image}&ticketName=${ticket?.name}&location=${ticket?.location}`
               );
             }}
             className="bg-[#8B5CF6] py-4 rounded-full"
@@ -268,19 +275,14 @@ const Event = () => {
           </TouchableOpacity>
         </View>
 
-        <Modal transparent={true} visible={showModal} animationType="fade">
-          {/* Backdrop */}
+        <Modal transparent visible={showModal} animationType="fade">
           <TouchableOpacity
             className="flex-1 bg-[#1b1b1b67]"
             onPress={toggleModal}
             activeOpacity={1}
           />
-
-          {/* Modal content sliding from the bottom */}
           <Animated.View
-            style={{
-              transform: [{ translateY: slideAnim }],
-            }}
+            style={{ transform: [{ translateY: slideAnim }] }}
             className="absolute bottom-0 left-0 right-0"
           >
             <ShareModal image={ticket?.image} />
