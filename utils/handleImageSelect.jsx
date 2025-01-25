@@ -1,3 +1,5 @@
+import * as ImagePicker from "expo-image-picker";
+
 const getCurrentTime = () => {
   return new Date().toLocaleTimeString([], {
     hour: "2-digit",
@@ -5,11 +7,7 @@ const getCurrentTime = () => {
   });
 };
 
-export const handleImageSelect = async ({
-  ImagePicker,
-  messages,
-  setMessages,
-}) => {
+export const handleImageSelect = async ({}) => {
   try {
     const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status.granted) {

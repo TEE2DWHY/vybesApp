@@ -1,64 +1,34 @@
 import React from "react";
-import {
-  TouchableOpacity,
-  SafeAreaView,
-  Image,
-  StyleSheet,
-  View,
-} from "react-native";
+import { TouchableOpacity, SafeAreaView, Image, View } from "react-native";
 import { Fontisto } from "@expo/vector-icons";
 
 const PhotoPreviewSection = ({ photo, handleRetakePhoto, sendImage }) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.box}>
-        <Image style={styles.previewContainer} source={{ uri: photo.uri }} />
+    <SafeAreaView className="flex-1 items-center justify-between bg-black-darker">
+      <View className="absolute top-5 left-5"></View>
+      <View className="w-full h-5/6 rounded-lg overflow-hidden mt-10">
+        <Image
+          className="w-full h-full rounded-2xl"
+          source={{ uri: photo.uri }}
+          resizeMode="contain"
+        />
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
-          <Fontisto name="trash" size={36} color="black" />
+      <View className="flex-row justify-between w-full px-10 mb-10">
+        <TouchableOpacity
+          className="bg-gray-700 rounded-full p-4 items-center justify-center"
+          onPress={handleRetakePhoto}
+        >
+          <Fontisto name="camera" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={sendImage}>
-          <Fontisto name="arrow-right" size={36} color="black" />
+        <TouchableOpacity
+          className="bg-purple-600 rounded-full p-4 items-center justify-center"
+          onPress={sendImage}
+        >
+          <Fontisto name="arrow-right" size={24} color="white" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  box: {
-    borderRadius: 15,
-    padding: 1,
-    width: "95%",
-    backgroundColor: "darkgray",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  previewContainer: {
-    width: "95%",
-    height: "85%",
-    borderRadius: 15,
-  },
-  buttonContainer: {
-    marginTop: "4%",
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-  },
-  button: {
-    backgroundColor: "gray",
-    borderRadius: 25,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default PhotoPreviewSection;

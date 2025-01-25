@@ -3,6 +3,7 @@ import React from "react";
 import { Modal, View, TouchableOpacity, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { handleImageSelect } from "../../../../../utils/handleImageSelect";
 
 const AttachmentModal = ({
   showAttachmentModal,
@@ -68,7 +69,7 @@ const AttachmentModal = ({
               <View className="flex-col items-center mb-4">
                 <TouchableOpacity
                   className="px-4 py-2 rounded-full justify-center items-center bg-[#FFF7EE] border border-[#FFE7CA]"
-                  onPress={() => handleImageSelect()}
+                  onPress={handleImageSelect}
                 >
                   <Ionicons name="image" size={30} color="#FFB053" />
                 </TouchableOpacity>

@@ -13,7 +13,6 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 const InputArea = ({
   message,
-  setMessage,
   sendMessage,
   startRecording,
   stopRecording,
@@ -22,6 +21,7 @@ const InputArea = ({
   handleTyping,
   setShowAttachmentModal,
   recordingDuration,
+  setShowCamera,
 }) => {
   const formatDuration = (duration) => {
     const minutes = Math.floor(duration / 60);
@@ -75,7 +75,7 @@ const InputArea = ({
               name="camera"
               size={24}
               color="#B2BBC6"
-              //   onPress={} // Implement camera functionality if required
+              onPress={setShowCamera}
             />
             <MaterialIcons
               name="keyboard-voice"

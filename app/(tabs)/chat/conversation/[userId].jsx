@@ -11,7 +11,6 @@ import {
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import DatingTips from "../components/DatingTips";
-import * as ImagePicker from "expo-image-picker";
 import { connectSocket } from "../../../../config/socket";
 import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
@@ -23,6 +22,7 @@ import Messages from "./components/Messages";
 import MessageModal from "./components/MessageModal";
 import InputArea from "./components/InputArea";
 import AttachmentModal from "./components/AttachmentModal";
+import Camera from "../camera";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -421,35 +421,6 @@ const Conversation = () => {
     };
   }, [sound]);
 
-  const handleImageSelect = async () => {
-    try {
-      const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status.granted) {
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        if (!result.canceled) {
-          const newMessage = {
-            id: messages.length + 1,
-            sender: "me",
-            image: result.assets[0].uri,
-            time: getCurrentTime(),
-            status: "sent",
-          };
-          setMessages([...messages, newMessage]);
-        }
-      } else {
-        console.log("Permission denied");
-      }
-    } catch (error) {
-      console.log("ImagePicker Error:", error);
-    }
-  };
-
   const formatDuration = (duration) => {
     const minutes = Math.floor(duration / 60);
     const seconds = duration % 60;
@@ -457,11 +428,13 @@ const Conversation = () => {
   };
 
   const handleAttachmentSelect = (type) => {
-    console.log(`Selected attachment type: ${type}`);
-
     if (attachmentModalRef.current) {
       attachmentModalRef.current.close();
     }
+  };
+
+  const handleShowCamera = () => {
+    setShowCamera(true);
   };
 
   return (
@@ -472,66 +445,82 @@ const Conversation = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <SafeAreaView className="bg-white-normal h-full pt-12">
-            <Header
-              onBackPress={() => router.push("/chat")}
-              onUserPress={() => router.push(`/home/user/${contact?._id}`)}
-              contact={contact}
-              isTyping={isTyping}
-            />
-            <ScrollView>
-              <DatingTips
-                showTips={() => setShowTips(true)}
-                closeTips={() => setShowTips(false)}
-                tips={showTips}
-                userName={contact?.userName}
-                accountType={contact?.accountType}
-                gender={contact?.gender}
+            {!showCamera ? (
+              <>
+                <Header
+                  onBackPress={() => router.push("/chat")}
+                  onUserPress={() => router.push(`/home/user/${contact?._id}`)}
+                  contact={contact}
+                  isTyping={isTyping}
+                />
+                <ScrollView>
+                  <DatingTips
+                    showTips={() => setShowTips(true)}
+                    closeTips={() => setShowTips(false)}
+                    tips={showTips}
+                    userName={contact?.userName}
+                    accountType={contact?.accountType}
+                    gender={contact?.gender}
+                  />
+                </ScrollView>
+
+                <Messages
+                  showTips={showTips}
+                  user={user}
+                  messages={messages}
+                  pauseAudio={pauseAudio}
+                  playAudio={playAudio}
+                  sound={sound}
+                  setIsPlaying={setIsPlaying}
+                  setPlayingMessageId={setPlayingMessageId}
+                  setPlaybackPosition={setPlaybackPosition}
+                  playbackPosition={playbackPosition}
+                  playingMessageId={playingMessageId}
+                  formatDuration={formatDuration}
+                  onLongPress={handleLongPress}
+                  messagesScrollViewRef={messagesScrollViewRef}
+                />
+
+                <MessageModal
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                  selectedMessage={selectedMessage}
+                  setSelectedMessage={setSelectedMessage}
+                  setMessage={setMessage}
+                />
+
+                <InputArea
+                  message={message}
+                  setMessage={setMessage}
+                  sendMessage={sendMessage}
+                  startRecording={startRecording}
+                  stopRecording={stopRecording}
+                  sendVoiceRecording={sendVoiceRecording}
+                  handleTyping={handleTyping}
+                  isRecording={isRecording}
+                  setShowAttachmentModal={setShowAttachmentModal}
+                  recordingDuration={recordingDuration}
+                  setShowCamera={handleShowCamera}
+                />
+
+                <AttachmentModal
+                  handleAttachmentSelect={handleAttachmentSelect}
+                  setShowAttachmentModal={setShowAttachmentModal}
+                  showAttachmentModal={showAttachmentModal}
+                />
+              </>
+            ) : (
+              <Camera
+                chatId={chatId}
+                userId={userId}
+                token={token}
+                socket={socket}
+                user={user}
+                setMessages={setMessages}
+                messagesScrollViewRef={messagesScrollViewRef}
+                setShowCamera={setShowCamera}
               />
-            </ScrollView>
-
-            <Messages
-              showTips={showTips}
-              user={user}
-              messages={messages}
-              pauseAudio={pauseAudio}
-              playAudio={playAudio}
-              sound={sound}
-              setIsPlaying={setIsPlaying}
-              setPlayingMessageId={setPlayingMessageId}
-              setPlaybackPosition={setPlaybackPosition}
-              playbackPosition={playbackPosition}
-              playingMessageId={playingMessageId}
-              formatDuration={formatDuration}
-              onLongPress={handleLongPress}
-              messagesScrollViewRef={messagesScrollViewRef}
-            />
-
-            <MessageModal
-              showModal={showModal}
-              setShowModal={setShowModal}
-              selectedMessage={selectedMessage}
-              setSelectedMessage={setSelectedMessage}
-              setMessage={setMessage}
-            />
-
-            <InputArea
-              message={message}
-              setMessage={setMessage}
-              sendMessage={sendMessage}
-              startRecording={startRecording}
-              stopRecording={stopRecording}
-              sendVoiceRecording={sendVoiceRecording}
-              handleTyping={handleTyping}
-              isRecording={isRecording}
-              setShowAttachmentModal={setShowAttachmentModal}
-              recordingDuration={recordingDuration}
-            />
-
-            <AttachmentModal
-              handleAttachmentSelect={handleAttachmentSelect}
-              setShowAttachmentModal={setShowAttachmentModal}
-              showAttachmentModal={showAttachmentModal}
-            />
+            )}
           </SafeAreaView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

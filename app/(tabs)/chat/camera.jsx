@@ -1,26 +1,27 @@
 import { useRef, useState, useEffect } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import axios from "axios";
-import { AntDesign } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useLocalSearchParams } from "expo-router";
 import PhotoPreviewSection from "./photopreview";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { handleImageSelect } from "../../../utils/handleImageSelect";
 
-export default function Camera() {
+export default function Camera({
+  chatId,
+  userId,
+  token,
+  socket,
+  user,
+  setMessages,
+  messagesScrollViewRef,
+  setShowCamera,
+}) {
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [photo, setPhoto] = useState(null);
   const cameraRef = useRef(null);
-
-  const {
-    chatId,
-    userId,
-    token,
-    socket,
-    user,
-    setMessages,
-    messagesScrollViewRef,
-  } = useLocalSearchParams();
 
   useEffect(() => {
     if (permission?.granted === false) {
@@ -35,10 +36,15 @@ export default function Camera() {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>
+        <Text style={styles.permissionText}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={() => requestPermission()} title="Grant Permission" />
+        <TouchableOpacity
+          style={styles.permissionButton}
+          onPress={() => requestPermission()}
+        >
+          <Text style={styles.buttonText}>Grant Permission</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -57,7 +63,6 @@ export default function Camera() {
 
   const handleRetakePhoto = () => setPhoto(null);
 
-  // Send the captured image
   const sendImage = async () => {
     try {
       const response = await axios.post(
@@ -78,14 +83,24 @@ export default function Camera() {
         ...response.data.payload,
         senderId: user._id,
       };
-      console.log(response);
       setMessages((prev) => [...prev, newMessage]);
       messagesScrollViewRef.current?.scrollToEnd({ animated: true });
       socket.emit("sendMessage", { ...newMessage, recipientId: userId });
+
+      Alert.alert("Success", "Image sent successfully!", [
+        { text: "OK", onPress: () => setShowCamera(false) },
+      ]);
     } catch (error) {
       console.log(error.response?.data?.message || error.message);
+
+      Alert.alert(
+        "Error",
+        "There was an issue sending the image. Please try again.",
+        [{ text: "OK", onPress: () => setShowCamera(false) }]
+      );
     }
   };
+
   if (photo) {
     return (
       <PhotoPreviewSection
@@ -97,14 +112,36 @@ export default function Camera() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} className="flex-1 bg-[#121212]">
+      <View className="mt-4 ml-4 mb-4">
+        <Ionicons
+          name="arrow-back-outline"
+          size={24}
+          color="#fff"
+          onPress={() => setShowCamera(false)}
+        />
+      </View>
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <AntDesign name="retweet" size={44} color="black" />
+        <Text className="text-white-normal text-[20px]"> </Text>
+        <View className="flex-row justify-around items-center mb-[20px]">
+          <TouchableOpacity
+            onPress={toggleCameraFacing}
+            className="w-[60px] h-[60px] bg-[#2C2C2C] rounded-[30px]  justify-center items-center"
+          >
+            <MaterialIcons name="cameraswitch" size={30} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-            <AntDesign name="camera" size={44} color="black" />
+          <TouchableOpacity
+            style={styles.captureButton}
+            className="w-[80px] h-[80px] bg-purple-normal rounded-[40px] border-2 border-white-normal"
+            onPress={handleTakePhoto}
+          />
+          <TouchableOpacity className="w-[60px] h-[60px] bg-[#2C2C2C] rounded-[30px] justify-center items-center">
+            <FontAwesome
+              name="image"
+              size={30}
+              color="#fff"
+              // onPress={() => handleImageSelect()}
+            />
           </TouchableOpacity>
         </View>
       </CameraView>
@@ -113,25 +150,25 @@ export default function Camera() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
   camera: {
     flex: 1,
+    justifyContent: "space-between",
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
+
+  permissionText: {
+    color: "white",
+    textAlign: "center",
+    marginBottom: 20,
   },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
-    marginHorizontal: 10,
-    backgroundColor: "gray",
-    borderRadius: 10,
+  permissionButton: {
+    backgroundColor: "#6E44FF",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignSelf: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

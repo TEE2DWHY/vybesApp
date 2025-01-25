@@ -37,7 +37,7 @@ const DatingTips = ({
 
   return (
     <ScrollView className="bg-gray-50 relative mb-20">
-      <View className="bg-white-normal rounded-lg p-4 w-[90%] self-center mt-4 text-justify text-sm h-fit">
+      <View className="bg-white-normal rounded-lg p-4 w-[90%] self-center mt-4 text-justify text-sm h-fit ">
         <Text className="font-axiformaRegular leading-6 capitalize text-[#47586E]">
           @{userName} accepted your request, {gender === "male" ? "he" : "she"}{" "}
           has a {accountType} profile, if you would like to know more off and

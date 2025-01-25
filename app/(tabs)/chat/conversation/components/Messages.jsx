@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { format } from "date-fns";
 import { formatMessageTime } from "../../../../../utils/formatMessageTime";
+import FullScreenImageModal from "./FullScreenImageModal";
 
 const Messages = ({
   messages,
@@ -16,6 +17,19 @@ const Messages = ({
   setPlayingMessageId,
   messagesScrollViewRef,
 }) => {
+  const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
+
+  const handleImageClick = (uri) => {
+    setSelectedImageUri(uri);
+    setImageModalVisible(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setImageModalVisible(false);
+    setSelectedImageUri(null);
+  };
+
   return (
     !showTips && (
       <ScrollView
@@ -109,11 +123,15 @@ const Messages = ({
                       }`}
                     >
                       {msg.image ? (
-                        <Image
-                          source={{ uri: msg.image }}
-                          className="w-[280px] h-[160px]"
-                          resizeMode="cover"
-                        />
+                        <TouchableOpacity
+                          onPress={() => handleImageClick(msg.image)}
+                        >
+                          <Image
+                            source={{ uri: msg.image }}
+                            className="w-[280px] h-[160px] rounded-2xl"
+                            resizeMode="cover"
+                          />
+                        </TouchableOpacity>
                       ) : (
                         <Text
                           className={`${
@@ -158,6 +176,12 @@ const Messages = ({
             </View>
           );
         })}
+
+        <FullScreenImageModal
+          imageUri={selectedImageUri}
+          visible={imageModalVisible}
+          onClose={handleCloseImageModal}
+        />
       </ScrollView>
     )
   );
