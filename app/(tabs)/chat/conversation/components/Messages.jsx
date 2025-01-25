@@ -123,15 +123,26 @@ const Messages = ({
                       }`}
                     >
                       {msg.image ? (
-                        <TouchableOpacity
-                          onPress={() => handleImageClick(msg.image)}
-                        >
-                          <Image
-                            source={{ uri: msg.image }}
-                            className="w-[280px] h-[160px] rounded-2xl"
-                            resizeMode="cover"
-                          />
-                        </TouchableOpacity>
+                        <>
+                          <TouchableOpacity
+                            onPress={() => handleImageClick(msg.image)}
+                          >
+                            <Image
+                              source={{ uri: msg.image }}
+                              className="w-[280px] h-[160px] rounded-2xl"
+                              resizeMode="cover"
+                            />
+                          </TouchableOpacity>
+                          <Text
+                            className={`${
+                              msg.senderId === user._id
+                                ? "text-[#fff]"
+                                : "text-gray-500"
+                            } text-xs ml-2 font-axiformaRegular mt-2`}
+                          >
+                            {formatMessageTime(msg.createdAt)}
+                          </Text>
+                        </>
                       ) : (
                         <Text
                           className={`${

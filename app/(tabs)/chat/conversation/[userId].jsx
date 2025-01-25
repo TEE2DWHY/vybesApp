@@ -16,13 +16,14 @@ import { useToken } from "../../../../hooks/useToken";
 import axios from "axios";
 import { useAccount } from "../../../../hooks/useAccount";
 import * as Notifications from "expo-notifications";
+import * as DocumentPicker from "expo-document-picker";
 import { Audio } from "expo-av";
 import Header from "./components/ChatHeader";
 import Messages from "./components/Messages";
 import MessageModal from "./components/MessageModal";
 import InputArea from "./components/InputArea";
 import AttachmentModal from "./components/AttachmentModal";
-import Camera from "../camera";
+import Camera from "./components/Camera";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -428,13 +429,31 @@ const Conversation = () => {
   };
 
   const handleAttachmentSelect = (type) => {
+    if (type === "Camera") {
+      setShowCamera(true);
+    }
+    if (type === "Document") {
+      pickDocument();
+    }
+
     if (attachmentModalRef.current) {
       attachmentModalRef.current.close();
     }
   };
 
-  const handleShowCamera = () => {
-    setShowCamera(true);
+  const pickDocument = async () => {
+    try {
+      let result = await DocumentPicker.getDocumentAsync({});
+
+      if (result.canceled) {
+        Alert.alert("Action Canceled", "User canceled picking a document.");
+        return;
+      }
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "An error occurred while picking the document.");
+    }
   };
 
   return (
@@ -500,7 +519,7 @@ const Conversation = () => {
                   isRecording={isRecording}
                   setShowAttachmentModal={setShowAttachmentModal}
                   recordingDuration={recordingDuration}
-                  setShowCamera={handleShowCamera}
+                  setShowCamera={() => setShowCamera(true)}
                 />
 
                 <AttachmentModal

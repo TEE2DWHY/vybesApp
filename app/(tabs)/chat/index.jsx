@@ -40,13 +40,11 @@ const Chat = () => {
         setPinnedChat(savedPinnedChat);
       }
     };
-
     getPinnedChat();
-
     const getMyContacts = async () => {
       try {
         const response = await axios.get(
-          "https://vybesapi.onrender.com/v1/contact/contacts/confirmed",
+          "https://ad3e-2605-6440-3008-5000-a39b-8df0-592c-90bb.ngrok-free.app/v1/contact/contacts/confirmed",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -98,7 +96,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (pinnedChat) {
-      setItem("pinnedChat", pinnedChat); // Use your setItem function to save pinned chat
+      setItem("pinnedChat", pinnedChat);
     } else {
       setItem("pinnedChat", null);
     }
@@ -202,7 +200,7 @@ const Chat = () => {
               <View className="flex-row items-center gap-2 w-[90%]">
                 {lastMessage ? (
                   <Text className="text-[#909DAD] font-axiformaRegular text-sm flex-1 capitalize">
-                    {lastMessage.startsWith("file") ? (
+                    {lastMessage === "audio" ? (
                       <View className="flex-row items-center justify-center gap-2">
                         <Ionicons
                           name="musical-notes-outline"
@@ -211,6 +209,13 @@ const Chat = () => {
                         />
                         <Text className="font-axiformaMedium text-gray-400 capitalize text-sm">
                           audio message
+                        </Text>
+                      </View>
+                    ) : lastMessage === "image" ? (
+                      <View className="flex-row items-center justify-center gap-2">
+                        <Ionicons name="image" size={18} color="#2B3357" />
+                        <Text className="font-axiformaMedium text-gray-400 capitalize text-sm">
+                          image
                         </Text>
                       </View>
                     ) : (

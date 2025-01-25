@@ -238,13 +238,11 @@ const Event = () => {
                 onPress={() => setSelectedTicket(type)}
                 className={`px-4 py-4 rounded-lg ${
                   selectedTicket === type
-                    ? `bg-[#${
-                        type === "Regular"
-                          ? "3C615F"
-                          : type === "Vip"
-                          ? "7A91F9"
-                          : "F97316"
-                      }]`
+                    ? type === "Regular"
+                      ? "bg-[#3C615F]"
+                      : type === "Vip"
+                      ? "bg-[#7A91F9]"
+                      : "bg-[#F97316]"
                     : "bg-[#E5E7EB]"
                 }`}
               >
@@ -252,7 +250,7 @@ const Event = () => {
                   className={`font-axiformaRegular ${
                     selectedTicket === type
                       ? "text-white-normal"
-                      : "text-black-dark"
+                      : "text-black-darker"
                   }`}
                 >
                   {type}

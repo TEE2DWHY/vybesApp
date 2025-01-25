@@ -2,11 +2,11 @@ import { useRef, useState, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import axios from "axios";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import PhotoPreviewSection from "./photopreview";
+import PhotoPreviewSection from "./PhotoPreview";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { handleImageSelect } from "../../../utils/handleImageSelect";
+import { handleImageSelect } from "../../../../../utils/handleImageSelect";
 
 export default function Camera({
   chatId,
@@ -126,19 +126,19 @@ export default function Camera({
         <View className="flex-row justify-around items-center mb-[20px]">
           <TouchableOpacity
             onPress={toggleCameraFacing}
-            className="w-[60px] h-[60px] bg-[#2C2C2C] rounded-[30px]  justify-center items-center"
+            className=" justify-center items-center"
           >
-            <MaterialIcons name="cameraswitch" size={30} color="#fff" />
+            <MaterialIcons name="cameraswitch" size={26} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.captureButton}
-            className="w-[80px] h-[80px] bg-purple-normal rounded-[40px] border-2 border-white-normal"
+            className="w-[70px] h-[70px] bg-purple-normal rounded-[40px] border-2 border-white-normal"
             onPress={handleTakePhoto}
           />
-          <TouchableOpacity className="w-[60px] h-[60px] bg-[#2C2C2C] rounded-[30px] justify-center items-center">
+          <TouchableOpacity className=" justify-center items-center">
             <FontAwesome
               name="image"
-              size={30}
+              size={26}
               color="#fff"
               // onPress={() => handleImageSelect()}
             />

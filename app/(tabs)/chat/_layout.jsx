@@ -12,8 +12,6 @@ const ChatLayout = () => {
           name="conversation/[userId]"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="camera" options={{ headerShown: false }} />
-        <Stack.Screen name="photopreview" options={{ headerShown: false }} />
       </Stack>
     </>
   );
