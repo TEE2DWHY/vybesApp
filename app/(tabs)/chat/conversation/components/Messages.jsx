@@ -13,11 +13,17 @@ const Messages = ({
   pauseAudio,
   playAudio,
   formatDuration,
+  setPlayingMessageId,
+  messagesScrollViewRef,
 }) => {
   return (
     !showTips && (
       <ScrollView
         className="flex-2 px-4 h-[60vh]"
+        ref={messagesScrollViewRef}
+        onContentSizeChange={() =>
+          messagesScrollViewRef.current.scrollToEnd({ animated: true })
+        }
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: "flex-end",
@@ -59,13 +65,24 @@ const Messages = ({
                           size={24}
                           color="#fff"
                           onPress={() => {
+                            if (!msg.audio) {
+                              console.log(
+                                "Audio URI is null or undefined for message:",
+                                msg
+                              );
+                              return;
+                            }
+
                             if (playingMessageId === msg._id) {
                               pauseAudio();
+                              setPlayingMessageId(null);
                             } else {
                               playAudio(msg.audio);
+                              setPlayingMessageId(msg._id);
                             }
                           }}
                         />
+
                         <Text className="text-white-normal ml-2">
                           {formatDuration(msg.duration)}
                         </Text>

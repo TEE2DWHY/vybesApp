@@ -23,7 +23,6 @@ import Messages from "./components/Messages";
 import MessageModal from "./components/MessageModal";
 import InputArea from "./components/InputArea";
 import AttachmentModal from "./components/AttachmentModal";
-import { pauseAudio, playAudio } from "../../../../utils/audioFn";
 
 // Notification configuration
 Notifications.setNotificationHandler({
@@ -298,7 +297,17 @@ const Conversation = () => {
     setShowModal(true);
   };
 
+  useEffect(() => {
+    const initRecording = new Audio.Recording();
+    setRecording(initRecording);
+  }, []);
+
   async function startRecording() {
+    if (isRecording) {
+      console.log("Recording is already in progress.");
+      return;
+    }
+
     try {
       const perm = await Audio.requestPermissionsAsync();
       if (perm.status === "granted") {
@@ -364,6 +373,43 @@ const Conversation = () => {
       socket.emit("sendMessage", { ...newMessage, recipientId: userId });
     } catch (error) {
       console.log(error.response.data.message);
+    }
+  };
+
+  const playAudio = async (uri) => {
+    if (sound) {
+      await sound.playFromPositionAsync(playbackPosition * 1000);
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri });
+      setSound(newSound);
+      await newSound.playFromPositionAsync(playbackPosition * 1000);
+      setIsPlaying(true);
+
+      newSound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isPlaying) {
+          setPlaybackPosition(status.positionMillis / 1000);
+        } else {
+          setIsPlaying(false);
+        }
+
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+          setPlayingMessageId(null);
+          setPlaybackPosition(0);
+          newSound.unloadAsync();
+          setSound(null);
+        }
+      });
+    }
+  };
+
+  const pauseAudio = async () => {
+    if (sound) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+      const status = await sound.getStatusAsync();
+      setPlaybackPosition(status.positionMillis / 1000);
     }
   };
 
@@ -447,18 +493,17 @@ const Conversation = () => {
               showTips={showTips}
               user={user}
               messages={messages}
-              pauseAudio={pauseAudio(sound, setPlaybackPosition)}
-              playAudio={playAudio(
-                message?.audio,
-                sound,
-                setIsPlaying,
-                setPlayingMessageId,
-                setPlaybackPosition,
-                setPlaybackPosition,
-                playbackPosition
-              )}
+              pauseAudio={pauseAudio}
+              playAudio={playAudio}
+              sound={sound}
+              setIsPlaying={setIsPlaying}
+              setPlayingMessageId={setPlayingMessageId}
+              setPlaybackPosition={setPlaybackPosition}
+              playbackPosition={playbackPosition}
+              playingMessageId={playingMessageId}
               formatDuration={formatDuration}
               onLongPress={handleLongPress}
+              messagesScrollViewRef={messagesScrollViewRef}
             />
 
             <MessageModal

@@ -28,7 +28,6 @@ const InputArea = ({
     const seconds = duration % 60;
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
-
   return (
     <View
       className={`flex-row items-center justify-between w-[93%] border-2 border-[#F3F9FF] bg-white-normal ${
