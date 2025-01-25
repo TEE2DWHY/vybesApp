@@ -33,12 +33,11 @@ const Chat = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef(null);
 
-  // Retrieve pinned chat from AsyncStorage when the app loads
   useEffect(() => {
     const getPinnedChat = async () => {
       const savedPinnedChat = await getItem("pinnedChat");
       if (savedPinnedChat) {
-        setPinnedChat(savedPinnedChat); // Set the saved pinned chat
+        setPinnedChat(savedPinnedChat);
       }
     };
 
@@ -152,13 +151,12 @@ const Chat = () => {
       prevContacts.filter((c) => c.contact._id !== contact.contact._id)
     );
     if (pinnedChat && pinnedChat.contact._id === contact.contact._id) {
-      setPinnedChat(null); // Unpin if the deleted chat was pinned
-      setItem("pinnedChat", null); // Remove from AsyncStorage
+      setPinnedChat(null);
+      setItem("pinnedChat", null);
     }
   };
 
   const renderItem = ({ item }) => {
-    console.log(item);
     const currentUserIsContact = item.contact._id === user?._id;
     const contact = currentUserIsContact ? item.user : item.contact;
     const lastMessage = item.lastMessage;

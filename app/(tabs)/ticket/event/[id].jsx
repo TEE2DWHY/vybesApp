@@ -29,8 +29,7 @@ const Event = () => {
   const [allEvents, setAllEvents] = useState([]);
   const slideAnim = useState(new Animated.Value(300))[0];
 
-  // Fetch all events once when the component mounts
-  const getAllTickets = useCallback(async () => {
+  const getAllEvents = useCallback(async () => {
     try {
       const response = await axios.get(
         `https://vybesapi.onrender.com/v1/event/all-events`
@@ -42,8 +41,8 @@ const Event = () => {
   }, []);
 
   useEffect(() => {
-    getAllTickets();
-  }, [getAllTickets]);
+    getAllEvents();
+  }, [getAllEvents]);
 
   useEffect(() => {
     if (!id) return;
@@ -215,6 +214,18 @@ const Event = () => {
           <Text className="font-axiformaRegular text-[#3D4C5E] text-lg mb-4">
             Featured Artist
           </Text>
+          <View className="flex-row flex-wrap gap-4">
+            {ticket?.dj?.[0]?.split(",").map((dj, index) => (
+              <View
+                className="px-4 py-4 rounded-lg border border-gray-400 mb-2"
+                key={index}
+              >
+                <Text className="font-axiformaMedium text-gray-500">
+                  {dj.trim()}
+                </Text>
+              </View>
+            ))}
+          </View>
 
           <Text className="font-axiformaRegular text-[#47586E] text-lg mt-6 mb-4">
             Select Your Preferred Type Of Ticket

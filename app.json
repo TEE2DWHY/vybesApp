@@ -17,6 +17,7 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app requires access to the microphone to record audio.",
+        "NSCameraUsageDescription": "This app requires access to the camera.",
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": ["vybesapp"]
@@ -31,24 +32,11 @@
         "foregroundImage": "./assets/images/vybe.png",
         "backgroundColor": "#fff"
       },
-      // "intentFilters": [
-      //   {
-      //     "action": "VIEW",
-      //     "autoVerify": true,
-      //     "data": [
-      //       {
-      //         "scheme": "https",
-      //         "host": "*.onrender.com",
-      //         "pathPrefix": "/records"
-      //       }
-      //     ],
-      //     "category": ["BROWSABLE", "DEFAULT"]
-      //   }
-      // ],
       "permissions": [
         "INTERNET",
         "android.permission.USE_BIOMETRIC",
-        "android.permission.USE_FINGERPRINT"
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.CAMERA" // Add camera permission here
       ],
       "package": "com.tee2dwhy.vybesapp",
       "jsEngine": "jsc"
