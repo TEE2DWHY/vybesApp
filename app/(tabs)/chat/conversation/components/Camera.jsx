@@ -6,6 +6,7 @@ import PhotoPreviewSection from "./PhotoPreview";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { handleImageSelect } from "../../../../../utils/handleImageSelect";
 
 export default function Camera({
@@ -131,11 +132,17 @@ export default function Camera({
             <MaterialIcons name="cameraswitch" size={26} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.captureButton}
-            className="w-[70px] h-[70px] bg-purple-normal rounded-[40px] border-2 border-white-normal"
+            className="w-[70px] h-[70px] bg-purple-normal rounded-[40px] border-2 border-white-normal items-center justify-center"
             onPress={handleTakePhoto}
-          />
-          <TouchableOpacity className=" justify-center items-center">
+          >
+            <MaterialCommunityIcons
+              name="star-three-points"
+              size={46}
+              color={"#fff"}
+              style={{ marginTop: "-5" }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity className="justify-center items-center">
             <FontAwesome
               name="image"
               size={26}
