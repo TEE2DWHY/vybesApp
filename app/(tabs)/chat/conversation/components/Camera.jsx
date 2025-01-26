@@ -67,7 +67,7 @@ export default function Camera({
   const sendImage = async () => {
     try {
       const response = await axios.post(
-        "https://ad3e-2605-6440-3008-5000-a39b-8df0-592c-90bb.ngrok-free.app/v1/messages/send-message",
+        "https://vybesapi.onrender.com/v1/messages/send-message",
         {
           chatId: chatId,
           receiverId: userId,
