@@ -47,13 +47,15 @@ const TxDashboard = () => {
             style={{ color: "#B2BBC6" }}
             onPress={() => router.push("/profile")}
           />
-          <Image
-            source={{
-              uri: user?.image || "",
-            }}
-            className="w-10 h-10 rounded-full"
-            resizeMode="cover"
-          />
+          <TouchableOpacity>
+            <Image
+              source={{
+                uri: user?.image,
+              }}
+              className="w-10 h-10 rounded-full"
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         </View>
         <View className="bg-purple-darker rounded-lg p-8 self-center mt-8 w-full">
           <View className="border-b border-b-white-normal flex-row items-center justify-between pb-6">
